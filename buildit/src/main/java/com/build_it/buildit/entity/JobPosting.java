@@ -45,7 +45,7 @@ public class JobPosting {
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
 
-  // The "Cart Items". CascadeType.ALL means if we save the JobPosting, it automatically saves all requirements.
+  @Builder.Default
   @OneToMany(mappedBy = "jobPosting", cascade = CascadeType.ALL, orphanRemoval = true)
   @ToString.Exclude
   @EqualsAndHashCode.Exclude

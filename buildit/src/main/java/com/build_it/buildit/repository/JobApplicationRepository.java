@@ -17,4 +17,6 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
 
   // We will use this later for the Handshake auto-cancel feature
   List<JobApplication> findByWorkerIdAndStatus(Long workerId, ApplicationStatus status);
+
+  boolean existsByWorkerIdAndJobRequirementId(Long workerId, Long jobRequirementId);
 }

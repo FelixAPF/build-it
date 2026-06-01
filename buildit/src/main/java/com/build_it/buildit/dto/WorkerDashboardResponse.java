@@ -1,0 +1,20 @@
+package com.build_it.buildit.dto;
+
+import lombok.Builder;
+import lombok.Data;
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+public class WorkerDashboardResponse {
+  private Long applicationId;
+  private String companyName;
+  private String companyPhone; // Important so the worker can call the boss if they are late
+  private String address;
+  private LocalDateTime startDatetime;
+  private LocalDateTime endDatetime;
+  private String jobType;
+  private Double hourlyRate;
+  private String applicationStatus; // PENDING, SELECTED, REJECTED, AUTO_CANCELLED
+  private String jobStatus;         // OPEN, COMPLETED, etc.
+}

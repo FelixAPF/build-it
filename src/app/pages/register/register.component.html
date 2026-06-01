@@ -1,0 +1,101 @@
+<div class="min-h-screen flex items-center justify-center bg-slate-50 p-4 py-12">
+  <div class="w-full max-w-2xl">
+    
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-extrabold text-blue-600 mb-2">BuildIt</h1>
+      <p class="text-slate-500">Create an account to join the marketplace.</p>
+    </div>
+
+    <p-card styleClass="shadow-lg rounded-xl">
+      
+      @if(errorMessage) {
+        <p-message severity="danger" [text]="errorMessage" styleClass="w-full mb-4"></p-message>
+      }
+
+      <p-tabView>
+        
+        <!-- WORKER REGISTRATION TAB -->
+        <p-tabPanel header="I am a Worker">
+          <form [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-4">
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">First Name</label>
+                <input pInputText formControlName="firstName" class="w-full p-3" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Last Name</label>
+                <input pInputText formControlName="lastName" class="w-full p-3" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Email</label>
+                <input pInputText formControlName="email" type="email" class="w-full p-3" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Phone Number</label>
+                <input pInputText formControlName="phoneNumber" placeholder="(514) 555-0123" class="w-full p-3" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Password</label>
+                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3"></p-password>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Years of Experience</label>
+                <p-inputNumber formControlName="yearsExperience" [min]="0" styleClass="w-full" inputStyleClass="w-full p-3"></p-inputNumber>
+              </div>
+            </div>
+
+            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-4 p-3 bg-blue-600 border-none hover:bg-blue-700"></p-button>
+          </form>
+        </p-tabPanel>
+
+        <!-- BUSINESS REGISTRATION TAB -->
+        <p-tabPanel header="I am a Business">
+          <form [formGroup]="businessForm" (ngSubmit)="onBusinessSubmit()" class="flex flex-col gap-5 mt-4">
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Company Name</label>
+                <input pInputText formControlName="companyName" class="w-full p-3" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Contact Name</label>
+                <input pInputText formControlName="contactName" class="w-full p-3" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-semibold text-slate-700">Email</label>
+              <input pInputText formControlName="email" type="email" class="w-full p-3" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Password</label>
+                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3"></p-password>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Phone Number</label>
+                <input pInputText formControlName="phoneNumber" class="w-full p-3" />
+              </div>
+            </div>
+
+            <p-button label="Register as Business" type="submit" [disabled]="businessForm.invalid" [loading]="isLoading" styleClass="w-full mt-4 p-3 bg-slate-800 border-none hover:bg-slate-900"></p-button>
+          </form>
+        </p-tabPanel>
+
+      </p-tabView>
+
+      <div class="text-center mt-6 text-sm text-slate-500 border-t pt-4">
+        Already have an account? 
+        <a routerLink="/login" class="text-blue-600 font-semibold hover:underline">Login here</a>
+      </div>
+    </p-card>
+  </div>
+</div>

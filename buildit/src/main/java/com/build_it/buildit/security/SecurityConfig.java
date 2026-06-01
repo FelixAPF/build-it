@@ -39,7 +39,7 @@ public class SecurityConfig {
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
         // Allow anyone to attempt login, register, or read API documentation
-        .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+        .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
         // Restrict any administration endpoints strictly to the admin role
         .requestMatchers("/api/admin/**").hasRole("ADMIN")
         // All other endpoints require a validated JWT

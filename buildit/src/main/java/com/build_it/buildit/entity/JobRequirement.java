@@ -36,7 +36,7 @@ public class JobRequirement {
   @Column(name = "qty_filled", nullable = false)
   private Integer qtyFilled = 0;
 
-  // Tracks all workers who applied specifically to this requirement
+  @Builder.Default
   @OneToMany(mappedBy = "jobRequirement", cascade = CascadeType.ALL, orphanRemoval = true)
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
