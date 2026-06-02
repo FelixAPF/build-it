@@ -6,10 +6,205 @@
         <h1 class="text-4xl font-extrabold text-slate-800">Business Dashboard</h1>
         <p class="text-slate-500 mt-2">Welcome back! Here are your ongoing projects.</p>
       </div>
-      <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-        Logout
-      </button>
+      <div class="flex gap-4">
+        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-success" (onClick)="showDialog = true"></p-button>
+        <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined" (onClick)="logout()"></p-button>
+      </div>
     </div>
 
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <p-table [value]="jobs" [loading]="isLoading" [rows]="10" [paginator]="true" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Job ID</th>
+            <th>Address</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-job>
+          <tr>
+            <td class="font-semibold text-slate-700">#{{job.jobPostingId}}</td>
+            <td>{{job.address}}</td>
+            <td>{{job.startDatetime | date:'medium'}}</td>
+            <td>{{job.endDatetime | date:'shortTime'}}</td>
+            <td>
+              <p-tag [value]="job.status" [severity]="getSeverity(job.status)"></p-tag>
+            </td>
+            <td class="text-center">
+            <p-button icon="pi pi-eye" styleClass="p-button-rounded p-button-text p-button-info" (onClick)="viewJobDetails(job)" pTooltip="Manage Roles"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center p-8 text-slate-500">
+              You haven't posted any jobs yet. Click "Post New Job" to get started!
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+    
+  </div>
 </div>
+
+<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [style]="{ width: '45rem' }">
+  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-4">
+    
+    <div class="flex flex-col gap-2">
+      <label class="font-semibold text-slate-700">Site Address</label>
+      <input pInputText formControlName="address" placeholder="123 Construction Blvd" class="w-full" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="font-semibold text-slate-700">Start Date & Time</label>
+        <p-calendar formControlName="startDatetime" [showTime]="true" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-semibold text-slate-700">End Date & Time</label>
+        <p-calendar formControlName="endDatetime" [showTime]="true" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
+      </div>
+    </div>
+
+    <div class="border-t pt-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg text-slate-800">Worker Requirements</h3>
+        <p-button label="Add Trade" icon="pi pi-plus" size="small" styleClass="p-button-outlined" (onClick)="addRequirement()"></p-button>
+      </div>
+
+      <div formArrayName="requirements" class="flex flex-col gap-4">
+        <div *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i" class="p-4 bg-slate-50 border border-slate-200 rounded-lg flex items-end gap-4 relative">
+          
+          <div class="flex-1 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">Trade / Job Type</label>
+            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" placeholder="Select a Trade" appendTo="body" styleClass="w-full"></p-dropdown>
+          </div>
+
+          <div class="w-32 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">Hourly Rate ($)</label>
+            <p-inputNumber formControlName="hourlyRate" mode="currency" currency="CAD" styleClass="w-full"></p-inputNumber>
+          </div>
+
+          <div class="w-24 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">Quantity</label>
+            <p-inputNumber formControlName="qtyRequested" [showButtons]="true" [min]="1" styleClass="w-full"></p-inputNumber>
+          </div>
+
+          <p-button *ngIf="requirementsFormArray.length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-text p-button-rounded" (onClick)="removeRequirement(i)"></p-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-4 pt-4 border-t">
+      <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text" (onClick)="showDialog = false"></p-button>
+      <p-button label="Post Job & Pay Fee" icon="pi pi-check" type="submit" [disabled]="jobForm.invalid" [loading]="isSubmitting"></p-button>
+    </div>
+
+  </form>
+</p-dialog>
+
+
+<p-dialog header="Manage Job Roles" [(visible)]="showJobDetailsDialog" [modal]="true" [style]="{ width: '50rem' }">
+  <div *ngIf="selectedJob">
+    <div class="mb-4 text-slate-600">
+      <p><i class="pi pi-map-marker mr-2"></i> {{selectedJob.address}}</p>
+      <p><i class="pi pi-calendar mr-2"></i> {{selectedJob.startDatetime | date:'mediumDate'}}</p>
+    </div>
+
+    <h3 class="font-bold text-lg text-slate-800 mb-3">Roles Requested</h3>
+    
+    <div class="flex flex-col gap-4">
+      <div *ngFor="let req of selectedJob.requirements" class="p-4 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+        <div>
+          <p-tag [value]="req.jobType" severity="info"></p-tag>
+          <div class="mt-2 text-sm text-slate-600 font-semibold">${{req.hourlyRate}}/hr</div>
+          <div class="text-sm text-slate-500 mt-1">Status: {{req.qtyFilled}} / {{req.qtyRequested}} Filled</div>
+        </div>
+
+        <div class="flex gap-2">
+          <p-button *ngIf="req.qtyFilled < req.qtyRequested" label="View Applicants" icon="pi pi-users" size="small" (onClick)="viewApplicants(req.requirementId)"></p-button>
+          <p-tag *ngIf="req.qtyFilled >= req.qtyRequested" value="Fully Staffed" severity="success" icon="pi pi-check"></p-tag>
+        </div>
+        
+        <div *ngIf="req.assignedWorkers.length > 0" class="mt-4 border-t pt-3 w-full col-span-full">
+          <p class="text-sm font-bold text-slate-700 mb-2">Hired Workers:</p>
+          <div *ngFor="let worker of req.assignedWorkers" class="flex justify-between items-center bg-white p-3 rounded-lg border border-slate-200 mb-2 shadow-sm">
+            <div>
+              <div class="font-semibold text-slate-800 flex items-center gap-2">
+                {{worker.fullName}}
+                <span class="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                  <i class="pi pi-star-fill text-yellow-500 text-xs mr-1"></i> 
+                  {{ worker.averageRating > 0 ? worker.averageRating : 'New' }}
+                </span>
+              </div>
+              <div class="text-sm text-slate-500 mt-1"><i class="pi pi-phone mr-1"></i> {{worker.phoneNumber}}</div>
+            </div>
+            
+            <p-button *ngIf="isJobComplete(selectedJob.endDatetime)" label="Rate Worker" icon="pi pi-star-fill" size="small" styleClass="p-button-warning p-button-outlined" (onClick)="openReview(worker.applicationId)"></p-button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Pending Applicants" [(visible)]="showApplicantsDialog" [modal]="true" [style]="{ width: '40rem' }">
+  
+  <p-table [value]="applicants" [loading]="isLoadingApplicants" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Worker Name</th>
+        <th>Experience</th>
+        <th>Rating</th>
+        <th class="text-center">Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-app>
+      <tr>
+        <td class="font-semibold text-slate-700">{{app.workerName}}</td>
+        <td>{{app.yearsExperience}} Years</td>
+        <td class="font-semibold">
+          <i class="pi pi-star-fill text-yellow-500 mr-1"></i> 
+          {{ app.averageRating > 0 ? app.averageRating : 'New' }}
+        </td>
+        <td class="text-center flex justify-center gap-2">
+          <p-button icon="pi pi-check" styleClass="p-button-rounded p-button-success p-button-text" (onClick)="approveWorker(app.applicationId)" pTooltip="Hire"></p-button>
+          <p-button icon="pi pi-times" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="rejectWorker(app.applicationId)" pTooltip="Reject"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center p-6 text-slate-500">
+          No pending applications for this role yet.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>
+
+<p-dialog header="Review Worker" [(visible)]="showReviewDialog" [modal]="true" [style]="{ width: '30rem' }">
+  <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="flex flex-col gap-5 mt-2">
+    
+    <div class="flex flex-col items-center gap-3">
+      <label class="font-semibold text-slate-700">How was their work?</label>
+      <p-rating formControlName="starRating" [cancel]="false" [stars]="5"></p-rating>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-semibold text-slate-700">Comments (Optional)</label>
+      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Were they on time? Did they do a good job?"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-2">
+      <p-button label="Cancel" styleClass="p-button-text" (onClick)="showReviewDialog = false"></p-button>
+      
+      <p-button label="Submit Review" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-warning"></p-button>
+    </div>
+  </form>
+</p-dialog>

@@ -4,6 +4,7 @@ import com.build_it.buildit.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   // Quick check to prevent duplicate registrations
   boolean existsByEmail(String email);
+
+  List<User> findByStatus(com.build_it.buildit.entity.AccountStatus status);
 }

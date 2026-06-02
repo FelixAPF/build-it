@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public class WorkerDashboardResponse {
   private Long applicationId;
+  private Long jobId;
   private String companyName;
   private String companyPhone; // Important so the worker can call the boss if they are late
   private String address;

@@ -96,6 +96,7 @@ public class AuthService {
       throw new RuntimeException("Account has been suspended");
     }
 
+    // Allow PENDING and ACTIVE users to get a token!
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }

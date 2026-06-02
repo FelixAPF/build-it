@@ -33,6 +33,7 @@ public class DashboardService {
         JobPosting posting = app.getJobRequirement().getJobPosting();
         return WorkerDashboardResponse.builder()
           .applicationId(app.getId())
+          .jobId(posting.getId())
           .companyName(posting.getBusiness().getCompanyName())
           .companyPhone(posting.getBusiness().getPhoneNumber())
           .address(posting.getAddress())
@@ -75,6 +76,7 @@ public class DashboardService {
               // ONLY SHOW HIRED WORKERS IN THE ASSIGNED LIST
               .filter(app -> app.getStatus() == ApplicationStatus.SELECTED)
               .map(app -> AssignedWorkerDto.builder()
+                .applicationId(app.getId())
                 .workerId(app.getWorker().getId())
                 .fullName(app.getWorker().getFullName())
                 .phoneNumber(app.getWorker().getPhoneNumber())

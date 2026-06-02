@@ -26,6 +26,10 @@ public class ApplicationService {
     User user = userRepository.findByEmail(workerEmail).orElseThrow();
     WorkerProfile worker = workerProfileRepository.findByUserId(user.getId()).orElseThrow();
 
+    if (user.getStatus() != AccountStatus.ACTIVE) {
+      throw new RuntimeException("Account pending verification.");
+    }
+
     JobRequirement req = requirementRepository.findById(requirementId)
       .orElseThrow(() -> new RuntimeException("Job requirement not found"));
 
@@ -52,6 +56,10 @@ public class ApplicationService {
 
     User user = userRepository.findByEmail(businessEmail).orElseThrow();
     BusinessProfile business = businessProfileRepository.findByUserId(user.getId()).orElseThrow();
+
+    if (user.getStatus() != AccountStatus.ACTIVE) {
+      throw new RuntimeException("Account pending verification.");
+    }
 
     JobApplication application = applicationRepository.findById(applicationId)
       .orElseThrow(() -> new RuntimeException("Application not found"));
@@ -114,6 +122,10 @@ public class ApplicationService {
   public String rejectApplication(Long applicationId, String businessEmail) {
     User user = userRepository.findByEmail(businessEmail).orElseThrow();
     BusinessProfile business = businessProfileRepository.findByUserId(user.getId()).orElseThrow();
+
+    if (user.getStatus() != AccountStatus.ACTIVE) {
+      throw new RuntimeException("Account pending verification.");
+    }
 
     JobApplication application = applicationRepository.findById(applicationId)
       .orElseThrow(() -> new RuntimeException("Application not found"));

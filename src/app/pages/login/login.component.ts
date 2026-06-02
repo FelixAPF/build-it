@@ -28,24 +28,32 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  onSubmit() {
+onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
       
       this.authService.login(this.loginForm.value).subscribe({
-        next: (res) => {
+next: (res) => {
           this.isLoading = false;
-          // Route based on role
-          if (res.role === 'WORKER') {
-            this.router.navigate(['/worker-dashboard']);
-          } else {
+          
+          const role = localStorage.getItem('user_role');
+          const status = localStorage.getItem('user_status'); // <-- Grab the status
+          
+          // Route them to the correct screen
+          if (status === 'PENDING_VERIFICATION') {
+            this.router.navigate(['/pending']);
+          } else if (role === 'ADMIN') {
+            this.router.navigate(['/admin-dashboard']);
+          } else if (role === 'BUSINESS') {
             this.router.navigate(['/business-dashboard']);
+          } else {
+            this.router.navigate(['/worker-dashboard']);
           }
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = 'Invalid email or password. Please try again.';
+          this.errorMessage = 'Invalid email or password.';
           console.error(err);
         }
       });

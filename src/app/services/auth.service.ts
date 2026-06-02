@@ -18,6 +18,7 @@ export class AuthService {
           localStorage.setItem('jwt_token', response.token);
           localStorage.setItem('user_role', response.role);
           localStorage.setItem('user_email', response.email);
+          localStorage.setItem('user_status', response.status); // <-- ADD THIS LINE
         }
       })
     );

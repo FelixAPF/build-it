@@ -29,6 +29,9 @@ public class WorkerFeedService {
     User user = userRepository.findByEmail(email).orElseThrow();
     WorkerProfile worker = workerProfileRepository.findByUserId(user.getId()).orElseThrow();
 
+    if (user.getStatus() != AccountStatus.ACTIVE) {
+      throw new RuntimeException("Account pending verification.");
+    }
     // 2. Get Worker's currently confirmed schedule
     List<JobApplication> confirmedShifts = jobApplicationRepository
       .findByWorkerIdAndStatus(worker.getId(), ApplicationStatus.SELECTED);
