@@ -9,6 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -17,11 +20,14 @@ public class AuthService {
   private final WorkerProfileRepository workerProfileRepository;
   private final BusinessProfileRepository businessProfileRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EmailVerificationTokenRepository emailVerificationTokenRepository;
   private final AuditLogService auditLogService;
+  private final PasswordResetTokenRepository passwordResetTokenRepository;
+  private final EmailService emailService;
   private final JwtUtils jwtUtils;
 
   @Transactional
-  public AuthResponse registerWorker(WorkerRegisterRequest request) {
+  public String registerWorker(WorkerRegisterRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("Email already in use");
     }
@@ -33,7 +39,7 @@ public class AuthService {
       .email(request.getEmail())
       .passwordHash(passwordEncoder.encode(request.getPassword()))
       .role(Role.WORKER)
-      .status(AccountStatus.PENDING_VERIFICATION) // Manual validation phase required
+      .status(AccountStatus.UNVERIFIED) // Manual validation phase required
       .build();
 
     userRepository.save(user);
@@ -51,11 +57,13 @@ public class AuthService {
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     auditLogService.log(request.getEmail(), "ACCOUNT_REGISTRATION", "Registered as worker profile matching specialization requirements.");
-    return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
+    emailVerificationTokenRepository.save(EmailVerificationToken.builder().user(user).token(token).build());
+    emailService.sendVerificationEmail(user.getEmail(), token);
+    return "Registration successful! Please check your email to verify your account.";
   }
 
   @Transactional
-  public AuthResponse registerBusiness(BusinessRegisterRequest request) {
+  public String registerBusiness(BusinessRegisterRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("Email already in use");
     }
@@ -73,9 +81,7 @@ public class AuthService {
     }
 
     // FIX: Auto-activate private individuals, but hold companies for review!
-    AccountStatus initialStatus = "PRIVATE".equals(request.getBusinessType())
-      ? AccountStatus.ACTIVE
-      : AccountStatus.PENDING_VERIFICATION;
+    AccountStatus initialStatus = AccountStatus.UNVERIFIED;
 
     User user = User.builder()
       .email(request.getEmail())
@@ -101,7 +107,9 @@ public class AuthService {
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     auditLogService.log(request.getEmail(), "ACCOUNT_REGISTRATION", "Registered as type context: " + request.getBusinessType());
-    return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
+    emailVerificationTokenRepository.save(EmailVerificationToken.builder().user(user).token(token).build());
+    emailService.sendVerificationEmail(user.getEmail(), token);
+    return "Registration successful! Please check your email to verify your account.";
   }
 
   public AuthResponse login(LoginRequest request) {
@@ -116,9 +124,106 @@ public class AuthService {
       throw new RuntimeException("Account has been suspended");
     }
 
+    // NEW BLOCK: Reject access if they try to log in without email verification
+    if (user.getStatus() == AccountStatus.UNVERIFIED) {
+      throw new RuntimeException("Please verify your email address before logging in.");
+    }
+
     // Allow PENDING and ACTIVE users to get a token!
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     auditLogService.log(user.getEmail(), "USER_LOGIN", "Authenticated successfully using clean secure route parameters.");
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
+  }
+
+  // Add this method inside your AuthService class
+  @Transactional(readOnly = true)
+  public java.util.Map<String, String> getBusinessProfileContext(String email) {
+    User user = userRepository.findByEmail(email)
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    BusinessProfile profile = businessProfileRepository.findByUserId(user.getId())
+      .orElseThrow(() -> new RuntimeException("Business profile not found"));
+
+    // Return a clean map to avoid JSON infinite recursion loops with the User entity
+    java.util.Map<String, String> context = new java.util.HashMap<>();
+    context.put("businessType", profile.getBusinessType());
+    context.put("companyName", profile.getCompanyName());
+    return context;
+  }
+
+  @Transactional
+  public String verifyEmail(String token) {
+    EmailVerificationToken verificationToken = emailVerificationTokenRepository.findByToken(token)
+      .orElseThrow(() -> new RuntimeException("Invalid or expired verification link."));
+
+    User user = verificationToken.getUser();
+
+    // SMART ROUTING: Determine their clearance level
+    if (user.getRole() == Role.WORKER) {
+      user.setStatus(AccountStatus.PENDING_VERIFICATION); // Send to Admin queue
+    } else if (user.getRole() == Role.BUSINESS) {
+      BusinessProfile profile = businessProfileRepository.findByUserId(user.getId())
+        .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+      if ("PRIVATE".equals(profile.getBusinessType())) {
+        user.setStatus(AccountStatus.ACTIVE); // Auto-clear Homeowners
+      } else {
+        user.setStatus(AccountStatus.PENDING_VERIFICATION); // Send GC to Admin queue
+      }
+    }
+
+    userRepository.save(user);
+    emailVerificationTokenRepository.delete(verificationToken); // Consume the token
+    auditLogService.log(user.getEmail(), "EMAIL_VERIFIED", "User successfully verified their email address.");
+
+    return "Email successfully verified! You can now log in.";
+  }
+
+  @Transactional
+  public String processForgotPassword(String email) {
+    Optional<User> userOpt = userRepository.findByEmail(email);
+
+    // Security Best Practice: Never confirm if an email exists or not to the frontend
+    if (userOpt.isEmpty()) {
+      return "If this email is registered, a password reset link has been sent.";
+    }
+
+    User user = userOpt.get();
+
+    // Wipe any existing unused tokens for this user
+    passwordResetTokenRepository.deleteByUserId(user.getId());
+
+    // Generate a secure UUID Magic Link Token
+    String token = java.util.UUID.randomUUID().toString();
+    PasswordResetToken resetToken = PasswordResetToken.builder()
+      .user(user)
+      .token(token)
+      .expiryDate(LocalDateTime.now().plusHours(1))
+      .build();
+
+    passwordResetTokenRepository.save(resetToken);
+    emailService.sendPasswordResetEmail(user.getEmail(), token);
+
+    return "If this email is registered, a password reset link has been sent.";
+  }
+
+  @Transactional
+  public String resetPassword(String token, String newPassword) {
+    PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+      .orElseThrow(() -> new RuntimeException("Invalid or expired password reset token."));
+
+    if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+      passwordResetTokenRepository.delete(resetToken);
+      throw new RuntimeException("This password reset link has expired. Please request a new one.");
+    }
+
+    User user = resetToken.getUser();
+    user.setPasswordHash(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+
+    // Delete the token so it can't be reused
+    passwordResetTokenRepository.delete(resetToken);
+
+    return "Your password has been successfully reset. You can now log in.";
   }
 }

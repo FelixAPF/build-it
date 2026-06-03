@@ -102,7 +102,6 @@ export class RegisterComponent implements OnInit {
       ccqControl?.updateValueAndValidity();
     });
   }
-
 onWorkerSubmit() {
     if (this.workerForm.valid) {
       this.isLoading = true;
@@ -120,26 +119,33 @@ onWorkerSubmit() {
       };
 
       this.authService.registerWorker(payload).subscribe({
-        next: () => {
+        next: (res) => {
           this.isLoading = false;
-          // FIX: Route them to pending if they are held for review
-          const status = localStorage.getItem('user_status');
-          if (status === 'PENDING_VERIFICATION') {
-            this.router.navigate(['/pending']);
-          } else {
-            this.router.navigate(['/worker-dashboard']);
-          }
+          this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = 'Registration failed. Please check your details.';
           console.error(err);
+
+          // Safety net: If the backend actually succeeded but Angular choked on parsing
+          if (err.status === 200) {
+            this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
+            return;
+          }
+
+          // Smart error extraction to prevent [object Object]
+          if (typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else if (err.error && typeof err.error.message === 'string') {
+            this.errorMessage = err.error.message;
+          } else {
+            this.errorMessage = 'Registration failed. Please check your details.';
+          }
         }
       });
     }
   }
-
-  onBusinessSubmit() {
+onBusinessSubmit() {
     if (this.businessForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -152,20 +158,28 @@ onWorkerSubmit() {
       }
 
       this.authService.registerBusiness(payload).subscribe({
-        next: () => {
+        next: (res) => {
           this.isLoading = false;
-          // FIX: Route them to pending if they are held for review
-          const status = localStorage.getItem('user_status');
-          if (status === 'PENDING_VERIFICATION') {
-            this.router.navigate(['/pending']);
-          } else {
-            this.router.navigate(['/business-dashboard']);
-          }
+          this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = 'Registration failed. Please check your details.';
           console.error(err);
+
+          // Safety net: If the backend actually succeeded but Angular choked on parsing
+          if (err.status === 200) {
+            this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
+            return;
+          }
+
+          // Smart error extraction to prevent [object Object]
+          if (typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else if (err.error && typeof err.error.message === 'string') {
+            this.errorMessage = err.error.message;
+          } else {
+            this.errorMessage = 'Registration failed. Please check your details.';
+          }
         }
       });
     }

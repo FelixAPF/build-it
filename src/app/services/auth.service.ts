@@ -24,16 +24,20 @@ export class AuthService {
     );
   }
 
-  registerWorker(data: any): Observable<any> {
-    return this.http.post(`${API_URL}/register/worker`, data).pipe(
-      tap((response: any) => this.saveToken(response))
-    );
+  getBusinessProfile(): Observable<any> {
+    return this.http.get<any>(`${API_URL}/business/profile`);
+  }
+
+registerWorker(data: any): Observable<any> {
+    return this.http.post(`${API_URL}/register/worker`, data, { responseType: 'text' });
   }
 
   registerBusiness(data: any): Observable<any> {
-    return this.http.post(`${API_URL}/register/business`, data).pipe(
-      tap((response: any) => this.saveToken(response))
-    );
+    return this.http.post(`${API_URL}/register/business`, data, { responseType: 'text' });
+  }
+
+  verifyEmail(token: string): Observable<string> {
+    return this.http.get(`${API_URL}/verify-email?token=${encodeURIComponent(token)}`, { responseType: 'text' });
   }
 
 logout() {
@@ -55,5 +59,13 @@ private saveToken(response: any) {
       localStorage.setItem('user_email', response.email);
       localStorage.setItem('user_status', response.status); 
     }
+  }
+
+  forgotPassword(email: string): Observable<string> {
+    return this.http.post(`${API_URL}/forgot-password?email=${encodeURIComponent(email)}`, {}, { responseType: 'text' });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<string> {
+    return this.http.post(`${API_URL}/reset-password?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(newPassword)}`, {}, { responseType: 'text' });
   }
 }

@@ -9,6 +9,8 @@ import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { PendingComponent } from './pages/pending/pending.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 
 const guestGuard = () => {
   const authService = inject(AuthService);
@@ -40,6 +42,8 @@ export const routes: Routes = [
   },
   { path: 'landing', component: LandingComponent }, // Moved landing to its own path
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [guestGuard] }, // <-- ADD THIS
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
   { path: 'pending', component: PendingComponent },
   

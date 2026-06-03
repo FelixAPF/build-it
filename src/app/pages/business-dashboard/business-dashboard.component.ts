@@ -46,6 +46,7 @@ export class BusinessDashboardComponent implements OnInit {
   reviewForm!: FormGroup;
   reviewApplicationId: number | null = null;
   isSubmittingReview: boolean = false;
+  businessType: 'COMPANY' | 'PRIVATE' = 'COMPANY';
   isAdminImpersonating: boolean = false;
   
   showDialog: boolean = false;
@@ -112,16 +113,27 @@ export class BusinessDashboardComponent implements OnInit {
   
   loadDashboard() {
     this.isLoading = true;
-    this.businessService.getDashboard().subscribe({
-      next: (data) => {
-        this.jobs = data;
-        this.isLoading = false;
-      },
+    this.authService.getBusinessProfile().subscribe({
+      next: (profile) => {
+        this.businessType = profile.businessType || 'COMPANY';
+            // 2. Call your existing job-loading sequence right underneath
+        this.businessService.getDashboard().subscribe({
+          next: (data) => {
+            this.jobs = data;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            console.error('Error fetching dashboard', err);
+            this.isLoading = false;
+          }
+        });
+    },
       error: (err) => {
-        console.error('Error fetching dashboard', err);
+        console.error('Could not load account profile details', err);
         this.isLoading = false;
       }
     });
+
   }
 
   onSubmit() {

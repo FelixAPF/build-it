@@ -1,0 +1,24 @@
+<div class="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+  <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 max-w-md w-full text-center">
+    
+    <div *ngIf="status === 'LOADING'">
+      <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
+      <h2 class="text-xl font-bold text-slate-800">Verifying...</h2>
+    </div>
+
+    <div *ngIf="status === 'SUCCESS'">
+      <i class="pi pi-check-circle text-5xl text-emerald-500 mb-4"></i>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Email Verified!</h2>
+      <p class="text-slate-500 mb-6">{{ message }}</p>
+      <a routerLink="/login" class="inline-block bg-emerald-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-emerald-600 transition-colors">Proceed to Login</a>
+    </div>
+
+    <div *ngIf="status === 'ERROR'">
+      <i class="pi pi-times-circle text-5xl text-red-500 mb-4"></i>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Verification Failed</h2>
+      <p class="text-slate-500 mb-6">{{ message }}</p>
+      <a routerLink="/login" class="text-blue-600 font-bold hover:underline">Return to Login</a>
+    </div>
+
+  </div>
+</div>

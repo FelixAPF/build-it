@@ -90,4 +90,70 @@ public class EmailService {
       System.err.println("==================================================================");
     }
   }
+
+  @Async
+  public void sendPasswordResetEmail(String toEmail, String token) {
+    try {
+      MimeMessage mimeMessage = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+      helper.setFrom(mailUsername);
+      helper.setTo(toEmail);
+      helper.setSubject("Password Reset Request - BuildIt");
+
+      // The Angular Route we will create in Step 2
+      String resetUrl = "http://localhost:4200/reset-password?token=" + token;
+
+      String htmlContent =
+        "<div style='font-family: Arial, sans-serif; background-color: #f8fafc; padding: 40px; color: #334155;'>" +
+          "<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;'>" +
+          "<div style='background-color: #2563eb; padding: 30px; text-align: center;'>" +
+          "<h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 800;'>BuildIt Password Recovery</h1>" +
+          "</div>" +
+          "<div style='padding: 40px; text-align: center;'>" +
+          "<h2 style='color: #1e293b; margin-top: 0; font-size: 20px;'>Forgot your password?</h2>" +
+          "<p style='font-size: 16px; line-height: 1.6; color: #475569;'>No problem. Click the button below to securely set a new password. This link will expire in 1 hour.</p>" +
+          "<a href='" + resetUrl + "' style='display: inline-block; background-color: #2563eb; color: #ffffff; padding: 14px 28px; margin: 20px 0; text-decoration: none; border-radius: 8px; font-weight: bold;'>Reset My Password</a>" +
+          "<p style='font-size: 14px; line-height: 1.6; color: #94a3b8;'>If you did not request this, you can safely ignore this email.</p>" +
+          "</div></div></div>";
+
+      helper.setText(htmlContent, true);
+      mailSender.send(mimeMessage);
+
+    } catch (Exception e) {
+      System.err.println("Failed to send password reset email.");
+    }
+  }
+
+  @Async
+  public void sendVerificationEmail(String toEmail, String token) {
+    try {
+      jakarta.mail.internet.MimeMessage mimeMessage = mailSender.createMimeMessage();
+      org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+      helper.setFrom(mailUsername);
+      helper.setTo(toEmail);
+      helper.setSubject("Verify Your BuildIt Account");
+
+      String verifyUrl = "http://localhost:4200/verify-email?token=" + token;
+
+      String htmlContent =
+        "<div style='font-family: Arial, sans-serif; background-color: #f8fafc; padding: 40px; color: #334155;'>" +
+          "<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;'>" +
+          "<div style='background-color: #10b981; padding: 30px; text-align: center;'>" +
+          "<h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 800;'>Welcome to BuildIt!</h1>" +
+          "</div>" +
+          "<div style='padding: 40px; text-align: center;'>" +
+          "<h2 style='color: #1e293b; margin-top: 0; font-size: 20px;'>Almost there...</h2>" +
+          "<p style='font-size: 16px; line-height: 1.6; color: #475569;'>Please verify your email address to activate your account and access the marketplace.</p>" +
+          "<a href='" + verifyUrl + "' style='display: inline-block; background-color: #10b981; color: #ffffff; padding: 14px 28px; margin: 20px 0; text-decoration: none; border-radius: 8px; font-weight: bold;'>Verify My Email</a>" +
+          "</div></div></div>";
+
+      helper.setText(htmlContent, true);
+      mailSender.send(mimeMessage);
+
+    } catch (Exception e) {
+      System.err.println("Failed to send verification email.");
+    }
+  }
 }

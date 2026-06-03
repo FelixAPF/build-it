@@ -40,7 +40,7 @@ public class AdminService {
       .map(this::mapToAdminResponse).collect(Collectors.toList());
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public AuthResponse impersonateUser(Long userId) {
     User user = userRepository.findById(userId)
       .orElseThrow(() -> new RuntimeException("User not found"));
