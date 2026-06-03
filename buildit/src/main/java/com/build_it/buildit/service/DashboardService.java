@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
@@ -19,18 +18,24 @@ public class DashboardService {
   private final BusinessProfileRepository businessProfileRepository;
   private final JobPostingRepository jobPostingRepository;
   private final JobApplicationRepository jobApplicationRepository;
+  private final ReviewRepository reviewRepository; // <-- 1. INJECT REPOSITORY
 
   @Transactional(readOnly = true)
   public List<WorkerDashboardResponse> getWorkerDashboard(String email) {
     User user = userRepository.findByEmail(email).orElseThrow();
     WorkerProfile worker = workerProfileRepository.findByUserId(user.getId()).orElseThrow();
 
-    // Fetch ALL applications for this worker (Past, Present, Pending, Selected)
     List<JobApplication> applications = jobApplicationRepository.findByWorkerId(worker.getId());
 
     return applications.stream()
       .map(app -> {
         JobPosting posting = app.getJobRequirement().getJobPosting();
+
+        // 2. EVALUATE WORKER TO BUSINESS ACTION
+        boolean alreadyReviewed = reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(
+          user.getId(), posting.getBusiness().getUser().getId(), posting.getId()
+        );
+
         return WorkerDashboardResponse.builder()
           .applicationId(app.getId())
           .jobId(posting.getId())
@@ -43,9 +48,9 @@ public class DashboardService {
           .hourlyRate(app.getJobRequirement().getHourlyRate())
           .applicationStatus(app.getStatus().name())
           .jobStatus(posting.getStatus().name())
+          .reviewedBusiness(alreadyReviewed) // <-- MAP IT HERE
           .build();
       })
-      // Sort so the newest/upcoming jobs are at the top
       .sorted((a, b) -> b.getStartDatetime().compareTo(a.getStartDatetime()))
       .collect(Collectors.toList());
   }
@@ -55,7 +60,6 @@ public class DashboardService {
     User user = userRepository.findByEmail(email).orElseThrow();
     BusinessProfile business = businessProfileRepository.findByUserId(user.getId()).orElseThrow();
 
-    // Fetch ALL jobs posted by this business ordered by start date (from Phase 1.5)
     List<JobPosting> postings = jobPostingRepository.findByBusinessIdOrderByStartDatetimeDesc(business.getId());
 
     return postings.stream()
@@ -73,15 +77,22 @@ public class DashboardService {
             .qtyRequested(req.getQtyRequested())
             .qtyFilled(req.getQtyFilled())
             .assignedWorkers(req.getApplications().stream()
-              // ONLY SHOW HIRED WORKERS IN THE ASSIGNED LIST
               .filter(app -> app.getStatus() == ApplicationStatus.SELECTED)
-              .map(app -> AssignedWorkerDto.builder()
-                .applicationId(app.getId())
-                .workerId(app.getWorker().getId())
-                .fullName(app.getWorker().getFullName())
-                .phoneNumber(app.getWorker().getPhoneNumber())
-                .averageRating(app.getWorker().getAverageRating())
-                .build())
+              .map(app -> {
+                // 3. EVALUATE BUSINESS TO WORKER ACTION
+                boolean alreadyReviewed = reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(
+                  user.getId(), app.getWorker().getUser().getId(), posting.getId()
+                );
+
+                return AssignedWorkerDto.builder()
+                  .applicationId(app.getId())
+                  .workerId(app.getWorker().getId())
+                  .fullName(app.getWorker().getFullName())
+                  .phoneNumber(app.getWorker().getPhoneNumber())
+                  .averageRating(app.getWorker().getAverageRating())
+                  .reviewedWorker(alreadyReviewed) // <-- MAP IT HERE
+                  .build();
+              })
               .collect(Collectors.toList()))
             .build())
           .collect(Collectors.toList()))

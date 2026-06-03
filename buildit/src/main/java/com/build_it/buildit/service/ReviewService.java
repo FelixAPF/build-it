@@ -32,6 +32,7 @@ public class ReviewService {
     if (!job.getBusiness().getUser().getId().equals(businessUser.getId())) {
       throw new RuntimeException("You cannot review a worker for a job you do not own.");
     }
+
     if (application.getStatus() != ApplicationStatus.SELECTED) {
       throw new RuntimeException("You can only review workers who were officially hired.");
     }
@@ -40,6 +41,9 @@ public class ReviewService {
     }
 
     User workerUser = application.getWorker().getUser();
+    if (reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(businessUser.getId(), workerUser.getId(), job.getId())) {
+      throw new RuntimeException("You have already reviewed this worker for this job.");
+    }
 
     Review review = Review.builder()
       .jobPosting(job)
@@ -76,6 +80,9 @@ public class ReviewService {
     }
 
     User businessUser = job.getBusiness().getUser();
+    if (reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(workerUser.getId(), businessUser.getId(), job.getId())) {
+      throw new RuntimeException("You have already reviewed this contractor for this job.");
+    }
 
     Review review = Review.builder()
       .jobPosting(job)
@@ -107,4 +114,6 @@ public class ReviewService {
     business.setAverageRating(Math.round(avg * 10.0) / 10.0);
     businessProfileRepository.save(business);
   }
+
+
 }

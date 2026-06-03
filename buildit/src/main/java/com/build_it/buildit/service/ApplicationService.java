@@ -19,6 +19,7 @@ public class ApplicationService {
   private final WorkerProfileRepository workerProfileRepository;
   private final BusinessProfileRepository businessProfileRepository;
   private final UserRepository userRepository;
+  private final EmailService emailService;
 
   // STEP 3.3: Worker Applies
   @Transactional
@@ -103,7 +104,6 @@ public class ApplicationService {
     // 4. THE HANDSHAKE MAGIC: Auto-cancel overlapping pending applications for the WINNING worker
     cancelOverlappingApplications(application.getWorker(), posting);
 
-    // 5. THE NEW LOGIC: If this specific requirement is now full, auto-reject everyone else waiting in line
     if (requirement.getQtyFilled().equals(requirement.getQtyRequested())) {
       List<JobApplication> remainingApplicants = applicationRepository
         .findByJobRequirementIdAndStatus(requirement.getId(), ApplicationStatus.PENDING);
@@ -113,6 +113,17 @@ public class ApplicationService {
         applicationRepository.save(remainingApp);
       }
     }
+
+    // ==========================================
+    // 6. FIRE THE EMAIL TO THE WORKER!
+    // ==========================================
+    emailService.sendWorkerHiredEmail(
+      application.getWorker().getUser().getEmail(),
+      application.getWorker().getFullName(),
+      business.getCompanyName(),
+      posting.getAddress(),
+      posting.getStartDatetime().toString()
+    );
 
     return "Worker approved! Schedule locked.";
   }

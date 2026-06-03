@@ -226,6 +226,15 @@ submitReview() {
           this.messageService.add({ severity: 'success', summary: 'Reviewed!', detail: 'Worker review submitted.' });
           this.showReviewDialog = false;
           this.isSubmittingReview = false;
+          
+          // Instantly clear the button out of the open modal locally
+          if (this.selectedJob) {
+            this.selectedJob.requirements.forEach((req: any) => {
+              const worker = req.assignedWorkers.find((w: any) => w.applicationId === this.reviewApplicationId);
+              if (worker) worker.reviewedWorker = true;
+            });
+          }
+          this.loadDashboard(); // Sync up global list in background
         },
         error: (err) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error || 'Failed to submit review.' });

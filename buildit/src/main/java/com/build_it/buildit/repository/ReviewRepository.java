@@ -10,4 +10,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
   // Fetch all reviews given TO a specific user to calculate their average star rating
   List<Review> findByRevieweeId(Long revieweeId);
+
+  boolean existsByReviewerIdAndRevieweeIdAndJobPostingId(Long reviewerId, Long revieweeId, Long jobPostingId);
 }

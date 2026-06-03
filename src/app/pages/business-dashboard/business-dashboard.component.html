@@ -144,7 +144,7 @@
               <div class="text-sm text-slate-500 mt-1"><i class="pi pi-phone mr-1"></i> {{worker.phoneNumber}}</div>
             </div>
             
-            <p-button *ngIf="isJobComplete(selectedJob.endDatetime)" label="Rate Worker" icon="pi pi-star-fill" size="small" styleClass="p-button-warning p-button-outlined" (onClick)="openReview(worker.applicationId)"></p-button>
+            <p-button *ngIf="isJobComplete(selectedJob.endDatetime) && !worker.reviewedWorker" label="Rate Worker" icon="pi pi-star-fill" size="small" styleClass="p-button-warning p-button-outlined" (onClick)="openReview(worker.applicationId)"></p-button>
           </div>
         </div>
 

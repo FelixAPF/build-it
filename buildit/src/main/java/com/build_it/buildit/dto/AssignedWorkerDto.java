@@ -10,4 +10,5 @@ public class AssignedWorkerDto {
   private String fullName;
   private String phoneNumber;
   private Double averageRating;
+  private boolean reviewedWorker;
 }

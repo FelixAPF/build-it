@@ -16,6 +16,7 @@ public class WorkerDashboardResponse {
   private LocalDateTime endDatetime;
   private String jobType;
   private Double hourlyRate;
-  private String applicationStatus; // PENDING, SELECTED, REJECTED, AUTO_CANCELLED
-  private String jobStatus;         // OPEN, COMPLETED, etc.
+  private String applicationStatus;
+  private String jobStatus;
+  private boolean reviewedBusiness;
 }
