@@ -1,45 +1,51 @@
 <p-toast></p-toast>
-<div class="min-h-screen bg-slate-900 p-8">
-  <div class="max-w-7xl mx-auto">
-    
-    <div class="flex justify-between items-center mb-8">
+<div class="min-h-screen bg-slate-900 pb-12">
+  
+  <div class="bg-red-900/40 text-white pt-12 pb-24 px-6 md:px-12 border-b border-red-900/50">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
-        <h1 class="text-4xl font-extrabold text-white">Admin Control Center</h1>
-        <p class="text-slate-400 mt-2">Verify CCQ & RBQ licenses before activating accounts.</p>
+        <div class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-widest uppercase shadow-lg shadow-red-900/50"><i class="pi pi-lock mr-2"></i>Admin Center</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">Access Control</h1>
+        <p class="text-slate-400 mt-2 text-lg">Verify CCQ & RBQ licenses before authorizing platform access.</p>
       </div>
-      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger" (onClick)="logout()"></p-button>
+      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger w-full md:w-auto" (onClick)="logout()"></p-button>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-4 md:px-8 -mt-12">
+    
+    <div *ngIf="!isLoading && pendingUsers.length === 0" class="bg-slate-800 rounded-2xl shadow-xl p-12 text-center border border-slate-700">
+      <div class="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-600">
+        <i class="pi pi-check-circle text-4xl text-green-400"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-2">Inbox Zero!</h3>
+      <p class="text-slate-400">All users have been verified and activated.</p>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-      <p-table [value]="pendingUsers" [loading]="isLoading" [rows]="10" [paginator]="true">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Date Registered</th>
-            <th>Type</th>
-            <th>Name / Company</th>
-            <th>Email</th>
-            <th>CCQ / RBQ Number</th>
-            <th class="text-center">Action</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-user>
-          <tr>
-            <td class="text-sm text-slate-500">{{user.createdAt | date:'medium'}}</td>
-            <td>
-              <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'"></p-tag>
-            </td>
-            <td class="font-bold text-slate-800">{{user.name}}</td>
-            <td>{{user.email}}</td>
-            <td class="font-mono text-slate-600 bg-slate-100 px-2 py-1 rounded inline-block">{{user.identificationNumber}}</td>
-            <td class="text-center">
-              <p-button label="Verify & Activate" icon="pi pi-check-circle" styleClass="p-button-success p-button-sm" (onClick)="verifyUser(user.userId)"></p-button>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr><td colspan="6" class="text-center p-8 text-slate-500">All users are verified! Inbox zero.</td></tr>
-        </ng-template>
-      </p-table>
+    <div *ngIf="!isLoading && pendingUsers.length > 0" class="flex flex-col gap-4">
+      
+      <div *ngFor="let user of pendingUsers" class="bg-slate-800 p-5 md:p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col md:flex-row justify-between md:items-center gap-6 hover:border-slate-600 transition-colors">
+        
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'" styleClass="text-xs"></p-tag>
+            <span class="text-sm text-slate-400"><i class="pi pi-clock mr-1 text-xs"></i> Applied {{user.createdAt | date:'short'}}</span>
+          </div>
+          
+          <h3 class="font-bold text-2xl text-white">{{user.name}}</h3>
+          <p class="text-slate-400 text-sm mt-1 mb-3"><i class="pi pi-envelope mr-2"></i>{{user.email}}</p>
+          
+          <div class="inline-flex items-center bg-slate-900 px-4 py-2 rounded-lg border border-slate-700">
+            <span class="text-xs text-slate-500 uppercase tracking-widest font-bold mr-3">{{user.role === 'WORKER' ? 'CCQ' : 'RBQ'}}</span>
+            <span class="font-mono text-amber-400 font-bold tracking-wider">{{user.identificationNumber}}</span>
+          </div>
+        </div>
+
+        <div class="w-full md:w-auto border-t border-slate-700 md:border-0 pt-4 md:pt-0">
+          <p-button label="Verify & Activate" icon="pi pi-verified" styleClass="w-full md:w-auto p-button-success shadow-lg shadow-green-900/20 p-4" (onClick)="verifyUser(user.userId)"></p-button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

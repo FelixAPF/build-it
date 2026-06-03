@@ -12,8 +12,7 @@
         <p-message severity="danger" [text]="errorMessage" styleClass="w-full mb-4"></p-message>
       }
 
-      <p-tabView>
-        
+    <p-tabView [(activeIndex)]="activeTabIndex">        
         <!-- WORKER REGISTRATION TAB -->
         <p-tabPanel header="I am a Worker">
           <form [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-4">

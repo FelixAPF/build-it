@@ -1,47 +1,47 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // <-- ADDED ReactiveFormsModule
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { WorkerService } from '../../services/worker.service';
-import { ReviewService } from '../../services/review.service'; // <-- ADDED ReviewService
+import { ReviewService } from '../../services/review.service';
 
-// PrimeNG imports
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
-import { DialogModule } from 'primeng/dialog';   // <-- ADDED DialogModule
-import { RatingModule } from 'primeng/rating';   // <-- ADDED RatingModule
-import { MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { RatingModule } from 'primeng/rating';
+import { MessageService, ConfirmationService } from 'primeng/api'; // <-- ConfirmationService
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; // <-- ConfirmDialogModule
 
 @Component({
   selector: 'app-worker-dashboard',
   standalone: true,
   imports: [
     CommonModule, DatePipe, TableModule, ButtonModule, TagModule, 
-    TabViewModule, CardModule, ToastModule, DialogModule, RatingModule, // <-- ADDED PrimeNG modules
-    ReactiveFormsModule // <-- ADDED ReactiveFormsModule
+    TabViewModule, CardModule, ToastModule, DialogModule, RatingModule,
+    ReactiveFormsModule, ConfirmDialogModule
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './worker-dashboard.component.html'
 })
 export class WorkerDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private workerService = inject(WorkerService);
-  private reviewService = inject(ReviewService); // <-- INJECTED ReviewService
+  private reviewService = inject(ReviewService);
   private router = inject(Router);
-  private fb = inject(FormBuilder);              // <-- INJECTED FormBuilder
+  private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
   mySchedule: any[] = [];
   availableJobs: any[] = [];
   isLoadingSchedule: boolean = true;
   isLoadingFeed: boolean = true;
 
-  // --- NEW: Review State Management ---
   showReviewDialog: boolean = false;
   reviewForm!: FormGroup;
   selectedJobId: number | null = null;
@@ -80,6 +80,20 @@ export class WorkerDashboardComponent implements OnInit {
     });
   }
 
+  confirmApply(job: any) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to apply for the ${this.formatStatus(job.jobType)} position at ${job.companyName}?`,
+      header: 'Confirm Application',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text",
+      accept: () => {
+        this.apply(job.requirementId);
+      }
+    });
+  }
+
   apply(requirementId: number) {
     this.workerService.applyForJob(requirementId).subscribe({
       next: (res) => {
@@ -92,7 +106,6 @@ export class WorkerDashboardComponent implements OnInit {
     });
   }
 
-  // --- NEW: Review Management Methods ---
   isJobComplete(endDate: string): boolean {
     return new Date(endDate) < new Date();
   }
@@ -105,8 +118,6 @@ export class WorkerDashboardComponent implements OnInit {
 
   submitReview() {
     const formValues = this.reviewForm.value;
-    
-    // Fallback if PrimeNG star selection evaluates to null
     if (!formValues.starRating) {
       formValues.starRating = 5;
     }
@@ -118,7 +129,7 @@ export class WorkerDashboardComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Contractor review submitted!' });
           this.showReviewDialog = false;
           this.isSubmittingReview = false;
-          this.loadData(); // Re-fetches the entire schedule list and updates flags instantly!
+          this.loadData(); 
         },
         error: (err) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error || 'Failed to submit review.' });
@@ -140,6 +151,40 @@ export class WorkerDashboardComponent implements OnInit {
       case 'REJECTED': return 'danger';
       case 'AUTO_CANCELLED': return 'secondary';
       default: return 'info';
+    }
+  }
+
+  // --- NEW: UI FORMATTING HELPERS ---
+
+  formatStatus(status: string): string {
+    if (!status) return '';
+    return status.replace(/_/g, ' ')
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  formatDateRange(startStr: string, endStr: string): string {
+    if (!startStr || !endStr) return '';
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+
+    const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
+    const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+
+    const startTime = start.toLocaleTimeString([], timeOptions);
+    const endTime = end.toLocaleTimeString([], timeOptions);
+
+    const isSameDay = start.getFullYear() === end.getFullYear() &&
+                      start.getMonth() === end.getMonth() &&
+                      start.getDate() === end.getDate();
+
+    if (isSameDay) {
+      return `${startTime} - ${endTime}`;
+    } else {
+      const endDate = end.toLocaleDateString([], dateOptions);
+      return `${startTime} - ${endDate} at ${endTime}`;
     }
   }
 }

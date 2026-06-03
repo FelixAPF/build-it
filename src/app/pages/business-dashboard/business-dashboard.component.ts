@@ -5,7 +5,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { BusinessService } from '../../services/business.service';
 
-// PrimeNG imports
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -14,11 +13,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ToastModule } from 'primeng/toast';     // <-- NEW
-import { MessageService } from 'primeng/api';    // <-- NEW
+import { ToastModule } from 'primeng/toast';
+import { MessageService, ConfirmationService } from 'primeng/api'; // <-- ConfirmationService
 import { ReviewService } from '../../services/review.service';
 import { RatingModule } from 'primeng/rating';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; // <-- ConfirmDialogModule
 
 @Component({
   selector: 'app-business-dashboard',
@@ -26,18 +26,19 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
   imports: [
     CommonModule, ReactiveFormsModule, DatePipe, TableModule, ButtonModule, 
     TagModule, DialogModule, InputTextModule, CalendarModule, DropdownModule, 
-    InputNumberModule, ToastModule, RatingModule
+    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule
   ],
-  providers: [MessageService],     // <-- ADDED MessageService
+  providers: [MessageService, ConfirmationService],
   templateUrl: './business-dashboard.component.html'
 })
 export class BusinessDashboardComponent implements OnInit {
   private authService = inject(AuthService);
-  private reviewService = inject(ReviewService); // <-- ADD THIS
+  private reviewService = inject(ReviewService);
   private businessService = inject(BusinessService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private messageService = inject(MessageService); // <-- ADDED MessageService
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
   jobs: any[] = [];
   isLoading: boolean = true;
@@ -46,15 +47,12 @@ export class BusinessDashboardComponent implements OnInit {
   reviewApplicationId: number | null = null;
   isSubmittingReview: boolean = false;
   
-  // Create Job State
   showDialog: boolean = false;
   isSubmitting: boolean = false;
   jobForm!: FormGroup;
 
-  // --- NEW: Applicant Management State ---
   selectedJob: any = null;
   showJobDetailsDialog: boolean = false;
-  
   showApplicantsDialog: boolean = false;
   applicants: any[] = [];
   isLoadingApplicants: boolean = false;
@@ -72,7 +70,6 @@ export class BusinessDashboardComponent implements OnInit {
     this.initForm();
   }
 
-  // ... (KEEP YOUR initForm, get requirementsFormArray, addRequirement, removeRequirement exactly as they are) ...
   initForm() {
     this.jobForm = this.fb.group({
       address: ['', Validators.required],
@@ -133,15 +130,11 @@ export class BusinessDashboardComponent implements OnInit {
     }
   }
 
-  // --- NEW: Applicant Management Methods ---
-  
-  // Opens the specific job details to see the requirements (Plumbers vs Electricians)
   viewJobDetails(job: any) {
     this.selectedJob = job;
     this.showJobDetailsDialog = true;
   }
 
-  // Fetches the workers who applied to a specific requirement
   viewApplicants(requirementId: number) {
     this.isLoadingApplicants = true;
     this.showApplicantsDialog = true;
@@ -158,13 +151,27 @@ export class BusinessDashboardComponent implements OnInit {
     });
   }
 
+  confirmApprove(app: any) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to hire ${app.workerName}? This will lock them into the schedule and notify them immediately.`,
+      header: 'Confirm Hire',
+      icon: 'pi pi-check-circle',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text",
+      accept: () => {
+        this.approveWorker(app.applicationId);
+      }
+    });
+  }
+
   approveWorker(applicationId: number) {
     this.businessService.approveWorker(applicationId).subscribe({
       next: (res) => {
         this.messageService.add({ severity: 'success', summary: 'Hired!', detail: 'Worker approved and scheduled!' });
         this.showApplicantsDialog = false;
         this.showJobDetailsDialog = false;
-        this.loadDashboard(); // Refresh to update filled quantities
+        this.loadDashboard(); 
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error || 'Failed to approve.' });
@@ -210,11 +217,8 @@ export class BusinessDashboardComponent implements OnInit {
     this.showReviewDialog = true;
   }
 
-submitReview() {
-    // 1. Grab the values from the form
+  submitReview() {
     const formValues = this.reviewForm.value;
-    
-    // 2. PrimeNG p-rating bug fallback: If it's null, force it to 5
     if (!formValues.starRating) {
       formValues.starRating = 5;
     }
@@ -227,20 +231,52 @@ submitReview() {
           this.showReviewDialog = false;
           this.isSubmittingReview = false;
           
-          // Instantly clear the button out of the open modal locally
           if (this.selectedJob) {
             this.selectedJob.requirements.forEach((req: any) => {
               const worker = req.assignedWorkers.find((w: any) => w.applicationId === this.reviewApplicationId);
               if (worker) worker.reviewedWorker = true;
             });
           }
-          this.loadDashboard(); // Sync up global list in background
         },
         error: (err) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error || 'Failed to submit review.' });
           this.isSubmittingReview = false;
         }
       });
+    }
+  }
+
+  // --- NEW: UI FORMATTING HELPERS ---
+
+  formatStatus(status: string): string {
+    if (!status) return '';
+    return status.replace(/_/g, ' ')
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  formatDateRange(startStr: string, endStr: string): string {
+    if (!startStr || !endStr) return '';
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+
+    const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
+    const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+
+    const startTime = start.toLocaleTimeString([], timeOptions);
+    const endTime = end.toLocaleTimeString([], timeOptions);
+
+    const isSameDay = start.getFullYear() === end.getFullYear() &&
+                      start.getMonth() === end.getMonth() &&
+                      start.getDate() === end.getDate();
+
+    if (isSameDay) {
+      return `${startTime} - ${endTime}`;
+    } else {
+      const endDate = end.toLocaleDateString([], dateOptions);
+      return `${startTime} - ${endDate} at ${endTime}`;
     }
   }
 }

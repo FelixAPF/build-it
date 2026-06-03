@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 // PrimeNG Modules
@@ -25,14 +25,26 @@ import { MultiSelectModule } from 'primeng/multiselect'; // <-- NEW IMPORT
   ],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute); // <-- Inject ActivatedRoute
 
   errorMessage: string = '';
   isLoading: boolean = false;
   showTermsDialog: boolean = false;
+  activeTabIndex: number = 0; // <-- 0 = Worker, 1 = Business
+
+  ngOnInit() {
+      this.route.queryParams.subscribe(params => {
+        if (params['tab'] === 'business') {
+          this.activeTabIndex = 1;
+        } else {
+          this.activeTabIndex = 0;
+        }
+      });
+  }
 
   // Options for the MultiSelect dropdown
   tradeOptions = [

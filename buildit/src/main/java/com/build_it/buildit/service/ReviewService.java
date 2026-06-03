@@ -28,74 +28,64 @@ public class ReviewService {
       .orElseThrow(() -> new RuntimeException("Application not found"));
 
     JobPosting job = application.getJobRequirement().getJobPosting();
+    User workerUser = application.getWorker().getUser();
 
     if (!job.getBusiness().getUser().getId().equals(businessUser.getId())) {
       throw new RuntimeException("You cannot review a worker for a job you do not own.");
     }
 
-    if (application.getStatus() != ApplicationStatus.SELECTED) {
-      throw new RuntimeException("You can only review workers who were officially hired.");
-    }
-    if (LocalDateTime.now().isBefore(job.getEndDatetime())) {
-      throw new RuntimeException("You cannot leave a review before the job has ended.");
-    }
-
-    User workerUser = application.getWorker().getUser();
+    // Security Check
     if (reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(businessUser.getId(), workerUser.getId(), job.getId())) {
       throw new RuntimeException("You have already reviewed this worker for this job.");
     }
 
-    Review review = Review.builder()
-      .jobPosting(job)
-      .reviewer(businessUser)
-      .reviewee(workerUser)
-      .starRating(request.getStarRating())
-      .comment(request.getComment())
-      .build();
-
+    Review review = new Review();
+    review.setReviewer(businessUser);
+    review.setReviewee(workerUser);
+    review.setJobPosting(job); // <-- CRITICAL FIX: Explicitly tie the review to the job!
+    review.setStarRating(request.getStarRating());
+    review.setComment(request.getComment());
+    review.setCreatedAt(LocalDateTime.now());
     reviewRepository.save(review);
+
+    // Call your existing average update method here
     updateWorkerAverage(application.getWorker());
 
-    return "Worker reviewed successfully!";
+    return "Review submitted successfully.";
   }
 
   @Transactional
   public String reviewBusiness(Long jobId, CreateReviewRequest request, String workerEmail) {
     User workerUser = userRepository.findByEmail(workerEmail).orElseThrow();
     WorkerProfile worker = workerProfileRepository.findByUserId(workerUser.getId()).orElseThrow();
+
     JobPosting job = jobPostingRepository.findById(jobId)
       .orElseThrow(() -> new RuntimeException("Job posting not found"));
+
+    User businessUser = job.getBusiness().getUser();
 
     if (LocalDateTime.now().isBefore(job.getEndDatetime())) {
       throw new RuntimeException("You cannot leave a review before the job has ended.");
     }
 
-    // Verify this worker actually worked this job
-    boolean workedThere = job.getRequirements().stream()
-      .flatMap(req -> req.getApplications().stream())
-      .anyMatch(app -> app.getWorker().getId().equals(worker.getId()) && app.getStatus() == ApplicationStatus.SELECTED);
-
-    if (!workedThere) {
-      throw new RuntimeException("You cannot review a business if you did not work the job.");
-    }
-
-    User businessUser = job.getBusiness().getUser();
+    // Security Check
     if (reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(workerUser.getId(), businessUser.getId(), job.getId())) {
       throw new RuntimeException("You have already reviewed this contractor for this job.");
     }
 
-    Review review = Review.builder()
-      .jobPosting(job)
-      .reviewer(workerUser)
-      .reviewee(businessUser)
-      .starRating(request.getStarRating())
-      .comment(request.getComment())
-      .build();
-
+    Review review = new Review();
+    review.setReviewer(workerUser);
+    review.setReviewee(businessUser);
+    review.setJobPosting(job); // <-- CRITICAL FIX: Explicitly tie the review to the job!
+    review.setStarRating(request.getStarRating());
+    review.setComment(request.getComment());
+    review.setCreatedAt(LocalDateTime.now());
     reviewRepository.save(review);
+
+    // Call your existing average update method here
     updateBusinessAverage(job.getBusiness());
 
-    return "Business reviewed successfully!";
+    return "Review submitted successfully.";
   }
 
   // --- Helper Methods to Recalculate Averages ---

@@ -1,135 +1,129 @@
 <p-toast></p-toast> 
-<div class="min-h-screen bg-slate-50 p-8">
-  <div class="max-w-7xl mx-auto">
-    
-    <div class="flex justify-between items-center mb-8">
+<div class="min-h-screen bg-slate-50 pb-12">
+  
+  <div class="bg-emerald-800 text-white pt-12 pb-20 px-6 md:px-12 shadow-md relative">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
-        <h1 class="text-4xl font-extrabold text-slate-800">Worker Dashboard</h1>
-        <p class="text-slate-500 mt-2">Find shifts, manage your schedule, and track applications.</p>
+        <div class="inline-block bg-emerald-700 text-emerald-100 text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-widest uppercase border border-emerald-600">Worker Portal</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">My Dashboard</h1>
       </div>
-      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined" (onClick)="logout()"></p-button>
+      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-emerald-900/50" (onClick)="logout()"></p-button>
     </div>
+  </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-      <p-tabView>
+  <div class="max-w-7xl mx-auto px-4 md:px-8 -mt-8">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+      
+      <p-tabView styleClass="w-full">
         
-        <p-tabPanel header="Job Board">
-          <ng-template pTemplate="header">
-            <i class="pi pi-briefcase mr-2"></i> Job Board
-          </ng-template>
+        <p-tabPanel header="Find Shifts">
+          <ng-template pTemplate="header"><i class="pi pi-search mr-2"></i> Find Shifts</ng-template>
 
-          <p-table [value]="availableJobs" [loading]="isLoadingFeed" [rows]="10" [paginator]="true" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Contractor</th>
-                <th>Address</th>
-                <th>Date & Time</th>
-                <th>Trade</th>
-                <th>Rate</th>
-                <th>Spots Left</th>
-                <th>Action</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-job>
-              <tr>
-                <td class="font-bold text-slate-700">{{job.companyName}}</td>
-                <td>{{job.address}}</td>
-                <td>
-                  <div class="text-sm">{{job.startDatetime | date:'mediumDate'}}</div>
-                  <div class="text-xs text-slate-500">{{job.startDatetime | date:'shortTime'}} - {{job.endDatetime | date:'shortTime'}}</div>
-                </td>
-                <td><p-tag [value]="job.jobType" severity="info"></p-tag></td>
-                <td class="font-semibold text-green-600">${{job.hourlyRate}}/hr</td>
-                <td>{{job.remainingSpots}}</td>
-                <td>
-                  <p-button label="Apply" icon="pi pi-check" size="small" (onClick)="apply(job.requirementId)"></p-button>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="7" class="text-center p-8 text-slate-500">
-                  There are currently no open jobs matching your trades. Check back later!
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+          <div class="p-2 md:p-6 bg-slate-50 min-h-[50vh]">
+            
+            <div *ngIf="!isLoadingFeed && availableJobs.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
+              <i class="pi pi-briefcase text-4xl text-slate-300 mb-4"></i>
+              <h3 class="text-xl font-bold text-slate-700 mb-2">No shifts available</h3>
+              <p class="text-slate-500">There are currently no open jobs matching your trades. Check back later!</p>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div *ngFor="let job of availableJobs" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between lg:items-center gap-6 hover:border-emerald-300 transition-colors">
+                
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-2">
+                    <p-tag [value]="formatStatus(job.jobType)" severity="info" styleClass="text-xs"></p-tag>
+                    <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">${{job.hourlyRate}}/hr</span>
+                  </div>
+                  <h3 class="font-bold text-xl text-slate-800">{{job.companyName}}</h3>
+                  <p class="text-slate-500 text-sm mt-1"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{job.address}}</p>
+                </div>
+
+                <div class="flex flex-col gap-1 bg-slate-50 p-4 rounded-xl border border-slate-100 lg:w-64">
+                  <div class="font-bold text-slate-700"><i class="pi pi-calendar mr-2 text-emerald-600"></i>{{job.startDatetime | date:'mediumDate'}}</div>
+                  <div class="text-sm text-slate-500">{{ formatDateRange(job.startDatetime, job.endDatetime) }}</div>
+                  <div class="text-xs font-semibold text-amber-600 mt-2">{{job.remainingSpots}} spot(s) remaining</div>
+                </div>
+
+                <div class="w-full lg:w-auto mt-2 lg:mt-0">
+                  <p-button label="Apply Now" icon="pi pi-check" styleClass="w-full lg:w-auto p-button-success shadow-md" (onClick)="confirmApply(job)"></p-button>
+                </div>
+              </div>
+            </div>
+          </div>
         </p-tabPanel>
 
         <p-tabPanel header="My Schedule">
-          <ng-template pTemplate="header">
-            <i class="pi pi-calendar mr-2"></i> My Schedule
-          </ng-template>
+          <ng-template pTemplate="header"><i class="pi pi-calendar mr-2"></i> My Schedule</ng-template>
 
-          <p-table [value]="mySchedule" [loading]="isLoadingSchedule" [rows]="10" [paginator]="true" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Contractor</th>
-                <th>Date & Time</th>
-                <th>Trade & Rate</th>
-                <th>Application Status</th>
-                <th>Site Status</th>
-                <th class="text-center">Action</th> </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-app>
-              <tr>
-                <td>
-                  <div class="font-bold text-slate-700">{{app.companyName}}</div>
-                  <div class="text-xs text-slate-500">Tel: {{app.companyPhone}}</div>
-                </td>
-                <td>
-                  <div class="text-sm">{{app.startDatetime | date:'mediumDate'}}</div>
-                  <div class="text-xs text-slate-500">{{app.startDatetime | date:'shortTime'}} - {{app.endDatetime | date:'shortTime'}}</div>
-                </td>
-                <td>
-                  <div class="text-sm">{{app.jobType}}</div>
-                  <div class="text-xs font-semibold text-green-600">${{app.hourlyRate}}/hr</div>
-                </td>
-                <td>
-                    <p-tag [value]="app.applicationStatus" [severity]="getAppSeverity(app.applicationStatus)"></p-tag>                
-                </td>
-                <td>{{app.jobStatus}}</td>
-                <td class="text-center">
-                  @if (app.applicationStatus === 'SELECTED' && isJobComplete(app.endDatetime) && !app.reviewedBusiness) {
-                    <p-button label="Rate Contractor" icon="pi pi-star-fill" size="small" styleClass="p-button-warning p-button-outlined" (onClick)="openReview(app.jobId)"></p-button>
-                  } @else {
-                    <span class="text-xs text-slate-400 font-medium">—</span>
-                  }
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="6" class="text-center p-8 text-slate-500">
-                  You haven't applied to any jobs yet.
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+          <div class="p-2 md:p-6 bg-slate-50 min-h-[50vh]">
+            
+            <div *ngIf="!isLoadingSchedule && mySchedule.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
+              <i class="pi pi-calendar-times text-4xl text-slate-300 mb-4"></i>
+              <h3 class="text-xl font-bold text-slate-700 mb-2">Schedule is empty</h3>
+              <p class="text-slate-500">You haven't applied to any jobs yet.</p>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div *ngFor="let app of mySchedule" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between gap-6"
+                   [ngClass]="{'border-l-4 border-l-emerald-500': app.applicationStatus === 'SELECTED', 'opacity-75': app.applicationStatus === 'REJECTED' || app.applicationStatus === 'AUTO_CANCELLED'}">
+                
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-3">
+                    <p-tag [value]="formatStatus(app.applicationStatus)" [severity]="getAppSeverity(app.applicationStatus)"></p-tag>
+                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded">Site: {{formatStatus(app.jobStatus)}}</span>
+                  </div>
+                  
+                  <h3 class="font-bold text-xl text-slate-800">{{app.companyName}}</h3>
+                  
+                  <p class="text-slate-500 text-sm mt-1 mb-2"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{app.address}}</p>
+                  <div class="text-sm font-semibold text-slate-600 mb-3"><i class="pi pi-phone mr-1"></i> {{app.companyPhone}}</div>
+                  
+                  <div class="inline-flex flex-wrap gap-2 text-sm bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
+                    <span class="font-bold text-slate-700">{{formatStatus(app.jobType)}}</span>
+                    <span class="text-slate-300">•</span>
+                    <span class="font-bold text-emerald-600">${{app.hourlyRate}}/hr</span>
+                  </div>
+                </div>
+
+                <div class="flex flex-col justify-between items-start md:items-end gap-4 md:text-right">
+                  <div>
+                    <div class="font-bold text-slate-700"><i class="pi pi-calendar mr-2 text-slate-400"></i>{{app.startDatetime | date:'mediumDate'}}</div>
+                    <div class="text-sm text-slate-500 mt-1">{{ formatDateRange(app.startDatetime, app.endDatetime) }}</div>
+                  </div>
+
+                  <div class="w-full md:w-auto mt-2">
+                    @if (app.applicationStatus === 'SELECTED' && isJobComplete(app.endDatetime) && !app.reviewedBusiness) {
+                      <p-button label="Rate Contractor" icon="pi pi-star-fill" styleClass="w-full p-button-warning shadow-md" (onClick)="openReview(app.jobId)"></p-button>
+                    }
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </p-tabPanel>
 
       </p-tabView>
     </div>
-
   </div>
 </div>
 
-<p-dialog header="Review General Contractor" [(visible)]="showReviewDialog" [modal]="true" [style]="{ width: '30rem' }">
-  <form [formGroup]="reviewForm" class="flex flex-col gap-5 mt-2">
-    
-    <div class="flex flex-col items-center gap-3">
-      <label class="font-semibold text-slate-700">How was your experience working on this site?</label>
+<p-dialog header="Rate General Contractor" [(visible)]="showReviewDialog" [modal]="true" [style]="{ width: '100%', maxWidth: '30rem' }" [breakpoints]="{ '640px': '95vw' }">
+  <form [formGroup]="reviewForm" class="flex flex-col gap-6 mt-2">
+    <div class="flex flex-col items-center gap-3 bg-slate-50 p-6 rounded-xl border border-slate-200">
+      <label class="font-bold text-slate-800 text-center">How was your experience on site?</label>
       <p-rating formControlName="starRating" [cancel]="false" [stars]="5"></p-rating>
     </div>
-
     <div class="flex flex-col gap-2">
-      <label class="font-semibold text-slate-700">Comments (Optional)</label>
-      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Did they pay correctly? Was the job site safe and organized?"></textarea>
+      <label class="font-semibold text-slate-700">Comments</label>
+      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Did they pay correctly? Was the site safe?"></textarea>
     </div>
-
-    <div class="flex justify-end gap-3 mt-2">
-      <p-button label="Cancel" styleClass="p-button-text" (onClick)="showReviewDialog = false"></p-button>
-      <p-button label="Submit Review" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-warning"></p-button>
+    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
+      <p-button label="Cancel" styleClass="p-button-text w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
+      <p-button label="Submit Review" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-warning w-full sm:w-auto"></p-button>
     </div>
   </form>
 </p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}"></p-confirmDialog>

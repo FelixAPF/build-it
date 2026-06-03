@@ -1,68 +1,131 @@
-<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+<nav class="fixed w-full z-50 top-0 bg-white/80 backdrop-blur-lg border-b border-slate-200 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-        <i class="pi pi-building text-white font-bold"></i>
+    
+    <div class="flex items-center gap-3 cursor-pointer" routerLink="/">
+      <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+        <i class="pi pi-building text-white text-xl font-bold"></i>
       </div>
-      <span class="text-2xl font-extrabold tracking-tight text-slate-800">Build<span class="text-blue-600">It</span></span>
+      <span class="text-2xl font-extrabold tracking-tight text-slate-800">
+        Build<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">It</span>
+      </span>
     </div>
     
-    <div class="flex gap-4">
+    <div class="flex items-center gap-3 md:gap-4">
       @if (authService.getToken()) {
-        <p-button label="Go to Dashboard" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-info"></p-button>
+        <p-button label="Go to Dashboard" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-info font-bold hidden md:inline-flex"></p-button>
+        <p-button icon="pi pi-arrow-right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-info md:hidden"></p-button>
       } @else {
-        <p-button label="Log in" routerLink="/login" styleClass="p-button-text p-button-plain font-semibold"></p-button>
-        <p-button label="Join the Network" routerLink="/register" styleClass="bg-blue-600 hover:bg-blue-700 border-none"></p-button>
+        <a routerLink="/login" class="text-slate-600 font-bold hover:text-blue-600 transition-colors px-2 md:px-4 hidden md:block">Log in</a>
+        <p-button label="Join the Network" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none font-bold shadow-md hidden md:inline-flex"></p-button>
+        <a routerLink="/login" class="text-slate-600 font-bold hover:text-blue-600 transition-colors px-2 md:hidden">Login</a>
+        <p-button icon="pi pi-user-plus" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none md:hidden"></p-button>
       }
     </div>
   </div>
 </nav>
 
-<main class="relative overflow-hidden bg-slate-50 min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center pb-24">
+<main class="relative overflow-hidden bg-slate-50 pt-32 pb-20 md:pt-48 md:pb-32 px-6">
   
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none -z-10 mt-[-200px]"></div>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] md:w-[1200px] h-[400px] md:h-[600px] bg-blue-400/20 rounded-full blur-[100px] pointer-events-none -z-10 mt-[-150px] md:mt-[-250px]"></div>
+  <div class="absolute top-40 right-0 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none -z-10"></div>
 
-  <div class="max-w-4xl mx-auto px-6 text-center z-10 pt-16">
-    <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
-      The smart way to staff <br/>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Quebec's job sites.</span>
+  <div class="max-w-4xl mx-auto text-center z-10">
+    
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-bold mb-8 shadow-sm">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+      </span>
+      Now live across all of Quebec
+    </div>
+
+    <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
+      Staff your sites. <br/>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Without the stress.</span>
     </h1>
     
-    <p class="text-xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-      Connect instantly with verified CCQ workers and RBQ contractors. Stop texting around. Fill your shifts in minutes and get back to building.
+    <p class="text-lg md:text-2xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+      Instantly connect with verified CCQ tradespeople and RBQ contractors. Fill your empty shifts in minutes and keep your projects on schedule.
     </p>
 
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <p-button label="I need workers" icon="pi pi-users" routerLink="/register" styleClass="p-4 text-lg bg-slate-800 hover:bg-slate-900 border-none shadow-lg w-full sm:w-auto"></p-button>
-      <p-button label="I am a worker" icon="pi pi-wrench" routerLink="/register" styleClass="p-4 text-lg p-button-outlined p-button-secondary bg-white shadow-sm w-full sm:w-auto hover:bg-slate-100"></p-button>
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
+      
+      <p-button label="I need to hire workers" icon="pi pi-building" routerLink="/register" [queryParams]="{tab: 'business'}" styleClass="w-full sm:w-auto px-8 py-4 text-lg font-bold bg-blue-600 hover:bg-blue-700 border-none shadow-xl shadow-blue-600/30 transition-all hover:-translate-y-1"></p-button>
+      
+      <p-button label="I am looking for shifts" icon="pi pi-wrench" routerLink="/register" [queryParams]="{tab: 'worker'}" styleClass="w-full sm:w-auto px-8 py-4 text-lg font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all"></p-button>
     </div>
-  </div>
 
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 w-full z-10">
-    
-    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center hover:shadow-md transition-shadow">
-      <div class="w-14 h-14 mx-auto bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-        <i class="pi pi-shield text-2xl text-blue-600"></i>
+    <div class="mt-16 pt-10 border-t border-slate-200/60 grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto text-slate-500 font-medium">
+      <div class="flex flex-col items-center justify-center">
+        <span class="text-3xl font-extrabold text-slate-800">100%</span>
+        <span class="text-sm uppercase tracking-wider mt-1">CCQ Verified</span>
       </div>
-      <h3 class="text-xl font-bold text-slate-800 mb-3">Act R-20 Compliant</h3>
-      <p class="text-slate-500 leading-relaxed">Designed for the Quebec market. Contractors maintain 100% control over CCQ payroll and CNESST obligations.</p>
-    </div>
-
-    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center hover:shadow-md transition-shadow">
-      <div class="w-14 h-14 mx-auto bg-green-100 rounded-xl flex items-center justify-center mb-6">
-        <i class="pi pi-verified text-2xl text-green-600"></i>
+      <div class="flex flex-col items-center justify-center">
+        <span class="text-3xl font-extrabold text-slate-800">24/7</span>
+        <span class="text-sm uppercase tracking-wider mt-1">Instant Matches</span>
       </div>
-      <h3 class="text-xl font-bold text-slate-800 mb-3">Verified Trades</h3>
-      <p class="text-slate-500 leading-relaxed">We require CCQ and RBQ numbers upon registration, ensuring you only connect with qualified professionals.</p>
-    </div>
-
-    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center hover:shadow-md transition-shadow">
-      <div class="w-14 h-14 mx-auto bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-        <i class="pi pi-bolt text-2xl text-purple-600"></i>
+      <div class="flex flex-col items-center justify-center col-span-2 md:col-span-1">
+        <span class="text-3xl font-extrabold text-slate-800">R-20</span>
+        <span class="text-sm uppercase tracking-wider mt-1">Fully Compliant</span>
       </div>
-      <h3 class="text-xl font-bold text-slate-800 mb-3">Instant Matchmaking</h3>
-      <p class="text-slate-500 leading-relaxed">Post a shift and notify available workers in your region instantly. Approve applicants with a single click.</p>
     </div>
-
   </div>
 </main>
+
+<section class="py-24 bg-white px-6">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="text-center mb-16 max-w-2xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight mb-4">Built specifically for the construction industry.</h2>
+      <p class="text-slate-500 text-lg">We handle the verification and matchmaking so you can focus on building.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      
+      <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-left hover:shadow-xl hover:bg-white hover:-translate-y-2 transition-all duration-300 group">
+        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <i class="pi pi-shield text-3xl text-blue-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-3">Act R-20 Compliant</h3>
+        <p class="text-slate-500 leading-relaxed text-lg">Designed exclusively for the Quebec market. Contractors maintain 100% control over CCQ payroll, union dues, and CNESST obligations.</p>
+      </div>
+
+      <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-left hover:shadow-xl hover:bg-white hover:-translate-y-2 transition-all duration-300 group">
+        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <i class="pi pi-verified text-3xl text-emerald-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-3">Verified Trades</h3>
+        <p class="text-slate-500 leading-relaxed text-lg">We strictly require CCQ and RBQ numbers upon registration. Our admins verify every credential before anyone can join the network.</p>
+      </div>
+
+      <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-left hover:shadow-xl hover:bg-white hover:-translate-y-2 transition-all duration-300 group">
+        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <i class="pi pi-bolt text-3xl text-purple-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-3">Instant Matchmaking</h3>
+        <p class="text-slate-500 leading-relaxed text-lg">Post a shift and we instantly notify available workers in your region with the right skills. Review applications and hire with a single click.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="py-20 bg-slate-900 px-6">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Ready to streamline your job sites?</h2>
+    <p class="text-slate-400 text-lg md:text-xl mb-10">Join hundreds of contractors and workers already using BuildIt.</p>
+    <p-button label="Create your free account today" icon="pi pi-arrow-right" iconPos="right" routerLink="/register" styleClass="px-8 py-4 text-lg font-bold bg-blue-500 hover:bg-blue-400 border-none text-white shadow-lg shadow-blue-500/20"></p-button>
+  </div>
+</section>
+
+<footer class="bg-slate-950 text-slate-500 py-12 px-6 border-t border-slate-800">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-building text-slate-400"></i>
+      <span class="font-bold text-slate-300 tracking-wide">BuildIt Technologies Inc.</span>
+    </div>
+    <div class="text-sm">
+      &copy; 2026 BuildIt Montreal, QC. All rights reserved.
+    </div>
+  </div>
+</footer>

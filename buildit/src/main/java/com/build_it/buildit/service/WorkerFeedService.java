@@ -32,9 +32,16 @@ public class WorkerFeedService {
     if (user.getStatus() != AccountStatus.ACTIVE) {
       throw new RuntimeException("Account pending verification.");
     }
+
     // 2. Get Worker's currently confirmed schedule
     List<JobApplication> confirmedShifts = jobApplicationRepository
       .findByWorkerIdAndStatus(worker.getId(), ApplicationStatus.SELECTED);
+
+    // NEW: Get ALL of the worker's applications (Pending, Rejected, Selected, Cancelled)
+    List<JobApplication> allWorkerApps = jobApplicationRepository.findByWorkerId(worker.getId());
+    java.util.Set<Long> appliedReqIds = allWorkerApps.stream()
+      .map(app -> app.getJobRequirement().getId())
+      .collect(java.util.stream.Collectors.toSet());
 
     // 3. Fetch all open requirements matching their trade
     List<JobRequirement> potentialMatches = jobRequirementRepository.findAvailableRequirements(
@@ -42,8 +49,9 @@ public class WorkerFeedService {
       List.of(JobStatus.OPEN, JobStatus.PARTIALLY_FILLED)
     );
 
-    // 4. Filter out jobs that overlap with their confirmed schedule and map to DTO
+    // 4. Filter out already applied jobs AND overlapping shifts
     return potentialMatches.stream()
+      .filter(req -> !appliedReqIds.contains(req.getId())) // <-- Hides applied/rejected jobs!
       .filter(req -> !isOverlapping(req.getJobPosting(), confirmedShifts))
       .map(req -> AvailableJobResponse.builder()
         .requirementId(req.getId())
@@ -56,7 +64,7 @@ public class WorkerFeedService {
         .hourlyRate(req.getHourlyRate())
         .remainingSpots(req.getQtyRequested() - req.getQtyFilled())
         .build())
-      .collect(Collectors.toList());
+      .collect(java.util.stream.Collectors.toList());
   }
 
   // Helper method to check time overlaps
