@@ -20,6 +20,7 @@ public class ReviewService {
   private final UserRepository userRepository;
   private final WorkerProfileRepository workerProfileRepository;
   private final BusinessProfileRepository businessProfileRepository;
+  private final AuditLogService auditLogService;
 
   @Transactional
   public String reviewWorker(Long applicationId, CreateReviewRequest request, String businessEmail) {
@@ -50,7 +51,7 @@ public class ReviewService {
 
     // Call your existing average update method here
     updateWorkerAverage(application.getWorker());
-
+    auditLogService.log(businessEmail, "REVIEW_SUBMITTED", "Gave worker account " + workerUser.getEmail() + " a score of " + request.getStarRating() + " stars.");
     return "Review submitted successfully.";
   }
 
@@ -84,7 +85,7 @@ public class ReviewService {
 
     // Call your existing average update method here
     updateBusinessAverage(job.getBusiness());
-
+    auditLogService.log(workerEmail, "REVIEW_SUBMITTED", "Gave company account " + businessUser.getEmail() + " a score of " + request.getStarRating() + " stars.");
     return "Review submitted successfully.";
   }
 

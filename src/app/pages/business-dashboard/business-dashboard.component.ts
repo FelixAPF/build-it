@@ -46,6 +46,7 @@ export class BusinessDashboardComponent implements OnInit {
   reviewForm!: FormGroup;
   reviewApplicationId: number | null = null;
   isSubmittingReview: boolean = false;
+  isAdminImpersonating: boolean = false;
   
   showDialog: boolean = false;
   isSubmitting: boolean = false;
@@ -67,6 +68,7 @@ export class BusinessDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadDashboard();
+    this.isAdminImpersonating = !!localStorage.getItem('admin_token'); // Check if backup token exists
     this.initForm();
   }
 
@@ -93,6 +95,17 @@ export class BusinessDashboardComponent implements OnInit {
       qtyRequested: [1, [Validators.required, Validators.min(1)]]
     });
     this.requirementsFormArray.push(reqGroup);
+  }
+
+  returnToAdmin() {
+    const adminToken = localStorage.getItem('admin_token');
+    if (adminToken) {
+      localStorage.setItem('jwt_token', adminToken);
+      localStorage.setItem('user_role', 'ADMIN');
+      localStorage.setItem('user_status', 'ACTIVE');
+      localStorage.removeItem('admin_token'); // Clear the backup
+      this.router.navigate(['/admin-dashboard']);
+    }
   }
 
   removeRequirement(index: number) { this.requirementsFormArray.removeAt(index); }

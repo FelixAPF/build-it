@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 // PrimeNG Modules
@@ -13,15 +14,15 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { MultiSelectModule } from 'primeng/multiselect'; // <-- NEW IMPORT
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    ReactiveFormsModule, CardModule, InputTextModule, ButtonModule, 
+    CommonModule, ReactiveFormsModule, CardModule, InputTextModule, ButtonModule, 
     MessageModule, TabViewModule, InputNumberModule, PasswordModule, 
-    CheckboxModule, DialogModule, RouterLink, MultiSelectModule // <-- ADDED
+    CheckboxModule, DialogModule, RouterLink, MultiSelectModule
   ],
   templateUrl: './register.component.html'
 })
@@ -29,24 +30,17 @@ export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute); // <-- Inject ActivatedRoute
+  private route = inject(ActivatedRoute);
 
   errorMessage: string = '';
   isLoading: boolean = false;
   showTermsDialog: boolean = false;
-  activeTabIndex: number = 0; // <-- 0 = Worker, 1 = Business
+  
+  activeTabIndex: number = 0; // 0 = Worker, 1 = Business
 
-  ngOnInit() {
-      this.route.queryParams.subscribe(params => {
-        if (params['tab'] === 'business') {
-          this.activeTabIndex = 1;
-        } else {
-          this.activeTabIndex = 0;
-        }
-      });
-  }
+  workerForm!: FormGroup;
+  businessForm!: FormGroup;
 
-  // Options for the MultiSelect dropdown
   tradeOptions = [
     { label: 'Electrician', value: 'ELECTRICIEN' },
     { label: 'Plumber', value: 'PLOMBIER' },
@@ -55,43 +49,70 @@ export class RegisterComponent implements OnInit {
     { label: 'Laborer', value: 'MANOEUVRE' }
   ];
 
-  // WORKER FORM - Added ccqNumber and specialties
-  workerForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    phoneNumber: ['', Validators.required],
-    yearsExperience: [0, [Validators.required, Validators.min(0)]],
-    ccqNumber: ['', Validators.required], // <-- NEW
-    specialties: [[], Validators.required], // <-- NEW (Array)
-    termsAccepted: [false, Validators.requiredTrue] 
-  });
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.activeTabIndex = params['tab'] === 'business' ? 1 : 0;
+    });
 
-  // BUSINESS FORM - Added rbqNumber
-  businessForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    companyName: ['', Validators.required],
-    contactName: ['', Validators.required],
-    phoneNumber: ['', Validators.required],
-    rbqNumber: ['', Validators.required],
-    billingAddress: ['', Validators.required], // <-- NEW FIELD
-    termsAccepted: [false, Validators.requiredTrue] 
-  });
+    this.initForms();
+    this.setupDynamicValidators();
+  }
 
-  onWorkerSubmit() {
+  initForms() {
+    this.workerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      yearsExperience: [0, [Validators.required, Validators.min(0)]],
+      ccqNumber: ['', Validators.required],
+      specialties: [[], Validators.required],
+      termsAccepted: [false, Validators.requiredTrue] 
+    });
+
+    this.businessForm = this.fb.group({
+      businessType: ['PRIVATE', Validators.required], // Defaults to Private Individual
+      companyName: ['', Validators.required],
+      contactName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phoneNumber: ['', Validators.required],
+      billingAddress: ['', Validators.required],
+      rbqNumber: [''], // Validations applied dynamically
+      ccqNumber: [''], // Validations applied dynamically
+      termsAccepted: [false, Validators.requiredTrue] 
+    });
+  }
+
+  setupDynamicValidators() {
+    const businessTypeControl = this.businessForm.get('businessType');
+    const rbqControl = this.businessForm.get('rbqNumber');
+    const ccqControl = this.businessForm.get('ccqNumber');
+
+    businessTypeControl?.valueChanges.subscribe((type) => {
+      if (type === 'COMPANY') {
+        rbqControl?.setValidators([Validators.required]);
+        ccqControl?.setValidators([Validators.required]);
+      } else {
+        rbqControl?.clearValidators();
+        ccqControl?.clearValidators();
+      }
+      rbqControl?.updateValueAndValidity();
+      ccqControl?.updateValueAndValidity();
+    });
+  }
+
+onWorkerSubmit() {
     if (this.workerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
 
       const formValues = this.workerForm.value;
-      
-      // MAP THE ANGULAR FORM TO MATCH SPRING BOOT'S EXPECTED DTO EXACTLY
       const payload = {
         email: formValues.email,
         password: formValues.password,
-        fullName: `${formValues.firstName} ${formValues.lastName}`.trim(), // Combines first & last
+        fullName: `${formValues.firstName} ${formValues.lastName}`.trim(),
         phoneNumber: formValues.phoneNumber,
         yearsExperience: formValues.yearsExperience,
         ccqNumber: formValues.ccqNumber,
@@ -101,7 +122,13 @@ export class RegisterComponent implements OnInit {
       this.authService.registerWorker(payload).subscribe({
         next: () => {
           this.isLoading = false;
-          this.router.navigate(['/worker-dashboard']);
+          // FIX: Route them to pending if they are held for review
+          const status = localStorage.getItem('user_status');
+          if (status === 'PENDING_VERIFICATION') {
+            this.router.navigate(['/pending']);
+          } else {
+            this.router.navigate(['/worker-dashboard']);
+          }
         },
         error: (err) => {
           this.isLoading = false;
@@ -116,10 +143,24 @@ export class RegisterComponent implements OnInit {
     if (this.businessForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      this.authService.registerBusiness(this.businessForm.value).subscribe({
+      
+      const payload = { ...this.businessForm.value };
+      
+      if (payload.businessType === 'PRIVATE') {
+        payload.rbqNumber = null;
+        payload.ccqNumber = null;
+      }
+
+      this.authService.registerBusiness(payload).subscribe({
         next: () => {
           this.isLoading = false;
-          this.router.navigate(['/business-dashboard']);
+          // FIX: Route them to pending if they are held for review
+          const status = localStorage.getItem('user_status');
+          if (status === 'PENDING_VERIFICATION') {
+            this.router.navigate(['/pending']);
+          } else {
+            this.router.navigate(['/business-dashboard']);
+          }
         },
         error: (err) => {
           this.isLoading = false;

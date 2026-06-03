@@ -41,6 +41,7 @@ export class WorkerDashboardComponent implements OnInit {
   availableJobs: any[] = [];
   isLoadingSchedule: boolean = true;
   isLoadingFeed: boolean = true;
+  isAdminImpersonating: boolean = false;
 
   showReviewDialog: boolean = false;
   reviewForm!: FormGroup;
@@ -48,6 +49,7 @@ export class WorkerDashboardComponent implements OnInit {
   isSubmittingReview: boolean = false;
 
   ngOnInit() {
+    this.isAdminImpersonating = !!localStorage.getItem('admin_token'); // Check if backup token exists
     this.loadData();
     this.initReviewForm();
   }
@@ -57,6 +59,17 @@ export class WorkerDashboardComponent implements OnInit {
       starRating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
       comment: ['']
     });
+  }
+  
+  returnToAdmin() {
+    const adminToken = localStorage.getItem('admin_token');
+    if (adminToken) {
+      localStorage.setItem('jwt_token', adminToken);
+      localStorage.setItem('user_role', 'ADMIN');
+      localStorage.setItem('user_status', 'ACTIVE');
+      localStorage.removeItem('admin_token'); // Clear the backup
+      this.router.navigate(['/admin-dashboard']);
+    }
   }
 
   loadData() {

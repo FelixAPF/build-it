@@ -19,6 +19,7 @@ public class JobPostingService {
 
   private final JobPostingRepository jobPostingRepository;
   private final BusinessProfileRepository businessProfileRepository;
+  private final AuditLogService auditLogService;
   private final UserRepository userRepository;
 
   private static final double BASE_FEE_PER_WORKER = 5.00;
@@ -76,6 +77,7 @@ public class JobPostingService {
     }
 
     // Because we set CascadeType.ALL on the Entity, saving the posting saves the requirements too!
+    auditLogService.log(businessEmail, "JOB_POSTED", "Created job requirement located at: " + request.getAddress() + ". App fee charged: $" + jobPosting.getTotalAppFeeCharged());
     return jobPostingRepository.save(jobPosting);
   }
 
@@ -116,7 +118,7 @@ public class JobPostingService {
     }
 
     // *Future feature note: This is where you would trigger a refund via the Stripe API for the $5 + Tax fee!*
-
+    auditLogService.log(businessEmail, "JOB_CANCELLED", "Cancelled active job assignment ID: " + jobId + ". Voided dependent applicants.");
     return "Job posting has been successfully cancelled. All worker applications have been voided.";
   }
 }

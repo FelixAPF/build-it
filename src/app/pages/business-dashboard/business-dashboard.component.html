@@ -1,15 +1,36 @@
+<div *ngIf="isAdminImpersonating" class="bg-red-600 text-white p-3 text-center font-bold flex flex-col md:flex-row justify-center items-center gap-4 shadow-lg sticky top-0 z-50">
+  <span><i class="pi pi-eye mr-2"></i> You are currently viewing this dashboard as a user.</span>
+  <p-button label="Return to Admin Control" icon="pi pi-arrow-left" size="small" styleClass="p-button-outlined p-button-contrast text-white border-white hover:bg-red-700" (onClick)="returnToAdmin()"></p-button>
+</div>
+
 <p-toast></p-toast>
 <div class="min-h-screen bg-slate-50 pb-12">
   
   <div class="bg-indigo-900 text-white pt-12 pb-24 px-6 md:px-12 rounded-b-[3rem] shadow-md">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
-        <div class="inline-block bg-indigo-800 text-indigo-200 text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-widest uppercase">Business Portal</div>
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <div class="bg-indigo-800 text-indigo-200 text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase border border-indigo-700">
+            Employer Portal
+          </div>
+          <div class="bg-emerald-900/80 text-emerald-300 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-emerald-800">
+            <i class="pi pi-shield text-[10px]"></i> Active Licensing Status
+          </div>
+        </div>
+        
         <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">My Job Sites</h1>
-        <p class="text-indigo-200 mt-2 text-lg">Manage your active projects and hired crews.</p>
+        
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-indigo-200 font-medium">
+          <span class="flex items-center gap-1.5"><i class="pi pi-home text-indigo-400"></i> Corporate Host Profile</span>
+          <span class="text-indigo-700 hidden sm:inline">|</span>
+          <span class="flex items-center gap-1.5"><i class="pi pi-verified text-indigo-400"></i> RBQ Verification Registry: <strong class="font-mono text-white">Valid</strong></span>
+          <span class="text-indigo-700 hidden sm:inline">|</span>
+          <span class="flex items-center gap-1.5"><i class="pi pi-file text-indigo-400"></i> CCQ Payroll Ledger: <strong class="font-mono text-white">Linked</strong></span>
+        </div>
       </div>
+      
       <div class="flex flex-wrap gap-3 w-full md:w-auto">
-        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-success w-full md:w-auto font-bold" (onClick)="showDialog = true"></p-button>
+        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-success w-full md:w-auto font-bold shadow-lg shadow-emerald-900/30" (onClick)="showDialog = true"></p-button>
         <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-indigo-900/50" (onClick)="logout()"></p-button>
       </div>
     </div>
@@ -63,7 +84,7 @@
   </div>
 </div>
 
-<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
   <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-2">
     <div class="flex flex-col gap-2">
       <label class="font-semibold text-slate-700">Site Address</label>
@@ -115,7 +136,7 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Manage Job Roles" [(visible)]="showJobDetailsDialog" [modal]="true" [style]="{ width: '100%', maxWidth: '50rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog header="Manage Job Roles" [(visible)]="showJobDetailsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '50rem' }" [breakpoints]="{ '640px': '95vw' }">
   <div *ngIf="selectedJob">
     <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
       <p class="font-semibold text-slate-800 mb-1"><i class="pi pi-map-marker text-indigo-500 mr-2"></i> {{selectedJob.address}}</p>
@@ -161,7 +182,7 @@
   </div>
 </p-dialog>
 
-<p-dialog header="Pending Applicants" [(visible)]="showApplicantsDialog" [modal]="true" [style]="{ width: '100%', maxWidth: '40rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog header="Pending Applicants" [(visible)]="showApplicantsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '40rem' }" [breakpoints]="{ '640px': '95vw' }">
   <div *ngIf="!isLoadingApplicants && applicants.length === 0" class="text-center p-8 text-slate-500 bg-slate-50 rounded-lg border border-slate-200">
     <i class="pi pi-inbox text-3xl mb-3 text-slate-400"></i>
     <p>No applications for this role yet.</p>
@@ -184,7 +205,7 @@
   </div>
 </p-dialog>
 
-<p-dialog header="Rate Worker" [(visible)]="showReviewDialog" [modal]="true" [style]="{ width: '100%', maxWidth: '30rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog header="Rate Worker" [(visible)]="showReviewDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '30rem' }" [breakpoints]="{ '640px': '95vw' }">
   <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="flex flex-col gap-6 mt-2">
     <div class="flex flex-col items-center gap-3 bg-slate-50 p-6 rounded-xl border border-slate-200">
       <label class="font-bold text-slate-800 text-center">How was their performance?</label>

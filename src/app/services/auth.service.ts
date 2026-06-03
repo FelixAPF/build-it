@@ -36,21 +36,24 @@ export class AuthService {
     );
   }
 
-  logout() {
+logout() {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_role');
     localStorage.removeItem('user_email');
+    localStorage.removeItem('user_status');
+    localStorage.removeItem('admin_token');
   }
 
   getToken(): string | null {
     return localStorage.getItem('jwt_token');
   }
 
-  private saveToken(response: any) {
+private saveToken(response: any) {
     if (response && response.token) {
       localStorage.setItem('jwt_token', response.token);
       localStorage.setItem('user_role', response.role);
       localStorage.setItem('user_email', response.email);
+      localStorage.setItem('user_status', response.status); 
     }
   }
 }

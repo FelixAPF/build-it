@@ -19,6 +19,7 @@ public class ApplicationService {
   private final WorkerProfileRepository workerProfileRepository;
   private final BusinessProfileRepository businessProfileRepository;
   private final UserRepository userRepository;
+  private final AuditLogService auditLogService;
   private final EmailService emailService;
 
   // STEP 3.3: Worker Applies
@@ -49,6 +50,7 @@ public class ApplicationService {
       .build();
 
     applicationRepository.save(application);
+    auditLogService.log(workerEmail, "JOB_APPLICATION", "Submitted availability match application tracking for slot ID: " + requirementId);
     return "Successfully applied for the position!";
   }
   @Transactional
@@ -125,6 +127,7 @@ public class ApplicationService {
       posting.getStartDatetime().toString()
     );
 
+    auditLogService.log(businessEmail, "APPLICATION_APPROVED", "Hired tradesperson " + application.getWorker().getFullName() + " for requirement context.");
     return "Worker approved! Schedule locked.";
   }
 
@@ -151,7 +154,7 @@ public class ApplicationService {
 
     application.setStatus(ApplicationStatus.REJECTED);
     applicationRepository.save(application);
-
+    auditLogService.log(businessEmail, "APPLICATION_REJECTED", "Declined applicant portfolio matching sequence ID: " + applicationId);
     return "Application has been rejected.";
   }
 

@@ -17,6 +17,7 @@ public class AuthService {
   private final WorkerProfileRepository workerProfileRepository;
   private final BusinessProfileRepository businessProfileRepository;
   private final PasswordEncoder passwordEncoder;
+  private final AuditLogService auditLogService;
   private final JwtUtils jwtUtils;
 
   @Transactional
@@ -49,6 +50,7 @@ public class AuthService {
     workerProfileRepository.save(profile);
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+    auditLogService.log(request.getEmail(), "ACCOUNT_REGISTRATION", "Registered as worker profile matching specialization requirements.");
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }
 
@@ -57,30 +59,48 @@ public class AuthService {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("Email already in use");
     }
-    if (businessProfileRepository.existsByRbqNumber(request.getRbqNumber())) {
-      throw new RuntimeException("RBQ Number already registered");
+
+    if ("COMPANY".equals(request.getBusinessType())) {
+      if (request.getRbqNumber() == null || request.getRbqNumber().trim().isEmpty()) {
+        throw new RuntimeException("RBQ Number is strictly required for Construction Companies.");
+      }
+      if (request.getCcqNumber() == null || request.getCcqNumber().trim().isEmpty()) {
+        throw new RuntimeException("CCQ Employer ID is strictly required for Construction Companies.");
+      }
+      if (businessProfileRepository.existsByRbqNumber(request.getRbqNumber())) {
+        throw new RuntimeException("RBQ Number already registered in our system.");
+      }
     }
+
+    // FIX: Auto-activate private individuals, but hold companies for review!
+    AccountStatus initialStatus = "PRIVATE".equals(request.getBusinessType())
+      ? AccountStatus.ACTIVE
+      : AccountStatus.PENDING_VERIFICATION;
 
     User user = User.builder()
       .email(request.getEmail())
       .passwordHash(passwordEncoder.encode(request.getPassword()))
       .role(Role.BUSINESS)
-      .status(AccountStatus.PENDING_VERIFICATION)
+      .status(initialStatus) // <-- Applied here
       .build();
 
     userRepository.save(user);
 
     BusinessProfile profile = BusinessProfile.builder()
       .user(user)
+      .businessType(request.getBusinessType())
       .companyName(request.getCompanyName())
+      .contactName(request.getContactName())
       .phoneNumber(request.getPhoneNumber())
       .rbqNumber(request.getRbqNumber())
+      .ccqNumber(request.getCcqNumber())
       .billingAddress(request.getBillingAddress())
       .build();
 
     businessProfileRepository.save(profile);
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+    auditLogService.log(request.getEmail(), "ACCOUNT_REGISTRATION", "Registered as type context: " + request.getBusinessType());
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }
 
@@ -98,6 +118,7 @@ public class AuthService {
 
     // Allow PENDING and ACTIVE users to get a token!
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+    auditLogService.log(user.getEmail(), "USER_LOGIN", "Authenticated successfully using clean secure route parameters.");
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }
 }

@@ -6,6 +6,15 @@ import lombok.Data;
 
 @Data
 public class BusinessRegisterRequest {
+  @NotBlank(message = "Account intention is required")
+  private String businessType;
+
+  @NotBlank(message = "Company or Name is required")
+  private String companyName;
+
+  @NotBlank(message = "Contact name is required")
+  private String contactName;
+
   @NotBlank(message = "Email is required")
   @Email(message = "Invalid email format")
   private String email;
@@ -13,15 +22,13 @@ public class BusinessRegisterRequest {
   @NotBlank(message = "Password is required")
   private String password;
 
-  @NotBlank(message = "Company name is required")
-  private String companyName;
-
   @NotBlank(message = "Phone number is required")
   private String phoneNumber;
 
-  @NotBlank(message = "RBQ number is required")
-  private String rbqNumber;
-
   @NotBlank(message = "Billing address is required")
   private String billingAddress;
+
+  // REMOVED @NotBlank to safely allow 'null' for Private Individuals
+  private String rbqNumber;
+  private String ccqNumber;
 }

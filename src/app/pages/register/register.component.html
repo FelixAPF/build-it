@@ -12,10 +12,10 @@
         <p-message severity="danger" [text]="errorMessage" styleClass="w-full mb-4"></p-message>
       }
 
-    <p-tabView [(activeIndex)]="activeTabIndex">        
-        <!-- WORKER REGISTRATION TAB -->
+      <p-tabView [(activeIndex)]="activeTabIndex">
+        
         <p-tabPanel header="I am a Worker">
-          <form [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-4">
+          <form *ngIf="workerForm" [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-4">
             
             <div class="grid grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
@@ -51,44 +51,62 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4 mt-4">
-            <div class="flex flex-col gap-2">
-                <label class="font-semibold text-slate-700">CCQ Number</label>
-                <input pInputText formControlName="ccqNumber" placeholder="e.g. 12345678" class="w-full" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="font-semibold text-slate-700">Trades / Specialties</label>
-                <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" placeholder="Select Trades" styleClass="w-full" appendTo="body" display="chip"></p-multiSelect>
-            </div>
+              <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-slate-700">CCQ Number</label>
+                  <input pInputText formControlName="ccqNumber" placeholder="e.g. 12345678" class="w-full" />
+              </div>
+              <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-slate-700">Trades / Specialties</label>
+                  <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" placeholder="Select Trades" styleClass="w-full" appendTo="body" display="chip"></p-multiSelect>
+              </div>
             </div>
 
             <div class="flex items-start gap-3 mt-2 mb-2">
-            <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="workerTerms" styleClass="mt-1"></p-checkbox>
-                <label for="workerTerms" class="text-sm text-slate-600 leading-tight cursor-pointer">
-                    I agree to the <a href="#" class="text-blue-600 hover:underline font-semibold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards.
-                </label>
+              <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="workerTerms" styleClass="mt-1"></p-checkbox>
+              <label for="workerTerms" class="text-sm text-slate-600 leading-tight cursor-pointer">
+                  I agree to the <a href="#" class="text-blue-600 hover:underline font-semibold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards.
+              </label>
             </div>
 
-            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-3 bg-blue-600 border-none hover:bg-blue-700"></p-button>          </form>
+            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-3 bg-blue-600 border-none hover:bg-blue-700"></p-button>          
+          </form>
         </p-tabPanel>
 
-        <!-- BUSINESS REGISTRATION TAB -->
-        <p-tabPanel header="I am a Business">
-          <form [formGroup]="businessForm" (ngSubmit)="onBusinessSubmit()" class="flex flex-col gap-5 mt-4">
+        <p-tabPanel header="I am an Employer">
+          <form *ngIf="businessForm" [formGroup]="businessForm" (ngSubmit)="onBusinessSubmit()" class="flex flex-col gap-5 mt-4">
             
+            <div class="flex flex-col gap-2 mb-2">
+              <label class="font-bold text-slate-700">Account Intention</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="p-4 border rounded-xl flex items-start gap-3 cursor-pointer transition-all"
+                       [ngClass]="businessForm.get('businessType')?.value === 'PRIVATE' ? 'border-blue-600 bg-blue-50/40 ring-1 ring-blue-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                  <input type="radio" formControlName="businessType" value="PRIVATE" class="mt-1 text-blue-600 focus:ring-blue-500" />
+                  <div>
+                    <div class="font-bold text-slate-800">Private Individual</div>
+                    <div class="text-xs text-slate-500 mt-0.5">I want to hire tradespeople directly for my personal residence.</div>
+                  </div>
+                </label>
+
+                <label class="p-4 border rounded-xl flex items-start gap-3 cursor-pointer transition-all"
+                       [ngClass]="businessForm.get('businessType')?.value === 'COMPANY' ? 'border-blue-600 bg-blue-50/40 ring-1 ring-blue-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                  <input type="radio" formControlName="businessType" value="COMPANY" class="mt-1 text-blue-600 focus:ring-blue-500" />
+                  <div>
+                    <div class="font-bold text-slate-800">Construction Business</div>
+                    <div class="text-xs text-slate-500 mt-0.5">We are a registered commercial entity hiring trade crews.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <div class="grid grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-semibold text-slate-700">Company Name</label>
+                <label class="font-semibold text-slate-700">Name / Company Name</label>
                 <input pInputText formControlName="companyName" class="w-full p-3" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-semibold text-slate-700">Contact Name</label>
+                <label class="font-semibold text-slate-700">Contact Person</label>
                 <input pInputText formControlName="contactName" class="w-full p-3" />
               </div>
-            </div>
-
-            <div class="flex flex-col gap-2 mt-4">
-            <label class="font-semibold text-slate-700">Billing Address</label>
-            <input pInputText formControlName="billingAddress" placeholder="e.g. 123 Contractor Blvd, Montreal, QC" class="w-full" />
             </div>
 
             <div class="flex flex-col gap-2">
@@ -107,20 +125,40 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-2 mt-4">
-                <label class="font-semibold text-slate-700">RBQ License Number</label>
-                <input pInputText formControlName="rbqNumber" placeholder="e.g. 1234-5678-90" class="w-full" />
-            </div>
-            
-
-            <div class="flex items-start gap-3 mt-2 mb-2">
-            <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="businessTerms" styleClass="mt-1"></p-checkbox>
-            <label for="businessTerms" class="text-sm text-slate-600 leading-tight cursor-pointer">
-                I agree to the <a href="#" class="text-blue-600 hover:underline font-semibold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20.
-            </label>
+            <div class="flex flex-col gap-2 mt-2">
+              <label class="font-semibold text-slate-700">Billing Address</label>
+              <input pInputText formControlName="billingAddress" placeholder="123 Constructor Blvd, Montreal, QC" class="w-full" />
             </div>
 
-            <p-button label="Register as Business" type="submit" [disabled]="businessForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-3 bg-slate-800 border-none hover:bg-slate-900"></p-button>          </form>
+            @if (businessForm.get('businessType')?.value === 'COMPANY') {
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-amber-50/50 border border-amber-200 rounded-xl mt-2 animate-fade-in">
+                <div class="flex flex-col gap-2">
+                  <label class="font-bold text-slate-800 flex items-center gap-1.5">
+                    Licence RBQ <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText formControlName="rbqNumber" placeholder="e.g., 1234-5678-90" class="w-full font-mono bg-white" />
+                  <small class="text-slate-500 text-xs">Mandatory under Régie du bâtiment rules.</small>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <label class="font-bold text-slate-800 flex items-center gap-1.5">
+                    Employer CCQ ID <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText formControlName="ccqNumber" placeholder="e.g., 987654321" class="w-full font-mono bg-white" />
+                  <small class="text-slate-500 text-xs">Required for statutory workforce registration.</small>
+                </div>
+              </div>
+            }
+
+            <div class="flex items-start gap-3 mt-4 mb-2">
+              <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="businessTerms" styleClass="mt-1"></p-checkbox>
+              <label for="businessTerms" class="text-sm text-slate-600 leading-tight cursor-pointer">
+                  I agree to the <a href="#" class="text-blue-600 hover:underline font-semibold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20.
+              </label>
+            </div>
+
+            <p-button label="Register Account" type="submit" [disabled]="businessForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-3 bg-slate-800 border-none hover:bg-slate-900"></p-button>          
+          </form>
         </p-tabPanel>
 
       </p-tabView>
@@ -133,7 +171,7 @@
   </div>
 </div>
 
-<p-dialog header="BuildIt - Terms of Service" [(visible)]="showTermsDialog" [modal]="true" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '75vw', '640px': '95vw' }">
+<p-dialog header="BuildIt - Terms of Service" [(visible)]="showTermsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '75vw', '640px': '95vw' }">
   <div class="flex flex-col gap-4 text-slate-700 leading-relaxed">
     <p><strong>Last Updated: June 2026</strong></p>
     
