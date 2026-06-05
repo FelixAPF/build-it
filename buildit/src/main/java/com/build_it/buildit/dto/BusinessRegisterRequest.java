@@ -28,7 +28,6 @@ public class BusinessRegisterRequest {
   @NotBlank(message = "Billing address is required")
   private String billingAddress;
 
-  // REMOVED @NotBlank to safely allow 'null' for Private Individuals
   private String rbqNumber;
-  private String ccqNumber;
+  private String neqNumber;
 }

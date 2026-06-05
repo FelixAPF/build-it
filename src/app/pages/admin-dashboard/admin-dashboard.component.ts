@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
-
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -24,6 +24,7 @@ export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private sanitizer = inject(DomSanitizer);
 
   pendingUsers: any[] = [];
   allUsers: any[] = [];
@@ -33,12 +34,41 @@ export class AdminDashboardComponent implements OnInit {
   userLogs: any[] = [];
   showLogsDialog: boolean = false;
   isLoadingLogs: boolean = false;
+  isReviewMode: boolean = true; // <-- NEW FLAG
   selectedUserForLogs: any = null;
+
+  selectedUserForReview: any = null;
+  showReviewDialog: boolean = false;
+  documentObjectUrl: SafeUrl | null = null;
+  isPdf: boolean = false;
 
   ngOnInit() {
     this.loadUsers();
   }
 
+openReviewDialog(user: any, isReviewMode: boolean = true) {
+    this.selectedUserForReview = user;
+    this.showReviewDialog = true;
+    this.isReviewMode = isReviewMode; // <-- SET THE FLAG
+    this.documentObjectUrl = null;
+
+    if (user.documentUrl) {
+      this.isPdf = user.documentUrl.toLowerCase().endsWith('.pdf');
+      
+      this.adminService.getDocumentAsBlob(user.documentUrl).subscribe({
+        next: (blob) => {
+          const mimeType = this.isPdf ? 'application/pdf' : blob.type;
+          const typedBlob = new Blob([blob], { type: mimeType });
+          
+          const objectUrl = URL.createObjectURL(typedBlob);
+          this.documentObjectUrl = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to securely load document.' });
+        }
+      });
+    }
+  }
   loadUsers() {
     this.isLoading = true;
     
@@ -60,9 +90,10 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   verifyUser(userId: number) {
-    this.adminService.verifyUser(userId).subscribe({
+this.adminService.verifyUser(userId).subscribe({
       next: (res) => {
         this.messageService.add({ severity: 'success', summary: 'Verified', detail: res });
+        this.showReviewDialog = false; // <-- Close modal
         this.loadUsers(); 
       },
       error: (err) => {

@@ -61,8 +61,8 @@ onSubmit() {
           const role = localStorage.getItem('user_role');
           const status = localStorage.getItem('user_status');
           
-          // INTELLIGENT LOGIN ROUTING
-          if (status === 'UNVERIFIED' || status === 'PENDING_VERIFICATION') {
+          // Add PENDING_UPLOAD to the trap block
+          if (status === 'UNVERIFIED' || status === 'PENDING_VERIFICATION' || status === 'PENDING_UPLOAD') {
             this.router.navigate(['/pending']);
           } else if (role === 'ADMIN') {
             this.router.navigate(['/admin-dashboard']);
@@ -76,15 +76,23 @@ onSubmit() {
           this.isLoading = false;
           console.error(err);
 
-          const backendErrorMessage = err.error || '';
+          // Deep string resolution for server objects to prevent [object Object] fallbacks
+          let backendErrorMessage = 'Invalid email or password.';
+          
+          if (typeof err.error === 'string') {
+            backendErrorMessage = err.error;
+          } else if (err.error && typeof err.error.message === 'string') {
+            backendErrorMessage = err.error.message;
+          } else if (err.message) {
+            backendErrorMessage = err.message;
+          }
 
-          // If the backend blocked them for email reasons, route them back to the hold screen
           if (backendErrorMessage.includes('verify your email')) {
             this.router.navigate(['/pending'], { 
               queryParams: { status: 'UNVERIFIED', email: this.loginForm.value.email } 
             });
           } else {
-            this.errorMessage = typeof err.error === 'string' ? err.error : 'Invalid email or password.';
+            this.errorMessage = backendErrorMessage;
           }
         }
       });

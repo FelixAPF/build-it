@@ -167,7 +167,17 @@
             </div>
           </div>
           <div class="w-full sm:w-auto">
-            <p-button *ngIf="req.qtyFilled < req.qtyRequested" label="View Applicants" icon="pi pi-users" styleClass="w-full sm:w-auto" (onClick)="viewApplicants(req.requirementId)"></p-button>
+            <button (click)="viewApplicants(req.requirementId)" class="relative p-2 text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1.5">
+            <i class="pi pi-users"></i> 
+            <span>View Applicants</span>
+            
+            <!-- Notification Pill -->
+            @if (req.pendingApplicantsCount > 0) {
+                <span class="absolute -top-1 -right-2 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md animate-bounce">
+                {{ req.pendingApplicantsCount }}
+                </span>
+            }
+            </button>
             <p-tag *ngIf="req.qtyFilled >= req.qtyRequested" value="Fully Staffed" severity="success" icon="pi pi-check" styleClass="w-full sm:w-auto px-4 py-2 text-sm"></p-tag>
           </div>
         </div>

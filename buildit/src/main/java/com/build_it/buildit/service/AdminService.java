@@ -94,6 +94,8 @@ public class AdminService {
       }
     }
 
+    String docUrl = user.getDocumentPath() != null ? "/api/admin/documents/" + user.getDocumentPath() : null;
+
     return UserAdminResponse.builder()
       .userId(user.getId())
       .email(user.getEmail())
@@ -101,6 +103,7 @@ public class AdminService {
       .name(name)
       .identificationNumber(idNumber)
       .createdAt(user.getCreatedAt())
+      .documentUrl(docUrl)
       .build();
   }
 }

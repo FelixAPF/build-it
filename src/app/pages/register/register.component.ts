@@ -80,7 +80,7 @@ export class RegisterComponent implements OnInit {
       phoneNumber: ['', Validators.required],
       billingAddress: ['', Validators.required],
       rbqNumber: [''], // Validations applied dynamically
-      ccqNumber: [''], // Validations applied dynamically
+      neqNumber: [''], // Validations applied dynamically
       termsAccepted: [false, Validators.requiredTrue] 
     });
   }
@@ -88,18 +88,18 @@ export class RegisterComponent implements OnInit {
   setupDynamicValidators() {
     const businessTypeControl = this.businessForm.get('businessType');
     const rbqControl = this.businessForm.get('rbqNumber');
-    const ccqControl = this.businessForm.get('ccqNumber');
+    const neqControl = this.businessForm.get('neqNumber');
 
     businessTypeControl?.valueChanges.subscribe((type) => {
       if (type === 'COMPANY') {
         rbqControl?.setValidators([Validators.required]);
-        ccqControl?.setValidators([Validators.required]);
+        neqControl?.setValidators([Validators.required]);
       } else {
         rbqControl?.clearValidators();
-        ccqControl?.clearValidators();
+        neqControl?.clearValidators();
       }
       rbqControl?.updateValueAndValidity();
-      ccqControl?.updateValueAndValidity();
+      neqControl?.updateValueAndValidity();
     });
   }
 onWorkerSubmit() {
@@ -150,11 +150,11 @@ onBusinessSubmit() {
       this.isLoading = true;
       this.errorMessage = '';
       
-      const payload = { ...this.businessForm.value };
+const payload = { ...this.businessForm.value };
       
       if (payload.businessType === 'PRIVATE') {
         payload.rbqNumber = null;
-        payload.ccqNumber = null;
+        payload.neqNumber = null; // <-- Swapped from ccqNumber
       }
 
       this.authService.registerBusiness(payload).subscribe({

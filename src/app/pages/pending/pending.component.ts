@@ -3,21 +3,27 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-pending',
   standalone: true,
-  imports: [CommonModule, ButtonModule, RouterLink],
+  imports: [CommonModule, ButtonModule, RouterLink, ToastModule],
+  providers: [MessageService],
   templateUrl: './pending.component.html'
 })
 export class PendingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private messageService = inject(MessageService);
 
   status: string = '';
   email: string = '';
   isAdminImpersonating: boolean = false;
+  selectedFile: File | null = null;
+  isUploading: boolean = false;
 
   ngOnInit() {
     // 1. Check if we just came from the Registration page (URL Params)
@@ -40,6 +46,32 @@ export class PendingComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.messageService.add({ severity: 'info', summary: 'File Selected', detail: file.name });
+    }
+  }
+
+  submitDocuments() {
+    if (!this.selectedFile) return;
+    
+    this.isUploading = true;
+    this.authService.uploadDocuments(this.selectedFile).subscribe({
+      next: (res) => {
+        this.isUploading = false;
+        this.status = 'PENDING_VERIFICATION';
+        localStorage.setItem('user_status', 'PENDING_VERIFICATION'); // Instantly upgrade their UI
+        this.messageService.add({ severity: 'success', summary: 'Uploaded!', detail: 'Documents submitted for review.' });
+      },
+      error: (err) => {
+        this.isUploading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload documents.' });
+      }
+    });
   }
 
   logout() {

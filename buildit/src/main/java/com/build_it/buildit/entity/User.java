@@ -19,6 +19,9 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "document_path")
+  private String documentPath;
+
   @Column(nullable = false, unique = true, length = 150)
   private String email;
 

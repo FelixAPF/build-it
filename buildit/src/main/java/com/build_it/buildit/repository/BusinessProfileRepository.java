@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
   Optional<BusinessProfile> findByUserId(Long userId);
   boolean existsByRbqNumber(String rbqNumber);
+  boolean existsByNeqNumber(String neqNumber);
 }

@@ -12,5 +12,6 @@ public class RequirementDetailDto {
   private Double hourlyRate;
   private Integer qtyRequested;
   private Integer qtyFilled;
-  private List<AssignedWorkerDto> assignedWorkers; // Only workers who are officially "SELECTED"
+  private List<AssignedWorkerDto> assignedWorkers;
+  private long pendingApplicantsCount;
 }

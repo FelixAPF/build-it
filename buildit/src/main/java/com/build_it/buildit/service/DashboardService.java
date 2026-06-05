@@ -70,31 +70,37 @@ public class DashboardService {
         .endDatetime(posting.getEndDatetime())
         .status(posting.getStatus().name())
         .requirements(posting.getRequirements().stream()
-          .map(req -> RequirementDetailDto.builder()
-            .requirementId(req.getId())
-            .jobType(req.getJobType().name())
-            .hourlyRate(req.getHourlyRate())
-            .qtyRequested(req.getQtyRequested())
-            .qtyFilled(req.getQtyFilled())
-            .assignedWorkers(req.getApplications().stream()
-              .filter(app -> app.getStatus() == ApplicationStatus.SELECTED)
-              .map(app -> {
-                // 3. EVALUATE BUSINESS TO WORKER ACTION
-                boolean alreadyReviewed = reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(
-                  user.getId(), app.getWorker().getUser().getId(), posting.getId()
-                );
+          .map(req -> {
+            // Compute count of pending worker applicants
+            long pendingCount = req.getApplications().stream()
+              .filter(app -> app.getStatus() == ApplicationStatus.PENDING)
+              .count();
 
-                return AssignedWorkerDto.builder()
-                  .applicationId(app.getId())
-                  .workerId(app.getWorker().getId())
-                  .fullName(app.getWorker().getFullName())
-                  .phoneNumber(app.getWorker().getPhoneNumber())
-                  .averageRating(app.getWorker().getAverageRating())
-                  .reviewedWorker(alreadyReviewed) // <-- MAP IT HERE
-                  .build();
-              })
-              .collect(Collectors.toList()))
-            .build())
+            return RequirementDetailDto.builder()
+              .requirementId(req.getId())
+              .jobType(req.getJobType().name())
+              .hourlyRate(req.getHourlyRate())
+              .qtyRequested(req.getQtyRequested())
+              .qtyFilled(req.getQtyFilled())
+              .pendingApplicantsCount(pendingCount) // <-- ADD THIS MAP
+              .assignedWorkers(req.getApplications().stream()
+                .filter(app -> app.getStatus() == ApplicationStatus.SELECTED)
+                .map(app -> {
+                  boolean alreadyReviewed = reviewRepository.existsByReviewerIdAndRevieweeIdAndJobPostingId(
+                    user.getId(), app.getWorker().getUser().getId(), posting.getId()
+                  );
+                  return AssignedWorkerDto.builder()
+                    .applicationId(app.getId())
+                    .workerId(app.getWorker().getId())
+                    .fullName(app.getWorker().getFullName())
+                    .phoneNumber(app.getWorker().getPhoneNumber())
+                    .averageRating(app.getWorker().getAverageRating())
+                    .reviewedWorker(alreadyReviewed)
+                    .build();
+                })
+                .collect(Collectors.toList()))
+              .build();
+          })
           .collect(Collectors.toList()))
         .build())
       .collect(Collectors.toList());

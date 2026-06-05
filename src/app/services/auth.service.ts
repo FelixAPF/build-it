@@ -32,6 +32,14 @@ registerWorker(data: any): Observable<any> {
     return this.http.post(`${API_URL}/register/worker`, data, { responseType: 'text' });
   }
 
+uploadDocuments(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // FIX: Bypassed the local API_URL constant to point exactly to the UserController
+    return this.http.post('http://localhost:8080/api/users/upload-documents', formData, { responseType: 'text' });
+  }
+
   registerBusiness(data: any): Observable<any> {
     return this.http.post(`${API_URL}/register/business`, data, { responseType: 'text' });
   }

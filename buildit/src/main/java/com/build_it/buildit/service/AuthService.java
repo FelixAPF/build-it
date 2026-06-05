@@ -72,11 +72,14 @@ public class AuthService {
       if (request.getRbqNumber() == null || request.getRbqNumber().trim().isEmpty()) {
         throw new RuntimeException("RBQ Number is strictly required for Construction Companies.");
       }
-      if (request.getCcqNumber() == null || request.getCcqNumber().trim().isEmpty()) {
-        throw new RuntimeException("CCQ Employer ID is strictly required for Construction Companies.");
+      if (request.getNeqNumber() == null || request.getNeqNumber().trim().isEmpty()) {
+        throw new RuntimeException("NEQ Number is strictly required for Construction Companies.");
       }
       if (businessProfileRepository.existsByRbqNumber(request.getRbqNumber())) {
         throw new RuntimeException("RBQ Number already registered in our system.");
+      }
+      if (businessProfileRepository.existsByNeqNumber(request.getNeqNumber())) {
+        throw new RuntimeException("NEQ Number already registered in our system.");
       }
     }
 
@@ -99,7 +102,7 @@ public class AuthService {
       .contactName(request.getContactName())
       .phoneNumber(request.getPhoneNumber())
       .rbqNumber(request.getRbqNumber())
-      .ccqNumber(request.getCcqNumber())
+      .neqNumber(request.getNeqNumber())
       .billingAddress(request.getBillingAddress())
       .build();
 
@@ -113,23 +116,25 @@ public class AuthService {
   }
 
   public AuthResponse login(LoginRequest request) {
+    // Throw an explicit 401 status exception for invalid email configurations
     User user = userRepository.findByEmail(request.getEmail())
-      .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+      .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+        org.springframework.http.HttpStatus.UNAUTHORIZED, "Invalid email or password."));
 
+    // Throw an explicit 401 status exception for password mismatches
     if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-      throw new RuntimeException("Invalid credentials");
+      throw new org.springframework.web.server.ResponseStatusException(
+        org.springframework.http.HttpStatus.UNAUTHORIZED, "Invalid email or password.");
     }
 
     if (user.getStatus() == AccountStatus.SUSPENDED) {
       throw new RuntimeException("Account has been suspended");
     }
 
-    // NEW BLOCK: Reject access if they try to log in without email verification
-    if (user.getStatus() == AccountStatus.UNVERIFIED) {
+    if (user.getStatus() == AccountStatus.UNVERIFIED || user.getStatus() == AccountStatus.PENDING_UPLOAD) {
       throw new RuntimeException("Please verify your email address before logging in.");
     }
 
-    // Allow PENDING and ACTIVE users to get a token!
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     auditLogService.log(user.getEmail(), "USER_LOGIN", "Authenticated successfully using clean secure route parameters.");
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
@@ -160,15 +165,15 @@ public class AuthService {
 
     // SMART ROUTING: Determine their clearance level
     if (user.getRole() == Role.WORKER) {
-      user.setStatus(AccountStatus.PENDING_VERIFICATION); // Send to Admin queue
+      user.setStatus(AccountStatus.PENDING_UPLOAD); // <-- SEND TO UPLOAD QUEUE
     } else if (user.getRole() == Role.BUSINESS) {
       BusinessProfile profile = businessProfileRepository.findByUserId(user.getId())
         .orElseThrow(() -> new RuntimeException("Profile not found"));
 
       if ("PRIVATE".equals(profile.getBusinessType())) {
-        user.setStatus(AccountStatus.ACTIVE); // Auto-clear Homeowners
+        user.setStatus(AccountStatus.ACTIVE); // Auto-clear Homeowners completely
       } else {
-        user.setStatus(AccountStatus.PENDING_VERIFICATION); // Send GC to Admin queue
+        user.setStatus(AccountStatus.PENDING_UPLOAD); // <-- SEND GCs TO UPLOAD QUEUE
       }
     }
 
@@ -177,6 +182,23 @@ public class AuthService {
     auditLogService.log(user.getEmail(), "EMAIL_VERIFIED", "User successfully verified their email address.");
 
     return "Email successfully verified! You can now log in.";
+  }
+
+  @Transactional
+  public String completeDocumentUpload(String email, String fileName) { // <-- ADD fileName
+    User user = userRepository.findByEmail(email)
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    if (user.getStatus() != AccountStatus.PENDING_UPLOAD) {
+      throw new RuntimeException("Account is not currently pending document uploads.");
+    }
+
+    user.setDocumentPath(fileName); // <-- SAVE THE PATH TO THE USER
+    user.setStatus(AccountStatus.PENDING_VERIFICATION);
+    userRepository.save(user);
+    auditLogService.log(email, "DOCUMENT_UPLOAD", "User uploaded compliance documents. Account is now queued for administrative review.");
+
+    return "Documents successfully uploaded. Your account is now under review.";
   }
 
   @Transactional

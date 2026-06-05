@@ -37,8 +37,20 @@
                 
                 <div class="flex-1">
                   <div class="flex items-center gap-3 mb-2">
+                    
+                    <!-- Original Job Type Tag -->
                     <p-tag [value]="formatStatus(job.jobType)" severity="info" styleClass="text-xs"></p-tag>
+                    
+                    <!-- NEW: Animated "New Shift" Badge -->
+                    @if (job.isNewShift) {
+                    <div class="bg-amber-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md animate-pulse tracking-wider">
+                        NEW SHIFT
+                    </div>
+                    }
+
+                    <!-- Original Pay Rate Badge -->
                     <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">${{job.hourlyRate}}/hr</span>
+                    
                   </div>
                   <h3 class="font-bold text-xl text-slate-800">{{job.companyName}}</h3>
                   <p class="text-slate-500 text-sm mt-1"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{job.address}}</p>

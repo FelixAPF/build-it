@@ -42,4 +42,7 @@ public class WorkerProfile {
   @Enumerated(EnumType.STRING)
   @Column(name = "job_type")
   private Set<JobType> specialties;
+
+  @Column(name = "last_feed_check")
+  private java.time.LocalDateTime lastFeedCheck;
 }

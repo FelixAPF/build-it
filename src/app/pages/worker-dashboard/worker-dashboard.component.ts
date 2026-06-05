@@ -60,7 +60,7 @@ export class WorkerDashboardComponent implements OnInit {
       comment: ['']
     });
   }
-  
+
   returnToAdmin() {
     const adminToken = localStorage.getItem('admin_token');
     if (adminToken) {
@@ -72,7 +72,7 @@ export class WorkerDashboardComponent implements OnInit {
     }
   }
 
-  loadData() {
+loadData() {
     this.isLoadingSchedule = true;
     this.isLoadingFeed = true;
 
@@ -86,7 +86,8 @@ export class WorkerDashboardComponent implements OnInit {
 
     this.workerService.getAvailableFeed().subscribe({
       next: (data) => {
-        this.availableJobs = data;
+        // Look how clean this is now! The backend handles all the heavy lifting.
+        this.availableJobs = data; 
         this.isLoadingFeed = false;
       },
       error: (err) => console.error(err)

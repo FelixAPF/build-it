@@ -18,4 +18,5 @@ public class AvailableJobResponse {
   private JobType jobType;
   private Double hourlyRate;
   private Integer remainingSpots;
+  private Boolean isNewShift;
 }

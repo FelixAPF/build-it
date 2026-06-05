@@ -13,4 +13,5 @@ public class UserAdminResponse {
   private String name; // Company name or Worker Name
   private String identificationNumber; // RBQ or CCQ
   private LocalDateTime createdAt;
+  private String documentUrl;
 }

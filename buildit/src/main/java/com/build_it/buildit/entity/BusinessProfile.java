@@ -35,8 +35,8 @@ public class BusinessProfile {
   @Column(name = "rbq_number", unique = true, length = 50)
   private String rbqNumber;
 
-  @Column(name = "ccq_number", length = 50)
-  private String ccqNumber;
+  @Column(name = "neq_number", length = 50)
+  private String neqNumber;
 
   @Column(name = "billing_address")
   private String billingAddress;
