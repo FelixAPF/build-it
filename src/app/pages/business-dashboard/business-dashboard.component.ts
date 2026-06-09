@@ -21,6 +21,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
 import { CheckboxModule } from 'primeng/checkbox'; 
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { MultiSelectModule } from 'primeng/multiselect'; 
 
 declare var google: any;
 
@@ -30,7 +31,7 @@ declare var google: any;
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule, DatePipe, TableModule, ButtonModule, 
     TagModule, DialogModule, InputTextModule, CalendarModule, DropdownModule, 
-    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule
+    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule, MultiSelectModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './business-dashboard.component.html'
@@ -68,26 +69,26 @@ export class BusinessDashboardComponent implements OnInit {
   allTradeQuestions: any[] = [];
   isLoadingApplicants: boolean = false;
 
-  jobTypes = [
-    { label: 'Electrician', value: 'ELECTRICIEN' },
-    { label: 'Plumber', value: 'PLOMBIER' },
-    { label: 'Floor Layer', value: 'POSEUR_DE_PLANCHER' },
-    { label: 'Carpenter', value: 'MENUISIER' },
-    { label: 'Laborer', value: 'MANOEUVRE' }
-  ];
+  // FIX: Start empty so we can fetch the dynamic trades from the database!
+  jobTypes: any[] = [];
 
   paymentTypes = [
     { label: 'Hourly /hr', value: 'HOURLY' },
     { label: 'Fixed Salary', value: 'FIXED' },
     { label: 'Per Sq. Ft.', value: 'PER_SQFT' }
   ];
-  
 
   ngOnInit() {
     this.loadDashboard();
     this.isAdminImpersonating = !!localStorage.getItem('admin_token'); 
-    this.initForm();
+
+    // FIX: Load the exact dynamic trades from the DB so the values match the questions!
+    this.authService.getTrades().subscribe(res => this.jobTypes = res);
+    
+    // Load the questions
     this.businessService.getTradeQuestions().subscribe(res => this.allTradeQuestions = res);
+    
+    this.initForm();
   }
 
   updateTools(value: any){
@@ -96,30 +97,41 @@ export class BusinessDashboardComponent implements OnInit {
     }
   }
 
-  // NEW: Supply Chain auto-add logic
   updateSupplyItems(value: any) {
     if(!this.supplyChainItemsFormArray.length && value) {
       this.addSupplyItem();
     }
   }
   
-onTradeChange(event: any, index: number) {
-    const reqGroup = this.requirementsFormArray.at(index) as FormGroup;
-    const selectedTrade = event.value;
+  onTradeChange(event: any, reqIndex: number) {
+    const reqGroup = this.requirementsFormArray.at(reqIndex) as FormGroup;
+    const selectedTrade = event.value; // Now this will perfectly match "FLOOR_LAYER"
     const questions = this.allTradeQuestions.filter(q => q.jobType === selectedTrade);
 
-    // FIX: Map the questions into FormGroups first to satisfy strict typing
-    const groupArray = questions.map(q => this.fb.group({
-      question: [q.questionText],
-      answer: ['', Validators.required]
-    }));
+    const questionsArray = this.fb.array(
+      questions.map(q => this.fb.group({
+        question: [q.questionText],
+        answers: this.fb.array([this.fb.control('', Validators.required)]) 
+      }))
+    );
     
-    reqGroup.setControl('answers', this.fb.array(groupArray));
+    reqGroup.setControl('tradeQuestions', questionsArray);
   }
 
-  // Helper for the HTML
-  getAnswersArray(index: number): FormArray {
-    return this.requirementsFormArray.at(index).get('answers') as FormArray;
+  getTradeQuestionsArray(reqIndex: number): FormArray {
+    return this.requirementsFormArray.at(reqIndex).get('tradeQuestions') as FormArray;
+  }
+
+  getAnswersForQuestion(reqIndex: number, qIndex: number): FormArray {
+    return this.getTradeQuestionsArray(reqIndex).at(qIndex).get('answers') as FormArray;
+  }
+
+  addAnswerToQuestion(reqIndex: number, qIndex: number) {
+    this.getAnswersForQuestion(reqIndex, qIndex).push(this.fb.control('', Validators.required));
+  }
+
+  removeAnswerFromQuestion(reqIndex: number, qIndex: number, aIndex: number) {
+    this.getAnswersForQuestion(reqIndex, qIndex).removeAt(aIndex);
   }
 
   initForm() {
@@ -134,8 +146,8 @@ onTradeChange(event: any, index: number) {
       providesSupplyChain: [false], 
       needSpecificTools: [false], 
       specificTools: this.fb.array([]), 
-      needSupplyChainItems: [false], // <-- NEW
-      supplyChainItems: this.fb.array([]), // <-- NEW
+      needSupplyChainItems: [false], 
+      supplyChainItems: this.fb.array([]), 
       requirements: this.fb.array([])
     });
     this.reviewForm = this.fb.group({
@@ -149,7 +161,6 @@ onTradeChange(event: any, index: number) {
   addTool() { this.specificToolsFormArray.push(this.fb.control('', Validators.required)); }
   removeTool(index: number) { this.specificToolsFormArray.removeAt(index); }
 
-  // NEW: Supply Chain FormArray Helpers
   get supplyChainItemsFormArray() { return this.jobForm.get('supplyChainItems') as FormArray; }
   addSupplyItem() { this.supplyChainItemsFormArray.push(this.fb.control('', Validators.required)); }
   removeSupplyItem(index: number) { this.supplyChainItemsFormArray.removeAt(index); }
@@ -161,7 +172,7 @@ onTradeChange(event: any, index: number) {
       jobType: [null, Validators.required],
       paymentType: ['HOURLY', Validators.required],
       payRate: [25, [Validators.required, Validators.min(1)]],
-      answers: this.fb.array([]),
+      tradeQuestions: this.fb.array([]), 
       qtyRequested: [1, [Validators.required, Validators.min(1)]]
     });
     this.requirementsFormArray.push(reqGroup);
@@ -300,6 +311,7 @@ onTradeChange(event: any, index: number) {
     this.jobForm.patchValue({ address: `${streetNumber} ${route}`.trim(), city, province, postalCode });
     this.cdr.detectChanges();
   }
+  
   returnToAdmin() {
     const adminToken = localStorage.getItem('admin_token');
     if (adminToken) {
@@ -337,18 +349,13 @@ onTradeChange(event: any, index: number) {
   onSubmit() {
     if (this.jobForm.valid) {
       this.isSubmitting = true;
-      const payload = { ...this.jobForm.value };
+      
+      const payload = JSON.parse(JSON.stringify(this.jobForm.value));
 
       payload.isTimeFlexible = !this.useSpecificTime;
 
-      if (!payload.needSpecificTools) {
-        payload.specificTools = [];
-      }
-      
-      // NEW: Clear items if toggle flipped off
-      if (!payload.needSupplyChainItems) {
-        payload.supplyChainItems = [];
-      }
+      if (!payload.needSpecificTools) payload.specificTools = [];
+      if (!payload.needSupplyChainItems) payload.supplyChainItems = [];
 
       if (!this.useSpecificTime) {
         if (payload.startDatetime) {
@@ -361,6 +368,21 @@ onTradeChange(event: any, index: number) {
           endDate.setHours(0, 0, 0, 0); 
           payload.endDatetime = endDate;
         }
+      }
+
+      if (payload.requirements) {
+        payload.requirements = payload.requirements.map((req: any) => {
+          if (req.tradeQuestions) {
+            req.answers = req.tradeQuestions.map((tq: any) => {
+              return {
+                question: tq.question,
+                answer: tq.answers.filter((a: string) => a.trim().length > 0).join(', ')
+              };
+            });
+            delete req.tradeQuestions;
+          }
+          return req;
+        });
       }
 
       this.businessService.createJobPosting(payload).subscribe({

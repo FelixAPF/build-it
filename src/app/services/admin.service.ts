@@ -50,4 +50,12 @@ export class AdminService {
   deleteTradeQuestion(id: number): Observable<any> {
     return this.http.delete<any>(`${this.adminUrl}/trade-questions/${id}`);
   }
+
+  addTrade(trade: any): Observable<any> {
+    return this.http.post<any>(`${this.adminUrl}/trades`, trade);
+  }
+
+  deleteTrade(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.adminUrl}/trades/${id}`);
+  }
 }

@@ -81,13 +81,10 @@ public class EmailService {
       helper.setText(htmlContent, true);
 
       mailSender.send(mimeMessage);
-      System.out.println("--> EMAIL SERVICE SUCCESS: Rich HTML MimeMessage dispatched safely!");
-      System.out.println("==================================================================");
 
     } catch (Exception e) {
       System.err.println("--> EMAIL SERVICE CRITICAL ERROR: HTML email compilation failed!");
       e.printStackTrace();
-      System.err.println("==================================================================");
     }
   }
 

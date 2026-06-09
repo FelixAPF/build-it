@@ -1,23 +1,40 @@
-<div class="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-  <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 max-w-md w-full text-center">
+<div class="min-h-screen relative flex items-center justify-center bg-slate-50 overflow-hidden p-4 sm:p-8">
+  
+  <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-orange-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+  <div class="bg-white/80 backdrop-blur-xl border border-white shadow-2xl shadow-slate-200/50 rounded-[2rem] p-8 sm:p-12 max-w-md w-full text-center z-10 animate-fade-in">
     
-    <div *ngIf="status === 'LOADING'">
-      <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-      <h2 class="text-xl font-bold text-slate-800">Verifying...</h2>
+    <div *ngIf="status === 'LOADING'" class="py-8">
+      <i class="pi pi-spin pi-spinner text-5xl text-red-600 mb-6 drop-shadow-sm"></i>
+      <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Verifying...</h2>
+    </div>
+
+    <div *ngIf="status === 'CHECK_INBOX'">
+      <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+        <i class="pi pi-envelope text-5xl text-red-600"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Check your inbox</h2>
+      <p class="text-slate-500 mb-8 text-lg leading-relaxed">We've sent a secure verification link to your email address. Please click it to activate your account.</p>
+      <a routerLink="/login" class="text-red-600 font-bold hover:underline hover:text-red-800 transition-colors text-lg">Return to Login</a>
     </div>
 
     <div *ngIf="status === 'SUCCESS'">
-      <i class="pi pi-check-circle text-5xl text-emerald-500 mb-4"></i>
-      <h2 class="text-2xl font-bold text-slate-800 mb-2">Email Verified!</h2>
-      <p class="text-slate-500 mb-6">{{ message }}</p>
-      <a routerLink="/login" class="inline-block bg-emerald-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-emerald-600 transition-colors">Proceed to Login</a>
+      <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+        <i class="pi pi-check text-5xl text-emerald-500"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Email Verified!</h2>
+      <p class="text-slate-500 mb-8 text-lg">{{ message }}</p>
+      <a routerLink="/login" class="inline-block w-full bg-slate-900 text-white font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:-translate-y-1">Proceed to Login</a>
     </div>
 
     <div *ngIf="status === 'ERROR'">
-      <i class="pi pi-times-circle text-5xl text-red-500 mb-4"></i>
-      <h2 class="text-2xl font-bold text-slate-800 mb-2">Verification Failed</h2>
-      <p class="text-slate-500 mb-6">{{ message }}</p>
-      <a routerLink="/login" class="text-blue-600 font-bold hover:underline">Return to Login</a>
+      <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+        <i class="pi pi-times text-5xl text-red-500"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Verification Failed</h2>
+      <p class="text-slate-500 mb-8 text-lg">{{ message }}</p>
+      <a routerLink="/login" class="inline-block w-full bg-slate-100 text-slate-700 font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-200 transition-colors">Return to Login</a>
     </div>
 
   </div>

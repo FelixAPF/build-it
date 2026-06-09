@@ -38,13 +38,13 @@ public class SecurityConfig {
       .csrf(AbstractHttpConfigurer::disable)
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
-        // FIX: Explicitly whitelist only the public routes, forcing /profile to require a token!
         .requestMatchers(
           "/api/auth/login",
           "/api/auth/register/**",
           "/api/auth/forgot-password",
           "/api/auth/reset-password",
-          "/api/auth/verify-email"
+          "/api/auth/verify-email",
+          "/api/trades" // <-- FIX: Whitelisted the dynamic trades endpoint!
         ).permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
 

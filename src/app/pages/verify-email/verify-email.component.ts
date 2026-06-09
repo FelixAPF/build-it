@@ -13,22 +13,23 @@ export class VerifyEmailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
 
-  status: 'LOADING' | 'SUCCESS' | 'ERROR' = 'LOADING';
+  // FIX: Added 'CHECK_INBOX' to the allowed statuses
+  status: 'LOADING' | 'SUCCESS' | 'ERROR' | 'CHECK_INBOX' = 'LOADING';
   message: string = 'Verifying your email...';
 
   ngOnInit() {
-    // FIX: Clear out any lingering token data from registration 
-    // so it doesn't mess with our next login attempt
     this.authService.logout();
 
     const token = this.route.snapshot.queryParamMap.get('token');
+    
+    // FIX: If there is no token, they just registered. Show the Inbox message!
     if (!token) {
-      this.status = 'ERROR';
-      this.message = 'Invalid verification link.';
+      this.status = 'CHECK_INBOX';
+      this.message = 'We sent a verification link to your email.';
       return;
     }
 
-    // Fire the API call directly to Spring Boot
+    // If there is a token, they clicked the email link. Fire the verification!
     this.authService.verifyEmail(token).subscribe({
       next: (res) => {
         this.status = 'SUCCESS';

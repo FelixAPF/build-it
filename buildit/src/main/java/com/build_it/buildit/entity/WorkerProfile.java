@@ -2,6 +2,8 @@ package com.build_it.buildit.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -11,38 +13,46 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class WorkerProfile {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // This creates a 1-to-1 relationship with the User table
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private User user;
 
-  @Column(name = "full_name", nullable = false, length = 100)
-  private String fullName;
+  @Column(name = "first_name", nullable = false, length = 50)
+  private String firstName;
+
+  @Column(name = "last_name", nullable = false, length = 50)
+  private String lastName;
 
   @Column(name = "phone_number", nullable = false, length = 20)
   private String phoneNumber;
 
-  @Column(name = "ccq_number", nullable = false, unique = true, length = 50)
-  private String ccqNumber;
-
-  @Column(name = "years_experience")
+  @Column(name = "years_experience", nullable = false)
   private Integer yearsExperience;
 
+  @Column(name = "ccq_number", length = 50)
+  private String ccqNumber;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "worker_specialties", joinColumns = @JoinColumn(name = "worker_id"))
+  @Column(name = "specialty")
+  private Set<String> specialties = new HashSet<>();
+
+  // RESTORED: Rating Tracking
   @Column(name = "average_rating")
-  private Double averageRating;
+  @Builder.Default
+  private Double averageRating = 0.0;
 
-  // This automatically creates a secondary table `worker_specialties` to hold multiple job types per worker
-  @ElementCollection(targetClass = JobType.class, fetch = FetchType.EAGER)
-  @CollectionTable(name = "worker_specialties", joinColumns = @JoinColumn(name = "worker_profile_id"))
-  @Enumerated(EnumType.STRING)
-  @Column(name = "job_type")
-  private Set<JobType> specialties;
-
+  // RESTORED: New Shift Notification Tracking
   @Column(name = "last_feed_check")
-  private java.time.LocalDateTime lastFeedCheck;
+  private LocalDateTime lastFeedCheck;
+
+  public String getFullName() {
+    return firstName + " " + lastName;
+  }
 }

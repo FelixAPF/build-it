@@ -1,29 +1,31 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
-// PrimeNG Modules
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-import { TabViewModule } from 'primeng/tabview';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { TabViewModule } from 'primeng/tabview';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { MessageModule } from 'primeng/message'; // <-- CHANGED TO MessageModule
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, CardModule, InputTextModule, ButtonModule, 
-    MessageModule, TabViewModule, InputNumberModule, PasswordModule, 
-    CheckboxModule, DialogModule, RouterLink, MultiSelectModule
+    CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, InputTextModule,
+    PasswordModule, DropdownModule, InputNumberModule, CheckboxModule,
+    MultiSelectModule, TabViewModule, ToastModule, MessageModule, DialogModule // <-- CHANGED TO MessageModule
   ],
+  providers: [MessageService],
   templateUrl: './register.component.html'
 })
 export class RegisterComponent implements OnInit {
@@ -31,155 +33,105 @@ export class RegisterComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private messageService = inject(MessageService);
 
-  errorMessage: string = '';
-  isLoading: boolean = false;
-  showTermsDialog: boolean = false;
-  
-  activeTabIndex: number = 0; // 0 = Worker, 1 = Business
-
+  activeTabIndex: number = 0;
   workerForm!: FormGroup;
   businessForm!: FormGroup;
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  showTermsDialog: boolean = false;
 
-  tradeOptions = [
-    { label: 'Electrician', value: 'ELECTRICIEN' },
-    { label: 'Plumber', value: 'PLOMBIER' },
-    { label: 'Floor Layer', value: 'POSEUR_DE_PLANCHER' },
-    { label: 'Carpenter', value: 'MENUISIER' },
-    { label: 'Laborer', value: 'MANOEUVRE' }
-  ];
+  tradeOptions: any[] = [];
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.activeTabIndex = params['tab'] === 'business' ? 1 : 0;
+    this.authService.getTrades().subscribe({
+      next: (res) => this.tradeOptions = res,
+      error: (err) => console.error('Failed to load trades', err)
     });
 
-    this.initForms();
-    this.setupDynamicValidators();
-  }
+    this.route.queryParams.subscribe(params => {
+      if (params['tab'] === 'business') {
+        this.activeTabIndex = 1;
+      } else {
+        this.activeTabIndex = 0;
+      }
+    });
 
-  initForms() {
     this.workerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', Validators.required],
       yearsExperience: [0, [Validators.required, Validators.min(0)]],
-      ccqNumber: ['', Validators.required],
+      ccqNumber: [''],
       specialties: [[], Validators.required],
-      termsAccepted: [false, Validators.requiredTrue] 
+      termsAccepted: [false, Validators.requiredTrue]
     });
 
     this.businessForm = this.fb.group({
-      businessType: ['PRIVATE', Validators.required], // Defaults to Private Individual
+      businessType: ['COMPANY', Validators.required],
       companyName: ['', Validators.required],
       contactName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', Validators.required],
       billingAddress: ['', Validators.required],
-      rbqNumber: [''], // Validations applied dynamically
-      neqNumber: [''], // Validations applied dynamically
-      termsAccepted: [false, Validators.requiredTrue] 
+      rbqNumber: [''],
+      neqNumber: [''],
+      termsAccepted: [false, Validators.requiredTrue]
     });
-  }
 
-  setupDynamicValidators() {
-    const businessTypeControl = this.businessForm.get('businessType');
-    const rbqControl = this.businessForm.get('rbqNumber');
-    const neqControl = this.businessForm.get('neqNumber');
-
-    businessTypeControl?.valueChanges.subscribe((type) => {
+    // Dynamic validation for business types
+    this.businessForm.get('businessType')?.valueChanges.subscribe(type => {
       if (type === 'COMPANY') {
-        rbqControl?.setValidators([Validators.required]);
-        neqControl?.setValidators([Validators.required]);
+        this.businessForm.get('rbqNumber')?.setValidators([Validators.required]);
+        this.businessForm.get('neqNumber')?.setValidators([Validators.required]);
       } else {
-        rbqControl?.clearValidators();
-        neqControl?.clearValidators();
+        this.businessForm.get('rbqNumber')?.clearValidators();
+        this.businessForm.get('neqNumber')?.clearValidators();
       }
-      rbqControl?.updateValueAndValidity();
-      neqControl?.updateValueAndValidity();
+      this.businessForm.get('rbqNumber')?.updateValueAndValidity();
+      this.businessForm.get('neqNumber')?.updateValueAndValidity();
     });
   }
-onWorkerSubmit() {
+
+  onWorkerSubmit() {
     if (this.workerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-
-      const formValues = this.workerForm.value;
-      const payload = {
-        email: formValues.email,
-        password: formValues.password,
-        fullName: `${formValues.firstName} ${formValues.lastName}`.trim(),
-        phoneNumber: formValues.phoneNumber,
-        yearsExperience: formValues.yearsExperience,
-        ccqNumber: formValues.ccqNumber,
-        specialties: formValues.specialties
-      };
+      const payload = { ...this.workerForm.value };
+      delete payload.termsAccepted;
 
       this.authService.registerWorker(payload).subscribe({
         next: (res) => {
           this.isLoading = false;
-          this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
+          this.router.navigate(['/verify-email']);
         },
         error: (err) => {
           this.isLoading = false;
-          console.error(err);
-
-          // Safety net: If the backend actually succeeded but Angular choked on parsing
-          if (err.status === 200) {
-            this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
-            return;
-          }
-
-          // Smart error extraction to prevent [object Object]
-          if (typeof err.error === 'string') {
-            this.errorMessage = err.error;
-          } else if (err.error && typeof err.error.message === 'string') {
-            this.errorMessage = err.error.message;
-          } else {
-            this.errorMessage = 'Registration failed. Please check your details.';
-          }
+          this.errorMessage = err.error || 'Registration failed. Please try again.';
         }
       });
     }
   }
-onBusinessSubmit() {
+
+  onBusinessSubmit() {
     if (this.businessForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      
-const payload = { ...this.businessForm.value };
-      
-      if (payload.businessType === 'PRIVATE') {
-        payload.rbqNumber = null;
-        payload.neqNumber = null; // <-- Swapped from ccqNumber
-      }
+      const payload = { ...this.businessForm.value };
+      delete payload.termsAccepted;
 
       this.authService.registerBusiness(payload).subscribe({
         next: (res) => {
           this.isLoading = false;
-          this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
+          this.router.navigate(['/verify-email']);
         },
         error: (err) => {
           this.isLoading = false;
-          console.error(err);
-
-          // Safety net: If the backend actually succeeded but Angular choked on parsing
-          if (err.status === 200) {
-            this.router.navigate(['/pending'], { queryParams: { status: 'UNVERIFIED', email: payload.email } });
-            return;
-          }
-
-          // Smart error extraction to prevent [object Object]
-          if (typeof err.error === 'string') {
-            this.errorMessage = err.error;
-          } else if (err.error && typeof err.error.message === 'string') {
-            this.errorMessage = err.error.message;
-          } else {
-            this.errorMessage = 'Registration failed. Please check your details.';
-          }
+          this.errorMessage = err.error || 'Registration failed. Please try again.';
         }
       });
     }

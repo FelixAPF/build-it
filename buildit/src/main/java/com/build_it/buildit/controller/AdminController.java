@@ -3,12 +3,17 @@ package com.build_it.buildit.controller;
 import com.build_it.buildit.dto.AuthResponse;
 import com.build_it.buildit.dto.UserAdminResponse;
 import com.build_it.buildit.entity.AuditLog;
+import com.build_it.buildit.entity.Trade;
+import com.build_it.buildit.entity.TradeQuestion;
 import com.build_it.buildit.service.AdminService;
 import com.build_it.buildit.service.AuditLogService;
 import com.build_it.buildit.service.FileStorageService;
+import com.build_it.buildit.repository.TradeRepository;
+import com.build_it.buildit.repository.TradeQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +28,15 @@ public class AdminController {
   private final AdminService adminService;
   private final AuditLogService auditLogService;
   private final FileStorageService fileStorageService;
+  private final TradeRepository tradeRepository;
+  private final TradeQuestionRepository tradeQuestionRepository;
 
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/users/{userId}/verify")
-  public ResponseEntity<String> verifyUser(@PathVariable Long userId) {
-    return ResponseEntity.ok(adminService.verifyUserAccount(userId));
+  public ResponseEntity<?> verifyUser(@PathVariable Long userId) {
+    // FIX: Using your correct custom method name
+    String responseMessage = adminService.verifyUserAccount(userId);
+    return ResponseEntity.ok(java.util.Map.of("message", responseMessage));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
@@ -48,16 +57,12 @@ public class AdminController {
     return ResponseEntity.ok(adminService.impersonateUser(userId));
   }
 
-  // NEW AUDIT FETCH API ROUTE
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/logs")
   public ResponseEntity<List<AuditLog>> getAuditLogs() {
     return ResponseEntity.ok(auditLogService.getAllLogs());
   }
 
-  // ... inside your AdminController class ...
-
-  // NEW: Fetch logs for a specific user
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/users/{userId}/logs")
   public ResponseEntity<List<AuditLog>> getUserLogs(@PathVariable Long userId) {
@@ -67,19 +72,19 @@ public class AdminController {
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/documents/{fileName:.+}")
   public ResponseEntity<Resource> getDocument(@PathVariable String fileName) {
+    // FIX: Using your correct FileStorageService
     Resource resource = fileStorageService.loadFileAsResource(fileName);
+    String contentType = fileName.toLowerCase().endsWith(".pdf") ? "application/pdf" : "image/jpeg";
+
     return ResponseEntity.ok()
+      .contentType(MediaType.parseMediaType(contentType))
       .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
       .body(resource);
   }
 
-  // Inject this at the top with your other dependencies
-  private final com.build_it.buildit.repository.TradeQuestionRepository tradeQuestionRepository;
-
-  // Add these endpoints inside the class
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/trade-questions")
-  public com.build_it.buildit.entity.TradeQuestion addTradeQuestion(@RequestBody com.build_it.buildit.entity.TradeQuestion question) {
+  public TradeQuestion addTradeQuestion(@RequestBody TradeQuestion question) {
     return tradeQuestionRepository.save(question);
   }
 
@@ -87,5 +92,17 @@ public class AdminController {
   @DeleteMapping("/trade-questions/{id}")
   public void deleteTradeQuestion(@PathVariable Long id) {
     tradeQuestionRepository.deleteById(id);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/trades")
+  public Trade addTrade(@RequestBody Trade trade) {
+    return tradeRepository.save(trade);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @DeleteMapping("/trades/{id}")
+  public void deleteTrade(@PathVariable Long id) {
+    tradeRepository.deleteById(id);
   }
 }

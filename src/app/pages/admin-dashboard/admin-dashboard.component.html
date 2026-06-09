@@ -46,14 +46,13 @@
             </div>
           </div>
         </p-tabPanel>
-
-        <p-tabPanel header="Trade Questions">
+<p-tabPanel header="Trade Questions">
           <div class="bg-white p-6 rounded-2xl border border-slate-200">
             <h3 class="text-xl font-bold text-slate-800 mb-4">Manage Predefined Trade Details</h3>
             
             <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
               <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="label" optionValue="value" styleClass="w-full sm:w-48"></p-dropdown>
-              <input pInputText [(ngModel)]="newQuestionText" placeholder="e.g. Rough-in or Finishing?" class="flex-1 w-full" />
+              <input pInputText [(ngModel)]="newQuestionText" placeholder="e.g. Required Flooring?" class="flex-1 w-full" />
               <p-button label="Add Detail Field" icon="pi pi-plus" styleClass="p-button-danger" (onClick)="addTradeQuestion()"></p-button>
             </div>
 
@@ -68,9 +67,48 @@
               <ng-template pTemplate="body" let-q>
                 <tr>
                   <td class="font-bold text-slate-700">{{ q.jobType }}</td>
-                  <td>{{ q.questionText }}</td>
+                  <td class="font-bold">{{ q.questionText }}</td>
                   <td class="text-right">
                     <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTradeQuestion(q.id)"></p-button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Manage Trades">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200">
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Add / Remove Available Trades</h3>
+            
+            <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="flex flex-col flex-1 gap-1">
+                <label class="text-xs font-bold text-slate-500 uppercase">Trade Name (UI)</label>
+                <input pInputText [(ngModel)]="newTradeLabel" placeholder="e.g. Concrete Finisher" class="w-full" />
+              </div>
+              <div class="flex flex-col flex-1 gap-1">
+                <label class="text-xs font-bold text-slate-500 uppercase">Database Code</label>
+                <input pInputText [(ngModel)]="newTradeValue" placeholder="e.g. CONCRETE_FINISHER" class="w-full uppercase" />
+              </div>
+              <div class="flex flex-col justify-end">
+                <p-button label="Add Trade" icon="pi pi-plus" styleClass="p-button-danger" (onClick)="addTrade()"></p-button>
+              </div>
+            </div>
+
+            <p-table [value]="trades" [paginator]="true" [rows]="10" styleClass="p-datatable-sm" responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Database Code</th>
+                  <th>Display Name</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-trade>
+                <tr>
+                  <td class="font-mono text-xs font-bold text-slate-500">{{ trade.value }}</td>
+                  <td class="font-bold text-slate-700">{{ trade.label }}</td>
+                  <td class="text-right">
+                    <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTrade(trade.id)"></p-button>
                   </td>
                 </tr>
               </ng-template>

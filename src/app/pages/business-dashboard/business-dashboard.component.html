@@ -207,32 +207,48 @@
 
       <div formArrayName="requirements" class="flex flex-col gap-4">
         <div *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i" class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative flex flex-col sm:flex-row gap-4 flex-wrap">
+          
           <div class="flex-1 min-w-[150px] flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Trade</label>
-            <p-dropdown [options]="jobTypes" formControlName="jobType" (onChange)="onTradeChange($event, i)" optionLabel="label" optionValue="value" placeholder="Select" appendTo="body" styleClass="w-full"></p-dropdown>
+            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" placeholder="Select" appendTo="body" styleClass="w-full" (onChange)="onTradeChange($event, i)"></p-dropdown>
           </div>
+          
           <div class="w-full sm:w-40 flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Pay Type</label>
             <p-dropdown [options]="paymentTypes" formControlName="paymentType" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full"></p-dropdown>
           </div>
+          
           <div class="w-full sm:w-28 flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Amount</label>
             <p-inputNumber formControlName="payRate" mode="currency" currency="CAD" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
           </div>
+          
           <div class="w-full sm:w-20 flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Qty</label>
             <p-inputNumber formControlName="qtyRequested" [showButtons]="true" [min]="1" styleClass="w-full" inputStyleClass="w-full text-center"></p-inputNumber>
           </div>
+          
           <div class="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 sm:flex sm:items-end pb-1">
             <p-button *ngIf="requirementsFormArray.length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-text p-button-rounded" (onClick)="removeRequirement(i)"></p-button>
           </div>
-          <div formArrayName="answers" *ngIf="getAnswersArray(i).length > 0" class="w-full flex flex-col gap-3 mt-3 p-4 bg-white border border-slate-200 rounded-xl">
+
+          <div formArrayName="tradeQuestions" *ngIf="getTradeQuestionsArray(i).length > 0" class="w-full flex flex-col gap-4 mt-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
             <h4 class="text-xs font-bold uppercase tracking-wider text-red-600 mb-1">Required Details for this Trade</h4>
-            <div *ngFor="let ans of getAnswersArray(i).controls; let aIndex=index" [formGroupName]="aIndex" class="flex flex-col gap-1">
-              <label class="text-sm font-semibold text-slate-700">{{ ans.get('question')?.value }} <span class="text-red-500">*</span></label>
-              <input pInputText formControlName="answer" placeholder="Provide details..." class="w-full bg-slate-50" />
+            
+            <div *ngFor="let tq of getTradeQuestionsArray(i).controls; let qIndex=index" [formGroupName]="qIndex" class="flex flex-col gap-2 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+              <label class="text-sm font-bold text-slate-700">{{ tq.get('question')?.value }} <span class="text-red-500">*</span></label>
+              
+              <div formArrayName="answers" class="flex flex-col gap-2">
+                <div *ngFor="let ansCtrl of getAnswersForQuestion(i, qIndex).controls; let aIndex=index" class="flex gap-2">
+                  <input pInputText [formControlName]="aIndex" placeholder="Enter detail line..." class="w-full bg-slate-50" />
+                  <p-button *ngIf="getAnswersForQuestion(i, qIndex).length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeAnswerFromQuestion(i, qIndex, aIndex)"></p-button>
+                </div>
+              </div>
+
+              <p-button label="Add Another Item" icon="pi pi-plus" size="small" styleClass="p-button-text p-button-danger w-fit mt-1" (onClick)="addAnswerToQuestion(i, qIndex)"></p-button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

@@ -62,7 +62,7 @@ public class JobPostingService {
       .isTimeFlexible(request.getIsTimeFlexible() != null ? request.getIsTimeFlexible() : false)
       .providesSupplyChain(request.getProvidesSupplyChain() != null ? request.getProvidesSupplyChain() : false)
       .specificTools(request.getSpecificTools() != null ? request.getSpecificTools() : new ArrayList<>())
-      .supplyChainItems(request.getSupplyChainItems() != null ? request.getSupplyChainItems() : new ArrayList<>()) // <-- NEW
+      .supplyChainItems(request.getSupplyChainItems() != null ? request.getSupplyChainItems() : new ArrayList<>())
       .status(JobStatus.OPEN)
       .totalAppFeeCharged(finalFee.doubleValue())
       .build();
@@ -71,7 +71,7 @@ public class JobPostingService {
       JobRequirement requirement = JobRequirement.builder()
         .jobPosting(jobPosting)
         .jobType(req.getJobType())
-        .paymentType(req.getPaymentType()) // <-- NEW
+        .paymentType(req.getPaymentType())
         .payRate(req.getPayRate())
         .qtyRequested(req.getQtyRequested())
         .qtyFilled(0)
@@ -109,7 +109,8 @@ public class JobPostingService {
     jobPostingRepository.save(posting);
 
     for (JobRequirement req : posting.getRequirements()) {
-      for (JobApplication app : req.getApplications()) {
+      // FIX: Changed from req.getApplications() to req.getAssignedWorkers()
+      for (JobApplication app : req.getAssignedWorkers()) {
         if (app.getStatus() == ApplicationStatus.PENDING || app.getStatus() == ApplicationStatus.SELECTED) {
           app.setStatus(ApplicationStatus.AUTO_CANCELLED);
         }

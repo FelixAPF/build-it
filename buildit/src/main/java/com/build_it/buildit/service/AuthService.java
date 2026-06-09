@@ -46,7 +46,9 @@ public class AuthService {
 
     WorkerProfile profile = WorkerProfile.builder()
       .user(user)
-      .fullName(request.getFullName())
+      // FIX: Map the specific first and last name fields
+      .firstName(request.getFirstName())
+      .lastName(request.getLastName())
       .phoneNumber(request.getPhoneNumber())
       .ccqNumber(request.getCcqNumber())
       .yearsExperience(request.getYearsExperience())
@@ -83,14 +85,14 @@ public class AuthService {
       }
     }
 
-    // FIX: Auto-activate private individuals, but hold companies for review!
+    // Auto-activate private individuals, but hold companies for review!
     AccountStatus initialStatus = AccountStatus.UNVERIFIED;
 
     User user = User.builder()
       .email(request.getEmail())
       .passwordHash(passwordEncoder.encode(request.getPassword()))
       .role(Role.BUSINESS)
-      .status(initialStatus) // <-- Applied here
+      .status(initialStatus)
       .build();
 
     userRepository.save(user);
@@ -116,12 +118,10 @@ public class AuthService {
   }
 
   public AuthResponse login(LoginRequest request) {
-    // Throw an explicit 401 status exception for invalid email configurations
     User user = userRepository.findByEmail(request.getEmail())
       .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
         org.springframework.http.HttpStatus.UNAUTHORIZED, "Invalid email or password."));
 
-    // Throw an explicit 401 status exception for password mismatches
     if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
       throw new org.springframework.web.server.ResponseStatusException(
         org.springframework.http.HttpStatus.UNAUTHORIZED, "Invalid email or password.");
@@ -131,7 +131,6 @@ public class AuthService {
       throw new RuntimeException("Account has been suspended");
     }
 
-    // FIX: Only block UNVERIFIED accounts here. PENDING_UPLOAD needs to log in to upload docs!
     if (user.getStatus() == AccountStatus.UNVERIFIED) {
       throw new RuntimeException("Please verify your email address before logging in.");
     }
@@ -141,7 +140,6 @@ public class AuthService {
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }
 
-  // Add this method inside your AuthService class
   @Transactional(readOnly = true)
   public java.util.Map<String, String> getBusinessProfileContext(String email) {
     User user = userRepository.findByEmail(email)
@@ -150,7 +148,6 @@ public class AuthService {
     BusinessProfile profile = businessProfileRepository.findByUserId(user.getId())
       .orElseThrow(() -> new RuntimeException("Business profile not found"));
 
-    // Return a clean map to avoid JSON infinite recursion loops with the User entity
     java.util.Map<String, String> context = new java.util.HashMap<>();
     context.put("businessType", profile.getBusinessType());
     context.put("companyName", profile.getCompanyName());
@@ -164,29 +161,28 @@ public class AuthService {
 
     User user = verificationToken.getUser();
 
-    // SMART ROUTING: Determine their clearance level
     if (user.getRole() == Role.WORKER) {
-      user.setStatus(AccountStatus.PENDING_UPLOAD); // <-- SEND TO UPLOAD QUEUE
+      user.setStatus(AccountStatus.PENDING_UPLOAD);
     } else if (user.getRole() == Role.BUSINESS) {
       BusinessProfile profile = businessProfileRepository.findByUserId(user.getId())
         .orElseThrow(() -> new RuntimeException("Profile not found"));
 
       if ("PRIVATE".equals(profile.getBusinessType())) {
-        user.setStatus(AccountStatus.ACTIVE); // Auto-clear Homeowners completely
+        user.setStatus(AccountStatus.ACTIVE);
       } else {
-        user.setStatus(AccountStatus.PENDING_UPLOAD); // <-- SEND GCs TO UPLOAD QUEUE
+        user.setStatus(AccountStatus.PENDING_UPLOAD);
       }
     }
 
     userRepository.save(user);
-    emailVerificationTokenRepository.delete(verificationToken); // Consume the token
+    emailVerificationTokenRepository.delete(verificationToken);
     auditLogService.log(user.getEmail(), "EMAIL_VERIFIED", "User successfully verified their email address.");
 
     return "Email successfully verified! You can now log in.";
   }
 
   @Transactional
-  public String completeDocumentUpload(String email, String fileName) { // <-- ADD fileName
+  public String completeDocumentUpload(String email, String fileName) {
     User user = userRepository.findByEmail(email)
       .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -194,7 +190,7 @@ public class AuthService {
       throw new RuntimeException("Account is not currently pending document uploads.");
     }
 
-    user.setDocumentPath(fileName); // <-- SAVE THE PATH TO THE USER
+    user.setDocumentPath(fileName);
     user.setStatus(AccountStatus.PENDING_VERIFICATION);
     userRepository.save(user);
     auditLogService.log(email, "DOCUMENT_UPLOAD", "User uploaded compliance documents. Account is now queued for administrative review.");
@@ -206,17 +202,14 @@ public class AuthService {
   public String processForgotPassword(String email) {
     Optional<User> userOpt = userRepository.findByEmail(email);
 
-    // Security Best Practice: Never confirm if an email exists or not to the frontend
     if (userOpt.isEmpty()) {
       return "If this email is registered, a password reset link has been sent.";
     }
 
     User user = userOpt.get();
 
-    // Wipe any existing unused tokens for this user
     passwordResetTokenRepository.deleteByUserId(user.getId());
 
-    // Generate a secure UUID Magic Link Token
     String token = java.util.UUID.randomUUID().toString();
     PasswordResetToken resetToken = PasswordResetToken.builder()
       .user(user)
@@ -244,7 +237,6 @@ public class AuthService {
     user.setPasswordHash(passwordEncoder.encode(newPassword));
     userRepository.save(user);
 
-    // Delete the token so it can't be reused
     passwordResetTokenRepository.delete(resetToken);
 
     return "Your password has been successfully reset. You can now log in.";

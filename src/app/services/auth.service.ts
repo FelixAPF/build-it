@@ -76,4 +76,9 @@ private saveToken(response: any) {
   resetPassword(token: string, newPassword: string): Observable<string> {
     return this.http.post(`${API_URL}/reset-password?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(newPassword)}`, {}, { responseType: 'text' });
   }
+
+  // Fetches dynamic trades from the database for global use (Register, Dashboards)
+getTrades(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8080/api/trades');
+  }
 }

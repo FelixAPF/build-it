@@ -4,20 +4,22 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { TabViewModule } from 'primeng/tabview'; 
-import { DialogModule } from 'primeng/dialog'; // <-- ADDED
+import { DialogModule } from 'primeng/dialog'; 
 import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule, InputTextModule],
   providers: [MessageService],
   templateUrl: './admin-dashboard.component.html'
 })
@@ -32,11 +34,10 @@ export class AdminDashboardComponent implements OnInit {
   allUsers: any[] = [];
   isLoading: boolean = true;
 
-  // NEW: Targeted Logs State
   userLogs: any[] = [];
   showLogsDialog: boolean = false;
   isLoadingLogs: boolean = false;
-  isReviewMode: boolean = true; // <-- NEW FLAG
+  isReviewMode: boolean = true; 
   selectedUserForLogs: any = null;
 
   selectedUserForReview: any = null;
@@ -44,26 +45,55 @@ export class AdminDashboardComponent implements OnInit {
   documentObjectUrl: SafeUrl | null = null;
   isPdf: boolean = false;
 
-tradeQuestions: any[] = [];
+  tradeQuestions: any[] = [];
   newQuestionText: string = '';
-  selectedJobTypeForQuestion: string = 'ELECTRICIEN';
+  selectedJobTypeForQuestion: string = '';
 
-  jobTypes = [
-    { label: 'Electrician', value: 'ELECTRICIEN' },
-    { label: 'Plumber', value: 'PLOMBIER' },
-    { label: 'Floor Layer', value: 'POSEUR_DE_PLANCHER' },
-    { label: 'Carpenter', value: 'MENUISIER' },
-    { label: 'Laborer', value: 'MANOEUVRE' }
-  ];
+  // NEW DYNAMIC TRADES
+  jobTypes: any[] = [];
+  trades: any[] = [];
+  newTradeLabel: string = '';
+  newTradeValue: string = '';
 
-  // Inside ngOnInit, add: this.loadTradeQuestions();
+  ngOnInit() {
+    this.loadUsers();
+    this.loadTrades();
+    this.loadTradeQuestions();
+  }
+
+  loadTrades() {
+    this.authService.getTrades().subscribe(res => {
+      this.trades = res;
+      this.jobTypes = res;
+      if (res.length > 0 && !this.selectedJobTypeForQuestion) {
+        this.selectedJobTypeForQuestion = res[0].value;
+      }
+    });
+  }
+
+  addTrade() {
+    if (!this.newTradeLabel || !this.newTradeValue) return;
+    this.adminService.addTrade({ label: this.newTradeLabel, value: this.newTradeValue.toUpperCase().replace(/\s+/g, '_') }).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Trade added'});
+      this.newTradeLabel = '';
+      this.newTradeValue = '';
+      this.loadTrades();
+    });
+  }
+
+  deleteTrade(id: number) {
+    this.adminService.deleteTrade(id).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Deleted', detail: 'Trade removed'});
+      this.loadTrades();
+    });
+  }
 
   loadTradeQuestions() {
     this.adminService.getTradeQuestions().subscribe(res => this.tradeQuestions = res);
   }
 
   addTradeQuestion() {
-    if (!this.newQuestionText.trim()) return;
+    if (!this.newQuestionText.trim() || !this.selectedJobTypeForQuestion) return;
     this.adminService.addTradeQuestion({ jobType: this.selectedJobTypeForQuestion, questionText: this.newQuestionText }).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Added', detail: 'Question added'});
       this.newQuestionText = '';
@@ -78,17 +108,10 @@ tradeQuestions: any[] = [];
     });
   }
 
-  ngOnInit() {
-    this.loadUsers();
-    this.loadTradeQuestions();
-  }
-
-  
-
-openReviewDialog(user: any, isReviewMode: boolean = true) {
+  openReviewDialog(user: any, isReviewMode: boolean = true) {
     this.selectedUserForReview = user;
     this.showReviewDialog = true;
-    this.isReviewMode = isReviewMode; // <-- SET THE FLAG
+    this.isReviewMode = isReviewMode;
     this.documentObjectUrl = null;
 
     if (user.documentUrl) {
@@ -108,6 +131,7 @@ openReviewDialog(user: any, isReviewMode: boolean = true) {
       });
     }
   }
+
   loadUsers() {
     this.isLoading = true;
     
@@ -129,10 +153,10 @@ openReviewDialog(user: any, isReviewMode: boolean = true) {
   }
 
   verifyUser(userId: number) {
-this.adminService.verifyUser(userId).subscribe({
+    this.adminService.verifyUser(userId).subscribe({
       next: (res) => {
         this.messageService.add({ severity: 'success', summary: 'Verified', detail: res });
-        this.showReviewDialog = false; // <-- Close modal
+        this.showReviewDialog = false; 
         this.loadUsers(); 
       },
       error: (err) => {
@@ -141,7 +165,6 @@ this.adminService.verifyUser(userId).subscribe({
     });
   }
 
-  // --- NEW: TARGETED LOG FETCH ---
   viewLogs(user: any) {
     this.selectedUserForLogs = user;
     this.showLogsDialog = true;

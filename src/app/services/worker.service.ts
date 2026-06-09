@@ -24,4 +24,17 @@ export class WorkerService {
   applyForJob(requirementId: number): Observable<string> {
     return this.http.post(`${API_URL}/applications/worker/${requirementId}/apply`, {}, { responseType: 'text' });
   }
+
+  // --- NEW SETTINGS ENDPOINTS ---
+  getProfile() {
+    return this.http.get<any>(`${API_URL}/worker/settings/profile`);
+  }
+
+  updateSpecialties(specialties: string[]) {
+    return this.http.put<any>(`${API_URL}/worker/settings/specialties`, { specialties });
+  }
+
+  deleteAccount() {
+    return this.http.delete<any>(`${API_URL}/worker/settings/account`);
+  }
 }
