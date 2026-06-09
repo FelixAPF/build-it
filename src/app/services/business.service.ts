@@ -14,6 +14,10 @@ export class BusinessService {
     return this.http.get<any[]>(`${API_URL}/dashboard/business`);
   }
 
+  getTradeQuestions(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}/trade-questions`);
+  }
+
   createJobPosting(jobData: any): Observable<string> {
     return this.http.post(`${API_URL}/jobs`, jobData, { responseType: 'text' });
   }

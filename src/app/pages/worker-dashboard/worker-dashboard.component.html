@@ -6,13 +6,13 @@
 <p-toast></p-toast> 
 <div class="min-h-screen bg-slate-50 pb-12">
   
-  <div class="bg-emerald-800 text-white pt-12 pb-20 px-6 md:px-12 shadow-md relative">
+  <div class="bg-red-900 text-white pt-12 pb-20 px-6 md:px-12 shadow-md relative border-b border-red-950">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
-        <div class="inline-block bg-emerald-700 text-emerald-100 text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-widest uppercase border border-emerald-600">Worker Portal</div>
+        <div class="inline-block bg-red-800 text-red-100 text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-widest uppercase border border-red-700">Worker Portal</div>
         <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">My Dashboard</h1>
       </div>
-      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-emerald-900/50" (onClick)="logout()"></p-button>
+      <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-red-950/50" (onClick)="logout()"></p-button>
     </div>
   </div>
 
@@ -33,37 +33,53 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div *ngFor="let job of availableJobs" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between lg:items-center gap-6 hover:border-emerald-300 transition-colors">
+              <div *ngFor="let job of availableJobs" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between lg:items-center gap-6 hover:border-red-300 transition-colors">
                 
                 <div class="flex-1">
                   <div class="flex items-center gap-3 mb-2">
-                    
-                    <!-- Original Job Type Tag -->
                     <p-tag [value]="formatStatus(job.jobType)" severity="info" styleClass="text-xs"></p-tag>
                     
-                    <!-- NEW: Animated "New Shift" Badge -->
                     @if (job.isNewShift) {
                     <div class="bg-amber-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md animate-pulse tracking-wider">
                         NEW SHIFT
                     </div>
                     }
 
-                    <!-- Original Pay Rate Badge -->
-                    <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">${{job.hourlyRate}}/hr</span>
-                    
+                    <span class="text-sm font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">{{ formatPay(job.payRate, job.paymentType) }}</span>
                   </div>
+                  
                   <h3 class="font-bold text-xl text-slate-800">{{job.companyName}}</h3>
                   <p class="text-slate-500 text-sm mt-1"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{job.address}}</p>
+                  
+                  <div *ngIf="job.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Job Details</div>
+                    <div *ngFor="let ans of job.answers" class="text-sm">
+                      <span class="font-bold text-slate-700"><i class="pi pi-info-circle mr-1 text-slate-400"></i>{{ans.question}}:</span> <span class="text-slate-600 ml-1">{{ans.answer}}</span>
+                    </div>
+                  </div>
+
+                  <div *ngIf="job.providesSupplyChain || (job.specificTools && job.specificTools.length > 0) || (job.supplyChainItems && job.supplyChainItems.length > 0)" class="mt-3 bg-red-50/50 p-4 rounded-xl border border-red-100 flex flex-col gap-2">
+                    <div *ngIf="job.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> Supply Chain Provided</div>
+                    
+                    <div *ngIf="job.supplyChainItems && job.supplyChainItems.length > 0" class="text-xs font-semibold text-slate-600">
+                      <span class="font-bold text-slate-700"><i class="pi pi-box mr-1 text-red-500"></i> Bring Materials:</span> {{ job.supplyChainItems.join(', ') }}
+                    </div>
+
+                    <div *ngIf="job.specificTools && job.specificTools.length > 0" class="text-xs font-semibold text-slate-600">
+                      <span class="font-bold text-slate-700"><i class="pi pi-wrench mr-1 text-red-500"></i> Bring Tools:</span> {{ job.specificTools.join(', ') }}
+                    </div>
+                  </div>
+
                 </div>
 
                 <div class="flex flex-col gap-1 bg-slate-50 p-4 rounded-xl border border-slate-100 lg:w-64">
-                  <div class="font-bold text-slate-700"><i class="pi pi-calendar mr-2 text-emerald-600"></i>{{job.startDatetime | date:'mediumDate'}}</div>
-                  <div class="text-sm text-slate-500">{{ formatDateRange(job.startDatetime, job.endDatetime) }}</div>
+                  <div class="font-bold text-slate-700"><i class="pi pi-calendar mr-2 text-red-600"></i>{{job.startDatetime | date:'mediumDate'}}</div>
+                  <div class="text-sm text-slate-500">{{ formatDateRange(job.startDatetime, job.endDatetime, job.isTimeFlexible) }}</div>
                   <div class="text-xs font-semibold text-amber-600 mt-2">{{job.remainingSpots}} spot(s) remaining</div>
                 </div>
 
                 <div class="w-full lg:w-auto mt-2 lg:mt-0">
-                  <p-button label="Apply Now" icon="pi pi-check" styleClass="w-full lg:w-auto p-button-success shadow-md" (onClick)="confirmApply(job)"></p-button>
+                  <p-button label="Apply Now" icon="pi pi-check" styleClass="w-full lg:w-auto p-button-danger shadow-md" (onClick)="confirmApply(job)"></p-button>
                 </div>
               </div>
             </div>
@@ -82,8 +98,8 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div *ngFor="let app of mySchedule" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between gap-6"
-                   [ngClass]="{'border-l-4 border-l-emerald-500': app.applicationStatus === 'SELECTED', 'opacity-75': app.applicationStatus === 'REJECTED' || app.applicationStatus === 'AUTO_CANCELLED'}">
+              <div *ngFor="let app of mySchedule" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between gap-6 hover:border-slate-300 transition-colors"
+                   [ngClass]="{'border-l-4 border-l-red-500': app.applicationStatus === 'SELECTED', 'opacity-75': app.applicationStatus === 'REJECTED' || app.applicationStatus === 'AUTO_CANCELLED'}">
                 
                 <div class="flex-1">
                   <div class="flex items-center gap-3 mb-3">
@@ -92,24 +108,51 @@
                   </div>
                   
                   <h3 class="font-bold text-xl text-slate-800">{{app.companyName}}</h3>
-                  
                   <p class="text-slate-500 text-sm mt-1 mb-2"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{app.address}}</p>
-                  <div class="text-sm font-semibold text-slate-600 mb-3"><i class="pi pi-phone mr-1"></i> {{app.companyPhone}}</div>
+                  
+                  <div class="flex flex-wrap gap-4 mb-3">
+                    <a [href]="'tel:' + app.companyPhone" class="text-sm font-semibold text-red-600 hover:text-red-800 hover:underline flex items-center gap-1"><i class="pi pi-phone"></i> {{app.companyPhone}}</a>
+                    <a *ngIf="app.companyEmail" [href]="'mailto:' + app.companyEmail" class="text-sm font-semibold text-red-600 hover:text-red-800 hover:underline flex items-center gap-1"><i class="pi pi-envelope"></i> Email Contact</a>
+                  </div>
                   
                   <div class="inline-flex flex-wrap gap-2 text-sm bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
                     <span class="font-bold text-slate-700">{{formatStatus(app.jobType)}}</span>
                     <span class="text-slate-300">•</span>
-                    <span class="font-bold text-emerald-600">${{app.hourlyRate}}/hr</span>
+                    <span class="font-bold text-red-600">{{ formatPay(app.payRate, app.paymentType) }}</span>
                   </div>
+
+                  <div *ngIf="app.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Job Details</div>
+                    <div *ngFor="let ans of app.answers" class="text-sm">
+                      <span class="font-bold text-slate-700"><i class="pi pi-info-circle mr-1 text-slate-400"></i>{{ans.question}}:</span> <span class="text-slate-600 ml-1">{{ans.answer}}</span>
+                    </div>
+                  </div>
+
+                  <div *ngIf="app.providesSupplyChain || (app.specificTools && app.specificTools.length > 0) || (app.supplyChainItems && app.supplyChainItems.length > 0)" class="mt-3 bg-red-50/50 p-4 rounded-xl border border-red-100 flex flex-col gap-2">
+                    <div *ngIf="app.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> Supply Chain Provided</div>
+                    
+                    <div *ngIf="app.supplyChainItems && app.supplyChainItems.length > 0" class="text-xs font-semibold text-slate-600">
+                      <span class="font-bold text-slate-700"><i class="pi pi-box mr-1 text-red-500"></i> Bring Materials:</span> {{ app.supplyChainItems.join(', ') }}
+                    </div>
+
+                    <div *ngIf="app.specificTools && app.specificTools.length > 0" class="text-xs font-semibold text-slate-600">
+                      <span class="font-bold text-slate-700"><i class="pi pi-wrench mr-1 text-red-500"></i> Bring Tools:</span> {{ app.specificTools.join(', ') }}
+                    </div>
+                  </div>
+
                 </div>
 
                 <div class="flex flex-col justify-between items-start md:items-end gap-4 md:text-right">
                   <div>
                     <div class="font-bold text-slate-700"><i class="pi pi-calendar mr-2 text-slate-400"></i>{{app.startDatetime | date:'mediumDate'}}</div>
-                    <div class="text-sm text-slate-500 mt-1">{{ formatDateRange(app.startDatetime, app.endDatetime) }}</div>
+                    <div class="text-sm text-slate-500 mt-1">{{ formatDateRange(app.startDatetime, app.endDatetime, app.isTimeFlexible) }}</div>
                   </div>
 
-                  <div class="w-full md:w-auto mt-2">
+                  <div class="w-full md:w-auto mt-2 flex flex-col gap-2">
+                    @if (app.applicationStatus === 'SELECTED') {
+                      <p-button label="Add to Calendar" icon="pi pi-calendar-plus" styleClass="w-full p-button-outlined p-button-danger shadow-sm" (onClick)="addToCalendar(app)"></p-button>
+                    }
+
                     @if (app.applicationStatus === 'SELECTED' && isJobComplete(app.endDatetime) && !app.reviewedBusiness) {
                       <p-button label="Rate Contractor" icon="pi pi-star-fill" styleClass="w-full p-button-warning shadow-md" (onClick)="openReview(app.jobId)"></p-button>
                     }
@@ -137,8 +180,8 @@
       <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Did they pay correctly? Was the site safe?"></textarea>
     </div>
     <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
-      <p-button label="Cancel" styleClass="p-button-text w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
-      <p-button label="Submit Review" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-warning w-full sm:w-auto"></p-button>
+      <p-button label="Cancel" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
+      <p-button label="Submit Review" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-danger w-full sm:w-auto shadow-md"></p-button>
     </div>
   </form>
 </p-dialog>

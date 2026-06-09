@@ -11,11 +11,13 @@ import { ToastModule } from 'primeng/toast';
 import { TabViewModule } from 'primeng/tabview'; 
 import { DialogModule } from 'primeng/dialog'; // <-- ADDED
 import { MessageService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, TabViewModule, DialogModule],
+  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule],
   providers: [MessageService],
   templateUrl: './admin-dashboard.component.html'
 })
@@ -42,9 +44,46 @@ export class AdminDashboardComponent implements OnInit {
   documentObjectUrl: SafeUrl | null = null;
   isPdf: boolean = false;
 
+tradeQuestions: any[] = [];
+  newQuestionText: string = '';
+  selectedJobTypeForQuestion: string = 'ELECTRICIEN';
+
+  jobTypes = [
+    { label: 'Electrician', value: 'ELECTRICIEN' },
+    { label: 'Plumber', value: 'PLOMBIER' },
+    { label: 'Floor Layer', value: 'POSEUR_DE_PLANCHER' },
+    { label: 'Carpenter', value: 'MENUISIER' },
+    { label: 'Laborer', value: 'MANOEUVRE' }
+  ];
+
+  // Inside ngOnInit, add: this.loadTradeQuestions();
+
+  loadTradeQuestions() {
+    this.adminService.getTradeQuestions().subscribe(res => this.tradeQuestions = res);
+  }
+
+  addTradeQuestion() {
+    if (!this.newQuestionText.trim()) return;
+    this.adminService.addTradeQuestion({ jobType: this.selectedJobTypeForQuestion, questionText: this.newQuestionText }).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Question added'});
+      this.newQuestionText = '';
+      this.loadTradeQuestions();
+    });
+  }
+
+  deleteTradeQuestion(id: number) {
+    this.adminService.deleteTradeQuestion(id).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Deleted', detail: 'Question removed'});
+      this.loadTradeQuestions();
+    });
+  }
+
   ngOnInit() {
     this.loadUsers();
+    this.loadTradeQuestions();
   }
+
+  
 
 openReviewDialog(user: any, isReviewMode: boolean = true) {
     this.selectedUserForReview = user;

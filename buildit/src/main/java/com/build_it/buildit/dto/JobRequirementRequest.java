@@ -3,7 +3,10 @@ package com.build_it.buildit.dto;
 import com.build_it.buildit.entity.JobType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import com.build_it.buildit.entity.PaymentType;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class JobRequirementRequest {
@@ -11,11 +14,16 @@ public class JobRequirementRequest {
   @NotNull(message = "Job type is required")
   private JobType jobType;
 
-  @NotNull(message = "Hourly rate is required")
-  @Min(value = 15, message = "Minimum wage compliance required") // Example minimum
-  private Double hourlyRate;
+  @NotNull(message = "Payment type is required")
+  private PaymentType paymentType;
+
+  @NotNull(message = "Pay amount is required")
+  @Min(value = 1, message = "Pay amount must be greater than 0")
+  private Double payRate;
 
   @NotNull(message = "Quantity is required")
   @Min(value = 1, message = "Must request at least 1 worker")
   private Integer qtyRequested;
+
+  private List<RequirementAnswerDto> answers;
 }

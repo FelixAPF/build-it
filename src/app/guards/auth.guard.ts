@@ -9,8 +9,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (authService.getToken()) {
     const status = localStorage.getItem('user_status');
     
-    // TRAP: Block pending users from accessing active dashboards
-    if (status === 'PENDING_VERIFICATION') {
+    // FIX: Trap all non-active users and force them to the pending screen
+    if (status === 'UNVERIFIED' || status === 'PENDING_UPLOAD' || status === 'PENDING_VERIFICATION') {
       router.navigate(['/pending']);
       return false;
     }

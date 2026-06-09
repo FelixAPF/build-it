@@ -131,7 +131,8 @@ public class AuthService {
       throw new RuntimeException("Account has been suspended");
     }
 
-    if (user.getStatus() == AccountStatus.UNVERIFIED || user.getStatus() == AccountStatus.PENDING_UPLOAD) {
+    // FIX: Only block UNVERIFIED accounts here. PENDING_UPLOAD needs to log in to upload docs!
+    if (user.getStatus() == AccountStatus.UNVERIFIED) {
       throw new RuntimeException("Please verify your email address before logging in.");
     }
 

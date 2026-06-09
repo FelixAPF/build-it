@@ -12,6 +12,10 @@ public class BusinessDashboardResponse {
   private String address;
   private LocalDateTime startDatetime;
   private LocalDateTime endDatetime;
+  private Boolean isTimeFlexible;
+  private Boolean providesSupplyChain;
+  private List<String> specificTools;
+  private List<String> supplyChainItems; // <-- NEW
   private String status;
   private List<RequirementDetailDto> requirements;
 }

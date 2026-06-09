@@ -72,4 +72,20 @@ public class AdminController {
       .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
       .body(resource);
   }
+
+  // Inject this at the top with your other dependencies
+  private final com.build_it.buildit.repository.TradeQuestionRepository tradeQuestionRepository;
+
+  // Add these endpoints inside the class
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/trade-questions")
+  public com.build_it.buildit.entity.TradeQuestion addTradeQuestion(@RequestBody com.build_it.buildit.entity.TradeQuestion question) {
+    return tradeQuestionRepository.save(question);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @DeleteMapping("/trade-questions/{id}")
+  public void deleteTradeQuestion(@PathVariable Long id) {
+    tradeQuestionRepository.deleteById(id);
+  }
 }

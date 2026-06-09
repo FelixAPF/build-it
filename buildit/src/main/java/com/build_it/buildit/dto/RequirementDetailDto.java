@@ -9,9 +9,13 @@ import java.util.List;
 public class RequirementDetailDto {
   private Long requirementId;
   private String jobType;
-  private Double hourlyRate;
+  private String paymentType;
+  private Double payRate;
   private Integer qtyRequested;
   private Integer qtyFilled;
+  private Long pendingApplicantsCount;
   private List<AssignedWorkerDto> assignedWorkers;
-  private long pendingApplicantsCount;
+
+  // FIX: Added the answers list so the builder works
+  private List<RequirementAnswerDto> answers;
 }

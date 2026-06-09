@@ -35,18 +35,23 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-      .csrf(AbstractHttpConfigurer::disable) // Dev architecture is stateless JWT, CSRF can be disabled safely
+      .csrf(AbstractHttpConfigurer::disable)
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
-        // Allow anyone to attempt login, register, or read API documentation
-        .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
-        // Restrict any administration endpoints strictly to the admin role
+        // FIX: Explicitly whitelist only the public routes, forcing /profile to require a token!
+        .requestMatchers(
+          "/api/auth/login",
+          "/api/auth/register/**",
+          "/api/auth/forgot-password",
+          "/api/auth/reset-password",
+          "/api/auth/verify-email"
+        ).permitAll()
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
+
         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-        // All other endpoints require a validated JWT
         .anyRequest().authenticated()
       );
 
-    // Inject our custom JWT validation filter right before standard username/password processing
     http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
@@ -55,7 +60,6 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    // Allow mobile development addresses and web development hosts
     configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost", "ionic://localhost"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));

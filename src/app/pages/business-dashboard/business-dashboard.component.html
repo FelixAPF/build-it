@@ -6,16 +6,16 @@
 <p-toast></p-toast>
 <div class="min-h-screen bg-slate-50 pb-12">
   
-<div class="bg-indigo-900 text-white pt-12 pb-24 px-6 md:px-12 rounded-b-[3rem] shadow-md">
+<div class="bg-red-900 text-white pt-12 pb-24 px-6 md:px-12 rounded-b-[3rem] shadow-md">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-3">
-          <div class="bg-indigo-800 text-indigo-200 text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase border border-indigo-700">
+          <div class="bg-red-800 text-red-100 text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase border border-red-700">
             Employer Portal
           </div>
           
           @if (businessType === 'COMPANY') {
-            <div class="bg-emerald-900/80 text-emerald-300 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-emerald-800 animate-fade-in">
+            <div class="bg-red-900/80 text-red-300 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-red-800 animate-fade-in">
               <i class="pi pi-shield text-[10px]"></i> Active Licensing Status
             </div>
           }
@@ -23,27 +23,27 @@
         
         <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">My Job Sites</h1>
         
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-indigo-200 font-medium">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-red-200 font-medium">
           
           @if (businessType === 'PRIVATE') {
-            <span class="flex items-center gap-1.5"><i class="pi pi-user text-indigo-400"></i> Private Individual Account</span>
-            <span class="text-indigo-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-home text-indigo-400"></i> Residential Postings</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-user text-red-400"></i> Private Individual Account</span>
+            <span class="text-red-700 hidden sm:inline">|</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-home text-red-400"></i> Residential Postings</span>
           } 
           @else {
-            <span class="flex items-center gap-1.5"><i class="pi pi-briefcase text-indigo-400"></i> Corporate Host Profile</span>
-            <span class="text-indigo-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-verified text-indigo-400"></i> RBQ Verification Registry: <strong class="font-mono text-white">Valid</strong></span>
-            <span class="text-indigo-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-file text-indigo-400"></i> CCQ Payroll Ledger: <strong class="font-mono text-white">Linked</strong></span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-briefcase text-red-400"></i> Corporate Host Profile</span>
+            <span class="text-red-700 hidden sm:inline">|</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-verified text-red-400"></i> RBQ Verification Registry: <strong class="font-mono text-white">Valid</strong></span>
+            <span class="text-red-700 hidden sm:inline">|</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-file text-red-400"></i> CCQ Payroll Ledger: <strong class="font-mono text-white">Linked</strong></span>
           }
           
         </div>
       </div>
       
       <div class="flex flex-wrap gap-3 w-full md:w-auto">
-        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-success w-full md:w-auto font-bold shadow-lg shadow-emerald-900/30" (onClick)="showDialog = true"></p-button>
-        <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-indigo-900/50" (onClick)="logout()"></p-button>
+        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-danger w-full md:w-auto font-bold shadow-lg shadow-red-900/30" (onClick)="showDialog = true"></p-button>
+        <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-red-900/50" (onClick)="logout()"></p-button>
       </div>
     </div>
   </div>
@@ -51,8 +51,8 @@
   <div class="max-w-7xl mx-auto px-4 md:px-8 -mt-12">
     
     <div *ngIf="!isLoading && jobs.length === 0" class="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-100">
-      <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="pi pi-folder-open text-3xl text-indigo-500"></i>
+      <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="pi pi-folder-open text-3xl text-red-500"></i>
       </div>
       <h3 class="text-2xl font-bold text-slate-800 mb-2">No active job sites</h3>
       <p class="text-slate-500 mb-6">You haven't posted any jobs yet. Click the button above to get started.</p>
@@ -71,17 +71,29 @@
 
         <div class="p-6 flex-1 flex flex-col gap-4">
           <div class="flex items-center gap-3 text-slate-600">
-            <div class="w-8 h-8 rounded bg-blue-50 flex items-center justify-center text-blue-600"><i class="pi pi-calendar"></i></div>
+            <div class="w-8 h-8 rounded bg-red-50 flex items-center justify-center text-red-600"><i class="pi pi-calendar"></i></div>
             <div>
               <div class="text-sm font-bold">{{job.startDatetime | date:'mediumDate'}}</div>
-              <div class="text-xs">{{ formatDateRange(job.startDatetime, job.endDatetime) }}</div>
+              <div class="text-xs font-medium">{{ formatDateRange(job.startDatetime, job.endDatetime, job.isTimeFlexible) }}</div>
+            </div>
+          </div>
+
+          <div *ngIf="job.providesSupplyChain || (job.specificTools && job.specificTools.length > 0) || (job.supplyChainItems && job.supplyChainItems.length > 0)" class="mt-1 bg-red-50/50 p-3 rounded-lg border border-red-100 flex flex-col gap-2">
+            <div *ngIf="job.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> Supply Chain Provided</div>
+            
+            <div *ngIf="job.supplyChainItems && job.supplyChainItems.length > 0" class="text-xs font-semibold text-slate-600">
+              <span class="font-bold text-slate-700"><i class="pi pi-box mr-1 text-red-500"></i> Bring Materials:</span> {{ job.supplyChainItems.join(', ') }}
+            </div>
+
+            <div *ngIf="job.specificTools && job.specificTools.length > 0" class="text-xs font-semibold text-slate-600">
+              <span class="font-bold text-slate-700"><i class="pi pi-wrench mr-1 text-red-500"></i> Bring Tools:</span> {{ job.specificTools.join(', ') }}
             </div>
           </div>
           
           <div class="mt-2">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Roles Required</p>
             <div class="flex flex-wrap gap-2">
-              <span *ngFor="let req of job.requirements" class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200">
+              <span *ngFor="let req of job.requirements" class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200 shadow-sm">
                 {{req.qtyFilled}}/{{req.qtyRequested}} {{formatStatus(req.jobType)}}
               </span>
             </div>
@@ -89,61 +101,145 @@
         </div>
 
         <div class="p-4 border-t border-slate-100 bg-white">
-          <p-button label="Manage Site & Roles" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary" (onClick)="viewJobDetails(job)"></p-button>
+          <p-button label="Manage Site & Roles" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary hover:bg-slate-50" (onClick)="viewJobDetails(job)"></p-button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
-  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-2">
+<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [dismissableMask]="true" (onShow)="initAutocomplete()" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
+  
+  <form *ngIf="jobForm" [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-2">
+    
     <div class="flex flex-col gap-2">
-      <label class="font-semibold text-slate-700">Site Address</label>
-      <input pInputText formControlName="address" placeholder="123 Construction Blvd" class="w-full" />
+      <label class="font-semibold text-slate-700">Search Address</label>
+        <div #autocompleteContainer class="w-full bg-red-50/50 border border-red-200 rounded-xl overflow-hidden min-h-[50px] flex items-center px-1">
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+      <div class="flex flex-col gap-2 md:col-span-2">
+        <label class="text-sm font-semibold text-slate-700">Street Address</label>
+        <input pInputText formControlName="address" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-semibold text-slate-700">City</label>
+        <input pInputText formControlName="city" class="w-full" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-semibold text-slate-700">Province</label>
+          <input pInputText formControlName="province" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-semibold text-slate-700">Postal Code</label>
+          <input pInputText formControlName="postalCode" class="w-full" />
+        </div>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">Start Date & Time</label>
-        <p-calendar formControlName="startDatetime" [showTime]="true" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
+        <label class="font-semibold text-slate-700">Start Date</label>
+        <p-calendar formControlName="startDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
       </div>
       <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">End Date & Time</label>
-        <p-calendar formControlName="endDatetime" [showTime]="true" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
+        <label class="font-semibold text-slate-700">End Date</label>
+        <p-calendar formControlName="endDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
       </div>
+    </div>
+
+    <div class="flex items-center gap-2 -mt-2">
+      <p-checkbox [(ngModel)]="useSpecificTime" [ngModelOptions]="{standalone: true}" [binary]="true" inputId="timeCheck"></p-checkbox>
+      <label for="timeCheck" class="text-sm font-semibold text-slate-600 cursor-pointer">Add a specific time (Defaults to Flexible / TBD)</label>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 border-t border-slate-100 pt-6">
+      
+      <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
+        <label class="font-semibold text-slate-700 text-sm">Provides Supply Chain?</label>
+        <p-inputSwitch formControlName="providesSupplyChain"></p-inputSwitch>
+      </div>
+
+      <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
+        <label class="font-semibold text-slate-700 text-sm">Need Materials Brought?</label>
+        <p-inputSwitch formControlName="needSupplyChainItems" (onChange)="updateSupplyItems($event.checked)"></p-inputSwitch>
+      </div>
+
+      <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
+        <label class="font-semibold text-slate-700 text-sm">Need Specific Tools?</label>
+        <p-inputSwitch formControlName="needSpecificTools" (onChange)="updateTools($event.checked)"></p-inputSwitch>
+      </div>
+    </div>
+
+    <div *ngIf="jobForm.get('needSupplyChainItems')?.value" class="p-5 bg-orange-50 border border-orange-200 rounded-xl mt-2 shadow-sm animate-fade-in">
+      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-box mr-2 text-orange-600"></i> Materials Required</h3>
+      
+      <div formArrayName="supplyChainItems" class="flex flex-col gap-3">
+        <div *ngFor="let matCtrl of supplyChainItemsFormArray.controls; let i=index" class="flex gap-2">
+          <input pInputText [formControlName]="i" placeholder="e.g., 2 boxes of 3/4 screws, 1 roll poly" class="w-full bg-white" />
+          <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeSupplyItem(i)"></p-button>
+        </div>
+      </div>
+      
+      <p-button label="Add Another Material" icon="pi pi-plus" size="small" styleClass="p-button-warning p-button-text mt-3 font-bold" (onClick)="addSupplyItem()"></p-button>
+    </div>
+
+    <div *ngIf="jobForm.get('needSpecificTools')?.value" class="p-5 bg-red-50/50 border border-red-200 rounded-xl mt-2 shadow-sm animate-fade-in">
+      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-wrench mr-2 text-red-600"></i> Required Tools to Bring</h3>
+      
+      <div formArrayName="specificTools" class="flex flex-col gap-3">
+        <div *ngFor="let toolCtrl of specificToolsFormArray.controls; let i=index" class="flex gap-2">
+          <input pInputText [formControlName]="i" placeholder="e.g., Hammer Drill, Wet Tile Saw" class="w-full bg-white" />
+          <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeTool(i)"></p-button>
+        </div>
+      </div>
+      
+      <p-button label="Add Another Tool" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-text mt-3 font-bold" (onClick)="addTool()"></p-button>
     </div>
 
     <div class="border-t pt-4">
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-lg text-slate-800">Worker Requirements</h3>
-        <p-button label="Add Trade" icon="pi pi-plus" size="small" styleClass="p-button-outlined p-button-sm" (onClick)="addRequirement()"></p-button>
+        <p-button label="Add Trade" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-outlined p-button-sm" (onClick)="addRequirement()"></p-button>
       </div>
 
       <div formArrayName="requirements" class="flex flex-col gap-4">
-        <div *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i" class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative flex flex-col sm:flex-row gap-4">
-          <div class="flex-1 flex flex-col gap-2">
+        <div *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i" class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative flex flex-col sm:flex-row gap-4 flex-wrap">
+          <div class="flex-1 min-w-[150px] flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Trade</label>
-            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" placeholder="Select" appendTo="body" styleClass="w-full"></p-dropdown>
+            <p-dropdown [options]="jobTypes" formControlName="jobType" (onChange)="onTradeChange($event, i)" optionLabel="label" optionValue="value" placeholder="Select" appendTo="body" styleClass="w-full"></p-dropdown>
           </div>
-          <div class="sm:w-32 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-700">Rate/hr</label>
-            <p-inputNumber formControlName="hourlyRate" mode="currency" currency="CAD" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
+          <div class="w-full sm:w-40 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">Pay Type</label>
+            <p-dropdown [options]="paymentTypes" formControlName="paymentType" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full"></p-dropdown>
           </div>
-          <div class="sm:w-24 flex flex-col gap-2">
+          <div class="w-full sm:w-28 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">Amount</label>
+            <p-inputNumber formControlName="payRate" mode="currency" currency="CAD" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
+          </div>
+          <div class="w-full sm:w-20 flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Qty</label>
             <p-inputNumber formControlName="qtyRequested" [showButtons]="true" [min]="1" styleClass="w-full" inputStyleClass="w-full text-center"></p-inputNumber>
           </div>
           <div class="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 sm:flex sm:items-end pb-1">
             <p-button *ngIf="requirementsFormArray.length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-text p-button-rounded" (onClick)="removeRequirement(i)"></p-button>
           </div>
+          <div formArrayName="answers" *ngIf="getAnswersArray(i).length > 0" class="w-full flex flex-col gap-3 mt-3 p-4 bg-white border border-slate-200 rounded-xl">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-red-600 mb-1">Required Details for this Trade</h4>
+            <div *ngFor="let ans of getAnswersArray(i).controls; let aIndex=index" [formGroupName]="aIndex" class="flex flex-col gap-1">
+              <label class="text-sm font-semibold text-slate-700">{{ ans.get('question')?.value }} <span class="text-red-500">*</span></label>
+              <input pInputText formControlName="answer" placeholder="Provide details..." class="w-full bg-slate-50" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">
-      <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text w-full sm:w-auto" (onClick)="showDialog = false"></p-button>
-      <p-button label="Post Job & Pay Fee" icon="pi pi-check" type="submit" [disabled]="jobForm.invalid" [loading]="isSubmitting" styleClass="w-full sm:w-auto"></p-button>
+      <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showDialog = false"></p-button>
+      <p-button label="Post Job & Pay Fee" icon="pi pi-check" type="submit" [disabled]="jobForm.invalid" [loading]="isSubmitting" styleClass="w-full sm:w-auto p-button-danger shadow-md shadow-red-500/20"></p-button>
     </div>
   </form>
 </p-dialog>
@@ -151,29 +247,33 @@
 <p-dialog header="Manage Job Roles" [(visible)]="showJobDetailsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '50rem' }" [breakpoints]="{ '640px': '95vw' }">
   <div *ngIf="selectedJob">
     <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
-      <p class="font-semibold text-slate-800 mb-1"><i class="pi pi-map-marker text-indigo-500 mr-2"></i> {{selectedJob.address}}</p>
-      <p class="text-sm text-slate-600"><i class="pi pi-calendar text-indigo-500 mr-2"></i> {{selectedJob.startDatetime | date:'mediumDate'}} ({{selectedJob.startDatetime | date:'shortTime'}})</p>
+      <p class="font-semibold text-slate-800 mb-1"><i class="pi pi-map-marker text-red-500 mr-2"></i> {{selectedJob.address}}</p>
+      <p class="text-sm text-slate-600"><i class="pi pi-calendar text-red-500 mr-2"></i> {{selectedJob.startDatetime | date:'mediumDate'}} &bull; {{ formatDateRange(selectedJob.startDatetime, selectedJob.endDatetime, selectedJob.isTimeFlexible) }}</p>
     </div>
-
     <div class="flex flex-col gap-4">
       <div *ngFor="let req of selectedJob.requirements" class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
         
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
+            
             <p-tag [value]="formatStatus(req.jobType)" severity="info"></p-tag>
-            <div class="mt-2 text-lg text-slate-800 font-bold">${{req.hourlyRate}}/hr</div>
+            <div *ngIf="req.answers?.length > 0" class="mt-3 flex flex-col gap-1 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div *ngFor="let ans of req.answers" class="text-sm">
+                <span class="font-bold text-slate-700">{{ans.question}}:</span> <span class="text-slate-600">{{ans.answer}}</span>
+              </div>
+            </div>
+            <div class="mt-2 text-lg text-slate-800 font-bold">{{ formatPay(req.payRate, req.paymentType) }}</div>
             <div class="text-sm font-medium" [ngClass]="req.qtyFilled >= req.qtyRequested ? 'text-green-600' : 'text-amber-600'">
               Filled: {{req.qtyFilled}} / {{req.qtyRequested}}
             </div>
           </div>
           <div class="w-full sm:w-auto">
-            <button (click)="viewApplicants(req.requirementId)" class="relative p-2 text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1.5">
+            <button (click)="viewApplicants(req.requirementId)" class="relative p-2 text-red-600 hover:text-red-800 font-semibold flex items-center gap-1.5">
             <i class="pi pi-users"></i> 
             <span>View Applicants</span>
             
-            <!-- Notification Pill -->
             @if (req.pendingApplicantsCount > 0) {
-                <span class="absolute -top-1 -right-2 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md animate-bounce">
+                <span class="absolute -top-1 -right-2 bg-slate-900 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md animate-bounce">
                 {{ req.pendingApplicantsCount }}
                 </span>
             }
@@ -193,7 +293,7 @@
                   {{ worker.averageRating > 0 ? worker.averageRating : 'New' }}
                 </span>
               </div>
-              <div class="text-sm text-slate-500 mt-1"><i class="pi pi-phone mr-1"></i> {{worker.phoneNumber}}</div>
+              <a [href]="'tel:' + worker.phoneNumber" class="text-sm font-semibold text-red-600 hover:underline mt-1 block w-fit"><i class="pi pi-phone mr-1"></i> {{worker.phoneNumber}}</a>
             </div>
             <p-button *ngIf="isJobComplete(selectedJob.endDatetime) && !worker.reviewedWorker" label="Rate Worker" icon="pi pi-star-fill" size="small" styleClass="p-button-warning w-full sm:w-auto" (onClick)="openReview(worker.applicationId)"></p-button>
           </div>
@@ -220,8 +320,8 @@
         </div>
       </div>
       <div class="flex gap-2 w-full sm:w-auto">
-        <p-button icon="pi pi-times" label="Reject" styleClass="p-button-danger p-button-outlined flex-1 sm:flex-none" (onClick)="rejectWorker(app.applicationId)"></p-button>
-        <p-button icon="pi pi-check" label="Hire" styleClass="p-button-success flex-1 sm:flex-none" (onClick)="confirmApprove(app)"></p-button>
+        <p-button icon="pi pi-times" label="Reject" styleClass="p-button-secondary p-button-outlined flex-1 sm:flex-none hover:bg-slate-100" (onClick)="rejectWorker(app.applicationId)"></p-button>
+        <p-button icon="pi pi-check" label="Hire" styleClass="p-button-danger flex-1 sm:flex-none shadow-md" (onClick)="confirmApprove(app)"></p-button>
       </div>
     </div>
   </div>
@@ -238,8 +338,8 @@
       <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Feedback on their punctuality and skills..."></textarea>
     </div>
     <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
-      <p-button label="Cancel" styleClass="p-button-text w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
-      <p-button label="Submit Rating" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-warning w-full sm:w-auto"></p-button>
+      <p-button label="Cancel" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
+      <p-button label="Submit Rating" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-danger w-full sm:w-auto shadow-md"></p-button>
     </div>
   </form>
 </p-dialog>

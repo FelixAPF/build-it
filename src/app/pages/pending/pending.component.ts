@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-pending',
   standalone: true,
-  imports: [CommonModule, ButtonModule, RouterLink, ToastModule],
+  imports: [CommonModule, ButtonModule, ToastModule],
   providers: [MessageService],
   templateUrl: './pending.component.html'
 })

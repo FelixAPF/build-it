@@ -26,8 +26,17 @@ public class JobRequirement {
   @Column(name = "job_type", nullable = false, length = 50)
   private JobType jobType;
 
-  @Column(name = "hourly_rate", nullable = false)
-  private Double hourlyRate;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "payment_type",  length = 30)
+  private PaymentType paymentType;
+
+  @Column(name = "pay_rate")
+  private Double payRate;
+
+  @ElementCollection
+  @CollectionTable(name = "job_requirement_answers", joinColumns = @JoinColumn(name = "job_requirement_id"))
+  @Builder.Default
+  private List<RequirementAnswer> answers = new ArrayList<>();
 
   @Column(name = "qty_requested", nullable = false)
   private Integer qtyRequested;

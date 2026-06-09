@@ -1,6 +1,7 @@
 package com.build_it.buildit.service;
 
 import com.build_it.buildit.dto.AvailableJobResponse;
+import com.build_it.buildit.dto.RequirementAnswerDto;
 import com.build_it.buildit.entity.*;
 import com.build_it.buildit.repository.JobApplicationRepository;
 import com.build_it.buildit.repository.JobRequirementRepository;
@@ -10,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime; // <-- MAKE SURE TO IMPORT THIS
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +24,9 @@ public class WorkerFeedService {
   private final JobRequirementRepository jobRequirementRepository;
   private final JobApplicationRepository jobApplicationRepository;
 
-  // FIX: Remove readOnly = true because we are updating the lastFeedCheck timestamp!
   @Transactional
   public List<AvailableJobResponse> getFeedForWorker(String email) {
 
-    // 1. Get the Worker
     User user = userRepository.findByEmail(email).orElseThrow();
     WorkerProfile worker = workerProfileRepository.findByUserId(user.getId()).orElseThrow();
 
@@ -35,67 +34,68 @@ public class WorkerFeedService {
       throw new RuntimeException("Account pending verification.");
     }
 
-    // NEW: Capture the watermark before updating it
     LocalDateTime lastCheck = worker.getLastFeedCheck();
 
-    // 2. Get Worker's currently confirmed schedule
     List<JobApplication> confirmedShifts = jobApplicationRepository
       .findByWorkerIdAndStatus(worker.getId(), ApplicationStatus.SELECTED);
 
-    // Get ALL of the worker's applications (Pending, Rejected, Selected, Cancelled)
     List<JobApplication> allWorkerApps = jobApplicationRepository.findByWorkerId(worker.getId());
     java.util.Set<Long> appliedReqIds = allWorkerApps.stream()
       .map(app -> app.getJobRequirement().getId())
       .collect(java.util.stream.Collectors.toSet());
 
-    // 3. Fetch all open requirements matching their trade
     List<JobRequirement> potentialMatches = jobRequirementRepository.findAvailableRequirements(
       worker.getSpecialties(),
       List.of(JobStatus.OPEN, JobStatus.PARTIALLY_FILLED)
     );
 
-    // 4. Filter out already applied jobs AND overlapping shifts
     List<AvailableJobResponse> response = potentialMatches.stream()
-      .filter(req -> !appliedReqIds.contains(req.getId())) // <-- Hides applied/rejected jobs!
+      .filter(req -> !appliedReqIds.contains(req.getId()))
       .filter(req -> !isOverlapping(req.getJobPosting(), confirmedShifts))
       .map(req -> {
 
-        // NEW: Evaluate if the job was created AFTER the worker's last check
         boolean isNew = (lastCheck == null || req.getJobPosting().getCreatedAt().isAfter(lastCheck));
+
+        String fullAddress = req.getJobPosting().getAddress();
+        if (req.getJobPosting().getCity() != null) {
+          fullAddress += ", " + req.getJobPosting().getCity() + ", " + req.getJobPosting().getProvince() + " " + req.getJobPosting().getPostalCode();
+        }
 
         return AvailableJobResponse.builder()
           .requirementId(req.getId())
           .jobPostingId(req.getJobPosting().getId())
           .companyName(req.getJobPosting().getBusiness().getCompanyName())
-          .address(req.getJobPosting().getAddress())
+          .address(fullAddress)
           .startDatetime(req.getJobPosting().getStartDatetime())
           .endDatetime(req.getJobPosting().getEndDatetime())
+          .isTimeFlexible(req.getJobPosting().getIsTimeFlexible())
           .jobType(req.getJobType())
-          .hourlyRate(req.getHourlyRate())
+          .paymentType(req.getPaymentType()) // <-- NEW
+          .providesSupplyChain(req.getJobPosting().getProvidesSupplyChain()) // <-- NEW
+          .specificTools(req.getJobPosting().getSpecificTools()) // <-- NEW
+          .answers(req.getAnswers().stream().map(a -> new RequirementAnswerDto(a.getQuestion(), a.getAnswer())).toList()) // <-- NEW
+          .payRate(req.getPayRate())
           .remainingSpots(req.getQtyRequested() - req.getQtyFilled())
-          .isNewShift(isNew) // <-- Map it to the DTO
+          .isNewShift(isNew)
           .build();
       })
       .collect(java.util.stream.Collectors.toList());
 
-    // NEW: Advance the watermark in the database for cross-device syncing
     worker.setLastFeedCheck(LocalDateTime.now());
     workerProfileRepository.save(worker);
 
     return response;
   }
 
-  // Helper method to check time overlaps
   private boolean isOverlapping(JobPosting potentialJob, List<JobApplication> confirmedShifts) {
     for (JobApplication shift : confirmedShifts) {
       JobPosting confirmedJob = shift.getJobRequirement().getJobPosting();
 
-      // Overlap formula: (StartA < EndB) AND (EndA > StartB)
       if (potentialJob.getStartDatetime().isBefore(confirmedJob.getEndDatetime()) &&
         potentialJob.getEndDatetime().isAfter(confirmedJob.getStartDatetime())) {
-        return true; // Conflict found!
+        return true;
       }
     }
-    return false; // No conflict
+    return false;
   }
 }

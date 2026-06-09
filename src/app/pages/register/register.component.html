@@ -1,21 +1,18 @@
 <div class="min-h-screen relative flex items-center justify-center bg-slate-50 overflow-hidden p-4 py-12 sm:p-8">
   
-  <!-- Decorative Background Glows -->
-  <div class="fixed top-0 right-0 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-  <div class="fixed bottom-0 left-0 w-[600px] h-[600px] bg-indigo-400/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+  <div class="fixed top-0 right-0 w-[600px] h-[600px] bg-red-400/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-0 left-0 w-[600px] h-[600px] bg-orange-400/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
 
   <div class="w-full max-w-3xl z-10">
     
-    <!-- Header & Logo -->
     <div class="text-center mb-8 flex flex-col items-center">
-      <a routerLink="/" class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/30 mb-5 hover:scale-105 transition-transform">
+      <a routerLink="/" class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center shadow-xl shadow-red-500/30 mb-5 hover:scale-105 transition-transform">
         <i class="pi pi-building text-white text-3xl font-bold"></i>
       </a>
       <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">Create your account</h1>
       <p class="text-slate-500 mt-2 text-lg font-medium">Join the premier construction marketplace.</p>
     </div>
 
-    <!-- Glassmorphic Card Wrapper -->
     <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl shadow-slate-200/50 rounded-[2rem] p-4 sm:p-8 overflow-hidden">
       
       @if(errorMessage) {
@@ -24,70 +21,64 @@
 
       <p-tabView [(activeIndex)]="activeTabIndex">
         
-        <!-- ===================================== -->
-        <!-- WORKER REGISTRATION TAB               -->
-        <!-- ===================================== -->
         <p-tabPanel header="I am a Worker">
           <form *ngIf="workerForm" [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-6">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">First Name</label>
-                <input pInputText formControlName="firstName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="firstName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Last Name</label>
-                <input pInputText formControlName="lastName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="lastName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Email Address</label>
-                <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Phone Number</label>
-                <input pInputText formControlName="phoneNumber" placeholder="(514) 555-0123" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="phoneNumber" placeholder="(514) 555-0123" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Password</label>
-                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white"></p-password>              
+                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-password>              
               </div>
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Years of Experience</label>
-                <p-inputNumber formControlName="yearsExperience" [min]="0" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white"></p-inputNumber>              
+                <p-inputNumber formControlName="yearsExperience" [min]="0" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-inputNumber>              
               </div>
             </div>
 
            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-2">
                   <label class="font-bold text-slate-700">CCQ Number</label>
-                  <input pInputText formControlName="ccqNumber" placeholder="e.g. 12345678" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                  <input pInputText formControlName="ccqNumber" placeholder="e.g. 12345678" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
                   <label class="font-bold text-slate-700">Trades / Specialties</label>
-                  <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" placeholder="Select Trades" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white" appendTo="body" display="chip"></p-multiSelect>
+                  <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" placeholder="Select Trades" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" appendTo="body" display="chip"></p-multiSelect>
               </div>
             </div>
 
             <div class="flex items-start gap-3 mt-4 mb-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="workerTerms" styleClass="mt-1"></p-checkbox>
               <label for="workerTerms" class="text-sm text-slate-600 leading-relaxed cursor-pointer">
-                  I agree to the <a href="#" class="text-blue-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards.
+                  I agree to the <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards.
               </label>
             </div>
 
-            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 border-none hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all"></p-button>          
+            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-800 border-none hover:from-red-700 hover:to-red-900 shadow-lg shadow-red-600/20 transition-all"></p-button>          
           </form>
         </p-tabPanel>
 
-        <!-- ===================================== -->
-        <!-- BUSINESS REGISTRATION TAB             -->
-        <!-- ===================================== -->
         <p-tabPanel header="I am an Employer">
           <form *ngIf="businessForm" [formGroup]="businessForm" (ngSubmit)="onBusinessSubmit()" class="flex flex-col gap-5 mt-6">
             
@@ -95,8 +86,8 @@
               <label class="font-bold text-slate-700">Account Intention</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label class="p-4 border rounded-xl flex items-start gap-3 cursor-pointer transition-all shadow-sm"
-                       [ngClass]="businessForm.get('businessType')?.value === 'PRIVATE' ? 'border-blue-600 bg-blue-50/40 ring-1 ring-blue-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
-                  <input type="radio" formControlName="businessType" value="PRIVATE" class="mt-1 text-blue-600 focus:ring-blue-500" />
+                       [ngClass]="businessForm.get('businessType')?.value === 'PRIVATE' ? 'border-red-600 bg-red-50/40 ring-1 ring-red-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                  <input type="radio" formControlName="businessType" value="PRIVATE" class="mt-1 text-red-600 focus:ring-red-500" />
                   <div>
                     <div class="font-bold text-slate-800">Private Individual</div>
                     <div class="text-xs text-slate-500 mt-0.5">I want to hire tradespeople directly for my personal residence.</div>
@@ -104,8 +95,8 @@
                 </label>
 
                 <label class="p-4 border rounded-xl flex items-start gap-3 cursor-pointer transition-all shadow-sm"
-                       [ngClass]="businessForm.get('businessType')?.value === 'COMPANY' ? 'border-blue-600 bg-blue-50/40 ring-1 ring-blue-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
-                  <input type="radio" formControlName="businessType" value="COMPANY" class="mt-1 text-blue-600 focus:ring-blue-500" />
+                       [ngClass]="businessForm.get('businessType')?.value === 'COMPANY' ? 'border-red-600 bg-red-50/40 ring-1 ring-red-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                  <input type="radio" formControlName="businessType" value="COMPANY" class="mt-1 text-red-600 focus:ring-red-500" />
                   <div>
                     <div class="font-bold text-slate-800">Construction Business</div>
                     <div class="text-xs text-slate-500 mt-0.5">We are a registered commercial entity hiring trade crews.</div>
@@ -117,43 +108,42 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Name / Company Name</label>
-                <input pInputText formControlName="companyName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="companyName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Contact Person</label>
-                <input pInputText formControlName="contactName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="contactName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="flex flex-col gap-2">
               <label class="font-bold text-slate-700">Email Address</label>
-              <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+              <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Password</label>
-                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white"></p-password>
+                <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-password>
               </div>
               <div class="flex flex-col gap-2">
                 <label class="font-bold text-slate-700">Phone Number</label>
-                <input pInputText formControlName="phoneNumber" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+                <input pInputText formControlName="phoneNumber" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="flex flex-col gap-2 mt-2">
               <label class="font-bold text-slate-700">Billing Address</label>
-              <input pInputText formControlName="billingAddress" placeholder="123 Constructor Blvd, Montreal, QC" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white" />
+              <input pInputText formControlName="billingAddress" placeholder="123 Constructor Blvd, Montreal, QC" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
             </div>
 
-            <!-- DYNAMIC MANDATORY FIELDS FOR BUSINESSES -->
             @if (businessForm.get('businessType')?.value === 'COMPANY') {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-amber-50/50 border border-amber-200 rounded-2xl mt-2 shadow-sm animate-fade-in">
                 <div class="flex flex-col gap-2">
                   <label class="font-bold text-slate-800 flex items-center gap-1.5">
                     Licence RBQ <span class="text-red-500">*</span>
                   </label>
-                  <input pInputText formControlName="rbqNumber" placeholder="e.g., 1234-5678-90" class="w-full font-mono bg-white rounded-xl" />
+                  <input pInputText formControlName="rbqNumber" placeholder="e.g., 1234-5678-90" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
                   <small class="text-slate-500 text-xs">Mandatory under Régie du bâtiment rules.</small>
                 </div>
 
@@ -161,7 +151,7 @@
                   <label class="font-bold text-slate-800 flex items-center gap-1.5">
                     Employer NEQ ID <span class="text-red-500">*</span>
                   </label>
-                  <input pInputText formControlName="neqNumber" placeholder="e.g., 987654321" class="w-full font-mono bg-white rounded-xl" />
+                  <input pInputText formControlName="neqNumber" placeholder="e.g., 987654321" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
                   <small class="text-slate-500 text-xs">Required for statutory workforce registration.</small>
                 </div>
               </div>
@@ -170,7 +160,7 @@
             <div class="flex items-start gap-3 mt-4 mb-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="businessTerms" styleClass="mt-1"></p-checkbox>
               <label for="businessTerms" class="text-sm text-slate-600 leading-relaxed cursor-pointer">
-                  I agree to the <a href="#" class="text-blue-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20.
+                  I agree to the <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20.
               </label>
             </div>
 
@@ -182,14 +172,13 @@
 
       <div class="text-center mt-8 text-sm text-slate-500 font-medium border-t border-slate-100 pt-6">
         Already have an account? 
-        <a routerLink="/login" class="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors ml-1">Log in here</a>
+        <a routerLink="/login" class="text-red-600 font-bold hover:text-red-700 hover:underline transition-colors ml-1">Log in here</a>
       </div>
       
     </div>
   </div>
 </div>
 
-<!-- Terms Dialog retained with dismissable mask -->
 <p-dialog header="BuildIt - Terms of Service" [(visible)]="showTermsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '75vw', '640px': '95vw' }">
   <div class="flex flex-col gap-4 text-slate-700 leading-relaxed">
     <p><strong>Last Updated: June 2026</strong></p>
@@ -210,6 +199,6 @@
     <p>You agree to indemnify and hold harmless BuildIt from any claims, CCQ fines, union grievances, or damages arising out of your use of the Platform.</p>
   </div>
   <ng-template pTemplate="footer">
-      <p-button icon="pi pi-check" (click)="showTermsDialog = false" label="I Understand" styleClass="p-button-text font-bold"></p-button>
+      <p-button icon="pi pi-check" (click)="showTermsDialog = false" label="I Understand" styleClass="p-button-text p-button-danger font-bold"></p-button>
   </ng-template>
 </p-dialog>

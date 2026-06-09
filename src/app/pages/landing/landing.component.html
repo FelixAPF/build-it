@@ -2,22 +2,22 @@
   <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
     
     <div class="flex items-center gap-3 cursor-pointer" routerLink="/">
-      <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+      <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30">
         <i class="pi pi-building text-white text-xl font-bold"></i>
       </div>
       <span class="text-2xl font-extrabold tracking-tight text-slate-800">
-        Build<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">It</span>
+        Build<span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">It</span>
       </span>
     </div>
     
     <div class="flex items-center gap-3 md:gap-4">
       @if (authService.getToken()) {
-        <p-button label="Go to Dashboard" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-info font-bold hidden md:inline-flex"></p-button>
-        <p-button icon="pi pi-arrow-right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-info md:hidden"></p-button>
+        <p-button label="Go to Dashboard" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger font-bold hidden md:inline-flex"></p-button>
+        <p-button icon="pi pi-arrow-right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger md:hidden"></p-button>
       } @else {
-        <a routerLink="/login" class="text-slate-600 font-bold hover:text-blue-600 transition-colors px-2 md:px-4 hidden md:block">Log in</a>
+        <a routerLink="/login" class="text-slate-600 font-bold hover:text-red-600 transition-colors px-2 md:px-4 hidden md:block">Log in</a>
         <p-button label="Join the Network" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none font-bold shadow-md hidden md:inline-flex"></p-button>
-        <a routerLink="/login" class="text-slate-600 font-bold hover:text-blue-600 transition-colors px-2 md:hidden">Login</a>
+        <a routerLink="/login" class="text-slate-600 font-bold hover:text-red-600 transition-colors px-2 md:hidden">Login</a>
         <p-button icon="pi pi-user-plus" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none md:hidden"></p-button>
       }
     </div>
@@ -26,22 +26,22 @@
 
 <main class="relative overflow-hidden bg-slate-50 pt-32 pb-20 md:pt-48 md:pb-32 px-6">
   
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] md:w-[1200px] h-[400px] md:h-[600px] bg-blue-400/20 rounded-full blur-[100px] pointer-events-none -z-10 mt-[-150px] md:mt-[-250px]"></div>
-  <div class="absolute top-40 right-0 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none -z-10"></div>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] md:w-[1200px] h-[400px] md:h-[600px] bg-red-400/20 rounded-full blur-[100px] pointer-events-none -z-10 mt-[-150px] md:mt-[-250px]"></div>
+  <div class="absolute top-40 right-0 w-[400px] h-[400px] bg-orange-400/10 rounded-full blur-[80px] pointer-events-none -z-10"></div>
 
   <div class="max-w-4xl mx-auto text-center z-10">
     
-    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-bold mb-8 shadow-sm">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 border border-red-200 text-red-700 text-sm font-bold mb-8 shadow-sm">
       <span class="flex h-2 w-2 relative">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
       </span>
       Now live across all of Quebec
     </div>
 
     <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
       Staff your sites. <br/>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Without the stress.</span>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500">Without the stress.</span>
     </h1>
     
     <p class="text-lg md:text-2xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -50,7 +50,7 @@
 
     <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
       
-      <p-button label="I need to hire workers" icon="pi pi-building" routerLink="/register" [queryParams]="{tab: 'business'}" styleClass="w-full sm:w-auto px-8 py-4 text-lg font-bold bg-blue-600 hover:bg-blue-700 border-none shadow-xl shadow-blue-600/30 transition-all hover:-translate-y-1"></p-button>
+      <p-button label="I need to hire workers" icon="pi pi-building" routerLink="/register" [queryParams]="{tab: 'business'}" styleClass="w-full sm:w-auto px-8 py-4 text-lg font-bold bg-red-600 hover:bg-red-700 border-none shadow-xl shadow-red-600/30 transition-all hover:-translate-y-1"></p-button>
       
       <p-button label="I am looking for shifts" icon="pi pi-wrench" routerLink="/register" [queryParams]="{tab: 'worker'}" styleClass="w-full sm:w-auto px-8 py-4 text-lg font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all"></p-button>
     </div>
@@ -83,16 +83,16 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
       
       <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-left hover:shadow-xl hover:bg-white hover:-translate-y-2 transition-all duration-300 group">
-        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-          <i class="pi pi-shield text-3xl text-blue-600"></i>
+        <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <i class="pi pi-shield text-3xl text-red-600"></i>
         </div>
         <h3 class="text-2xl font-bold text-slate-800 mb-3">Act R-20 Compliant</h3>
         <p class="text-slate-500 leading-relaxed text-lg">Designed exclusively for the Quebec market. Contractors maintain 100% control over CCQ payroll, union dues, and CNESST obligations.</p>
       </div>
 
       <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-left hover:shadow-xl hover:bg-white hover:-translate-y-2 transition-all duration-300 group">
-        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-          <i class="pi pi-verified text-3xl text-emerald-600"></i>
+        <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <i class="pi pi-verified text-3xl text-amber-600"></i>
         </div>
         <h3 class="text-2xl font-bold text-slate-800 mb-3">Verified Trades</h3>
         <p class="text-slate-500 leading-relaxed text-lg">We strictly require CCQ and RBQ numbers upon registration. Our admins verify every credential before anyone can join the network.</p>
@@ -114,7 +114,7 @@
   <div class="max-w-4xl mx-auto text-center">
     <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Ready to streamline your job sites?</h2>
     <p class="text-slate-400 text-lg md:text-xl mb-10">Join hundreds of contractors and workers already using BuildIt.</p>
-    <p-button label="Create your free account today" icon="pi pi-arrow-right" iconPos="right" routerLink="/register" styleClass="px-8 py-4 text-lg font-bold bg-blue-500 hover:bg-blue-400 border-none text-white shadow-lg shadow-blue-500/20"></p-button>
+    <p-button label="Create your free account today" icon="pi pi-arrow-right" iconPos="right" routerLink="/register" styleClass="px-8 py-4 text-lg font-bold bg-red-600 hover:bg-red-500 border-none text-white shadow-lg shadow-red-600/20"></p-button>
   </div>
 </section>
 

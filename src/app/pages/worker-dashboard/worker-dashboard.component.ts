@@ -14,8 +14,8 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { RatingModule } from 'primeng/rating';
-import { MessageService, ConfirmationService } from 'primeng/api'; // <-- ConfirmationService
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; // <-- ConfirmDialogModule
+import { MessageService, ConfirmationService } from 'primeng/api'; 
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
 
 @Component({
   selector: 'app-worker-dashboard',
@@ -49,7 +49,7 @@ export class WorkerDashboardComponent implements OnInit {
   isSubmittingReview: boolean = false;
 
   ngOnInit() {
-    this.isAdminImpersonating = !!localStorage.getItem('admin_token'); // Check if backup token exists
+    this.isAdminImpersonating = !!localStorage.getItem('admin_token'); 
     this.loadData();
     this.initReviewForm();
   }
@@ -67,12 +67,12 @@ export class WorkerDashboardComponent implements OnInit {
       localStorage.setItem('jwt_token', adminToken);
       localStorage.setItem('user_role', 'ADMIN');
       localStorage.setItem('user_status', 'ACTIVE');
-      localStorage.removeItem('admin_token'); // Clear the backup
+      localStorage.removeItem('admin_token'); 
       this.router.navigate(['/admin-dashboard']);
     }
   }
 
-loadData() {
+  loadData() {
     this.isLoadingSchedule = true;
     this.isLoadingFeed = true;
 
@@ -86,7 +86,6 @@ loadData() {
 
     this.workerService.getAvailableFeed().subscribe({
       next: (data) => {
-        // Look how clean this is now! The backend handles all the heavy lifting.
         this.availableJobs = data; 
         this.isLoadingFeed = false;
       },
@@ -153,6 +152,57 @@ loadData() {
     }
   }
 
+  addToCalendar(app: any) {
+    const startDate = new Date(app.startDatetime);
+    const endDate = new Date(app.endDatetime);
+
+    const pad = (n: number): string => n < 10 ? '0' + n : n.toString();
+    
+    const formatICSDate = (date: Date) => {
+      return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
+    };
+
+    let description = `Job Type: ${this.formatStatus(app.jobType)}\\n`;
+    description += `Pay: ${this.formatPay(app.payRate, app.paymentType)}\\n`;
+    description += `Phone: ${app.companyPhone}\\n`;
+    if (app.providesSupplyChain) description += `\\n--- Logistic Notes ---\\nSupply Chain Provided\\n`;
+    
+    // NEW: Include supply chain items in calendar
+    if (app.supplyChainItems && app.supplyChainItems.length > 0) {
+      description += `Required Materials: ${app.supplyChainItems.join(', ')}\\n`;
+    }
+
+    if (app.specificTools && app.specificTools.length > 0) {
+      description += `Required Tools: ${app.specificTools.join(', ')}\\n`;
+    }
+
+    const icsData = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//BuildIt//EN',
+      'BEGIN:VEVENT',
+      `DTSTART:${formatICSDate(startDate)}`,
+      `DTEND:${formatICSDate(endDate)}`,
+      `SUMMARY:Shift at ${app.companyName}`,
+      `LOCATION:${app.address}`,
+      `DESCRIPTION:${description}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\n');
+
+    const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Shift_${app.companyName.replace(/\s+/g, '_')}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    this.messageService.add({ severity: 'success', summary: 'Added', detail: 'Event downloaded for your calendar!' });
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
@@ -168,8 +218,6 @@ loadData() {
     }
   }
 
-  // --- NEW: UI FORMATTING HELPERS ---
-
   formatStatus(status: string): string {
     if (!status) return '';
     return status.replace(/_/g, ' ')
@@ -179,7 +227,7 @@ loadData() {
       .join(' ');
   }
 
-  formatDateRange(startStr: string, endStr: string): string {
+  formatDateRange(startStr: string, endStr: string, isTimeFlexible: boolean = false): string {
     if (!startStr || !endStr) return '';
     const start = new Date(startStr);
     const end = new Date(endStr);
@@ -187,18 +235,32 @@ loadData() {
     const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
     const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
-    const startTime = start.toLocaleTimeString([], timeOptions);
-    const endTime = end.toLocaleTimeString([], timeOptions);
-
     const isSameDay = start.getFullYear() === end.getFullYear() &&
                       start.getMonth() === end.getMonth() &&
                       start.getDate() === end.getDate();
+
+    if (isTimeFlexible) {
+      return isSameDay ? 'Flexible schedule / TBD' : `Until ${end.toLocaleDateString([], dateOptions)}`;
+    }
+
+    const startTime = start.toLocaleTimeString([], timeOptions);
+    const endTime = end.toLocaleTimeString([], timeOptions);
 
     if (isSameDay) {
       return `${startTime} - ${endTime}`;
     } else {
       const endDate = end.toLocaleDateString([], dateOptions);
       return `${startTime} - ${endDate} at ${endTime}`;
+    }
+  }
+
+  formatPay(rate: number, type: string): string {
+    if (!rate) return '';
+    switch(type) {
+      case 'HOURLY': return `$${rate}/hr`;
+      case 'FIXED': return `$${rate} Fixed`;
+      case 'PER_SQFT': return `$${rate}/sqft`;
+      default: return `$${rate}`;
     }
   }
 }
