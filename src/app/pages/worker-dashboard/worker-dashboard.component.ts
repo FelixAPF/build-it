@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { RatingModule } from 'primeng/rating';
 import { MessageService, ConfirmationService } from 'primeng/api'; 
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
+import { MultiSelectModule } from 'primeng/multiselect'; // <-- NEW
 
 @Component({
   selector: 'app-worker-dashboard',
@@ -23,7 +24,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
   imports: [
     CommonModule, DatePipe, TableModule, ButtonModule, TagModule, 
     TabViewModule, CardModule, ToastModule, DialogModule, RatingModule,
-    ReactiveFormsModule, ConfirmDialogModule
+    ReactiveFormsModule, FormsModule, ConfirmDialogModule, MultiSelectModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './worker-dashboard.component.html'
@@ -48,6 +49,21 @@ export class WorkerDashboardComponent implements OnInit {
   selectedJobId: number | null = null;
   isSubmittingReview: boolean = false;
 
+  // NEW SETTINGS VARIABLES
+  showSettingsDialog: boolean = false;
+  isSavingSettings: boolean = false;
+  isDeletingAccount: boolean = false;
+  workerProfile: any = null;
+  selectedSpecialties: string[] = [];
+
+  jobTypes = [
+    { label: 'Electrician', value: 'ELECTRICIEN' },
+    { label: 'Plumber', value: 'PLOMBIER' },
+    { label: 'Floor Layer', value: 'POSEUR_DE_PLANCHER' },
+    { label: 'Carpenter', value: 'MENUISIER' },
+    { label: 'Laborer', value: 'MANOEUVRE' }
+  ];
+
   ngOnInit() {
     this.isAdminImpersonating = !!localStorage.getItem('admin_token'); 
     this.loadData();
@@ -58,6 +74,56 @@ export class WorkerDashboardComponent implements OnInit {
     this.reviewForm = this.fb.group({
       starRating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
       comment: ['']
+    });
+  }
+
+  // --- NEW SETTINGS LOGIC ---
+  openSettings() {
+    this.workerService.getProfile().subscribe(res => {
+      this.workerProfile = res;
+      this.selectedSpecialties = res.specialties || [];
+      this.showSettingsDialog = true;
+    });
+  }
+
+  saveSettings() {
+    this.isSavingSettings = true;
+    this.workerService.updateSpecialties(this.selectedSpecialties).subscribe({
+      next: () => {
+        this.messageService.add({severity:'success', summary:'Updated', detail:'Your trade specialties have been updated!'});
+        this.isSavingSettings = false;
+        this.showSettingsDialog = false;
+        this.loadData(); // Reload the feed with the new trades
+      },
+      error: () => {
+        this.messageService.add({severity:'error', summary:'Error', detail:'Failed to update settings.'});
+        this.isSavingSettings = false;
+      }
+    });
+  }
+
+  confirmDeleteAccount() {
+    this.confirmationService.confirm({
+      message: 'Are you absolutely sure you want to permanently delete your account? You will lose all your shift history and this action cannot be undone.',
+      header: 'Delete Account',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      acceptButtonStyleClass: "p-button-danger",
+      rejectButtonStyleClass: "p-button-text p-button-secondary",
+      accept: () => {
+        this.isDeletingAccount = true;
+        this.workerService.deleteAccount().subscribe({
+          next: () => {
+             this.authService.logout();
+             this.router.navigate(['/']);
+          },
+          error: (err) => {
+             this.messageService.add({severity:'error', summary:'Error', detail:'Failed to delete account. Please contact support.'});
+             this.isDeletingAccount = false;
+          }
+        });
+      }
     });
   }
 
@@ -167,7 +233,6 @@ export class WorkerDashboardComponent implements OnInit {
     description += `Phone: ${app.companyPhone}\\n`;
     if (app.providesSupplyChain) description += `\\n--- Logistic Notes ---\\nSupply Chain Provided\\n`;
     
-    // NEW: Include supply chain items in calendar
     if (app.supplyChainItems && app.supplyChainItems.length > 0) {
       description += `Required Materials: ${app.supplyChainItems.join(', ')}\\n`;
     }
