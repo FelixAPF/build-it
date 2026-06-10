@@ -1,7 +1,6 @@
 package com.build_it.buildit.controller;
 
 import com.build_it.buildit.dto.CreateJobPostingRequest;
-import com.build_it.buildit.entity.JobPosting;
 import com.build_it.buildit.service.JobPostingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Map; // <-- Add this
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -18,17 +18,14 @@ public class JobPostingController {
 
   private final JobPostingService jobPostingService;
 
-  // Only allow verified BUSINESS accounts to hit this route
   @PreAuthorize("hasRole('BUSINESS')")
   @PostMapping
-  public ResponseEntity<?> createJobPosting(
-    @Valid @RequestBody CreateJobPostingRequest request,
-    Principal principal) {
+  public ResponseEntity<?> createJobPosting(@Valid @RequestBody CreateJobPostingRequest request, Principal principal) {
+    // Returns the Stripe Checkout URL
+    String checkoutUrl = jobPostingService.createJobPosting(request, principal.getName());
 
-    // principal.getName() automatically contains the email parsed from the JWT Subject
-    JobPosting createdJob = jobPostingService.createJobPosting(request, principal.getName());
-
-    return ResponseEntity.ok("Job posted successfully. Total Fee Charged: $" + createdJob.getTotalAppFeeCharged());
+    // Send it back as a clean JSON object
+    return ResponseEntity.ok(Map.of("checkoutUrl", checkoutUrl));
   }
 
   @PreAuthorize("hasRole('BUSINESS')")
@@ -36,5 +33,13 @@ public class JobPostingController {
   public ResponseEntity<String> cancelJobPosting(@PathVariable Long jobId, Principal principal) {
     String response = jobPostingService.cancelJobPosting(jobId, principal.getName());
     return ResponseEntity.ok(response);
+  }
+
+  @PreAuthorize("hasRole('BUSINESS')")
+  @PostMapping("/{jobId}/pay")
+  public ResponseEntity<?> payForExistingJob(@PathVariable Long jobId, Principal principal) {
+    String checkoutUrl = jobPostingService.generatePaymentSessionForExistingJob(jobId, principal.getName());
+    // Return the new Stripe URL back to Angular
+    return ResponseEntity.ok(java.util.Map.of("checkoutUrl", checkoutUrl));
   }
 }

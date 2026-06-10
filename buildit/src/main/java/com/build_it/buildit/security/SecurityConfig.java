@@ -44,7 +44,8 @@ public class SecurityConfig {
           "/api/auth/forgot-password",
           "/api/auth/reset-password",
           "/api/auth/verify-email",
-          "/api/trades" // <-- FIX: Whitelisted the dynamic trades endpoint!
+          "/api/trades",
+          "/api/webhooks/stripe" // <-- NEW: Whitelisted the Webhook for Stripe!
         ).permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
 
@@ -62,7 +63,7 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost", "ionic://localhost"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control", "Stripe-Signature")); // Allowed Stripe-Signature header
     configuration.setExposedHeaders(List.of("Authorization"));
     configuration.setAllowCredentials(true);
 

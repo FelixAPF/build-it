@@ -56,6 +56,7 @@ export class BusinessDashboardComponent implements OnInit {
   isSubmittingReview: boolean = false;
   businessType: 'COMPANY' | 'PRIVATE' = 'COMPANY';
   isAdminImpersonating: boolean = false;
+  isPaying: { [key: number]: boolean } = {};
   
   showDialog: boolean = false;
   isSubmitting: boolean = false;
@@ -96,6 +97,21 @@ export class BusinessDashboardComponent implements OnInit {
       this.addTool();
     }
   }
+
+  resumePayment(jobId: number) {
+  this.isPaying[jobId] = true;
+  this.businessService.payForExistingJob(jobId).subscribe({
+    next: (res) => {
+      if (res && res.checkoutUrl) {
+        window.location.href = res.checkoutUrl; // Teleport to Stripe
+      }
+    },
+    error: (err) => {
+      this.isPaying[jobId] = false;
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not connect to payment provider.' });
+    }
+  });
+}
 
   updateSupplyItems(value: any) {
     if(!this.supplyChainItemsFormArray.length && value) {
@@ -388,9 +404,11 @@ export class BusinessDashboardComponent implements OnInit {
       this.businessService.createJobPosting(payload).subscribe({
         next: (res) => {
           this.isSubmitting = false;
-          this.showDialog = false;
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Job Posted Successfully!' });
-          this.loadDashboard(); 
+          // FIX: Redirect the user's browser to the Stripe Checkout window!
+          if (res && res.checkoutUrl) {
+            window.location.href = res.checkoutUrl;
+          }
+          
           this.initForm();      
         },
         error: (err) => {
@@ -467,16 +485,17 @@ export class BusinessDashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  getSeverity(status: string): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" {
-    switch (status) {
-      case 'OPEN': return 'info';
-      case 'PARTIALLY_FILLED': return 'warning';
-      case 'FULLY_FILLED': return 'success';
-      case 'COMPLETED': return 'secondary';
-      case 'CANCELLED': return 'danger';
-      default: return 'info';
-    }
+getSeverity(status: string): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" {
+  switch (status) {
+    case 'OPEN': return 'info';
+    case 'PENDING_PAYMENT': return 'warning'; // <-- Added this!
+    case 'PARTIALLY_FILLED': return 'warning';
+    case 'FULLY_FILLED': return 'success';
+    case 'COMPLETED': return 'secondary';
+    case 'CANCELLED': return 'danger';
+    default: return 'info';
   }
+}
 
   isJobComplete(endDate: string): boolean {
     return new Date(endDate) < new Date();

@@ -11,6 +11,7 @@ import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard
 import { PendingComponent } from './pages/pending/pending.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+import { PaymentSuccessComponent } from './pages/payment-success/payment-success.component';
 
 const guestGuard = () => {
   const authService = inject(AuthService);
@@ -49,5 +50,6 @@ export const routes: Routes = [
   
   { path: 'worker-dashboard', component: WorkerDashboardComponent, canActivate: [authGuard] },
   { path: 'business-dashboard', component: BusinessDashboardComponent, canActivate: [authGuard] },
-  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] }
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] },
+  { path: 'payment-success', component: PaymentSuccessComponent, canActivate: [authGuard] },
 ];

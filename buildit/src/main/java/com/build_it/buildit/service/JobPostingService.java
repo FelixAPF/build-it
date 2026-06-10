@@ -6,7 +6,13 @@ import com.build_it.buildit.entity.*;
 import com.build_it.buildit.repository.BusinessProfileRepository;
 import com.build_it.buildit.repository.JobPostingRepository;
 import com.build_it.buildit.repository.UserRepository;
+
+import com.stripe.Stripe;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +29,16 @@ public class JobPostingService {
   private final AuditLogService auditLogService;
   private final UserRepository userRepository;
 
+  @Value("${stripe.api.key}")
+  private String stripeApiKey;
+
   private static final double BASE_FEE_PER_WORKER = 5.00;
   private static final double TPS_RATE = 0.05;
   private static final double TVQ_RATE = 0.09975;
 
   @Transactional
-  public JobPosting createJobPosting(CreateJobPostingRequest request, String businessEmail) {
+  public String createJobPosting(CreateJobPostingRequest request, String businessEmail) {
+    Stripe.apiKey = stripeApiKey;
 
     User user = userRepository.findByEmail(businessEmail)
       .orElseThrow(() -> new RuntimeException("User not found"));
@@ -63,7 +73,7 @@ public class JobPostingService {
       .providesSupplyChain(request.getProvidesSupplyChain() != null ? request.getProvidesSupplyChain() : false)
       .specificTools(request.getSpecificTools() != null ? request.getSpecificTools() : new ArrayList<>())
       .supplyChainItems(request.getSupplyChainItems() != null ? request.getSupplyChainItems() : new ArrayList<>())
-      .status(JobStatus.OPEN)
+      .status(JobStatus.PENDING_PAYMENT)
       .totalAppFeeCharged(finalFee.doubleValue())
       .build();
 
@@ -83,8 +93,39 @@ public class JobPostingService {
       jobPosting.getRequirements().add(requirement);
     }
 
-    auditLogService.log(businessEmail, "JOB_POSTED", "Created job requirement located at: " + request.getAddress() + ". App fee charged: $" + jobPosting.getTotalAppFeeCharged());
-    return jobPostingRepository.save(jobPosting);
+    jobPosting = jobPostingRepository.save(jobPosting);
+
+    try {
+      long amountInCents = finalFee.multiply(new BigDecimal(100)).longValue();
+
+      SessionCreateParams params = SessionCreateParams.builder()
+        .setMode(SessionCreateParams.Mode.PAYMENT)
+        .setSuccessUrl("http://localhost:4200/payment-success?jobId=" + jobPosting.getId())
+        .setCancelUrl("http://localhost:4200/business-dashboard")
+        .putMetadata("jobId", jobPosting.getId().toString()) // <-- CRITICAL: Attach Job ID!
+        .addLineItem(
+          SessionCreateParams.LineItem.builder()
+            .setQuantity(1L)
+            .setPriceData(
+              SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency("cad")
+                .setUnitAmount(amountInCents)
+                .setProductData(
+                  SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                    .setName("BuildIt Matchmaking Fee - " + totalWorkersRequested + " Worker(s)")
+                    .setDescription("Job Site: " + request.getAddress())
+                    .build())
+                .build())
+            .build())
+        .build();
+
+      Session session = Session.create(params);
+      auditLogService.log(businessEmail, "JOB_POSTED", "Created job requirement located at: " + request.getAddress() + ". Awaiting Stripe payment.");
+      return session.getUrl();
+
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to generate payment session: " + e.getMessage());
+    }
   }
 
   @Transactional
@@ -109,7 +150,6 @@ public class JobPostingService {
     jobPostingRepository.save(posting);
 
     for (JobRequirement req : posting.getRequirements()) {
-      // FIX: Changed from req.getApplications() to req.getAssignedWorkers()
       for (JobApplication app : req.getAssignedWorkers()) {
         if (app.getStatus() == ApplicationStatus.PENDING || app.getStatus() == ApplicationStatus.SELECTED) {
           app.setStatus(ApplicationStatus.AUTO_CANCELLED);
@@ -119,5 +159,60 @@ public class JobPostingService {
 
     auditLogService.log(businessEmail, "JOB_CANCELLED", "Cancelled active job assignment ID: " + jobId + ". Voided dependent applicants.");
     return "Job posting has been successfully cancelled. All worker applications have been voided.";
+  }
+
+  @Transactional
+  public String generatePaymentSessionForExistingJob(Long jobId, String businessEmail) {
+    Stripe.apiKey = stripeApiKey;
+
+    User user = userRepository.findByEmail(businessEmail)
+      .orElseThrow(() -> new RuntimeException("User not found"));
+    BusinessProfile business = businessProfileRepository.findByUserId(user.getId())
+      .orElseThrow(() -> new RuntimeException("Business profile not found"));
+
+    JobPosting jobPosting = jobPostingRepository.findById(jobId)
+      .orElseThrow(() -> new RuntimeException("Job posting not found"));
+
+    if (!jobPosting.getBusiness().getId().equals(business.getId())) {
+      throw new RuntimeException("You do not have permission to pay for this job.");
+    }
+    if (jobPosting.getStatus() != JobStatus.PENDING_PAYMENT) {
+      throw new RuntimeException("This job is not pending payment.");
+    }
+
+    try {
+      long amountInCents = BigDecimal.valueOf(jobPosting.getTotalAppFeeCharged()).multiply(new BigDecimal(100)).longValue();
+
+      int totalWorkersRequested = jobPosting.getRequirements().stream()
+        .mapToInt(JobRequirement::getQtyRequested)
+        .sum();
+
+      SessionCreateParams params = SessionCreateParams.builder()
+        .setMode(SessionCreateParams.Mode.PAYMENT)
+        .setSuccessUrl("http://localhost:4200/payment-success?jobId=" + jobPosting.getId())
+        .setCancelUrl("http://localhost:4200/business-dashboard")
+        .putMetadata("jobId", jobPosting.getId().toString()) // <-- CRITICAL: Attach Job ID!
+        .addLineItem(
+          SessionCreateParams.LineItem.builder()
+            .setQuantity(1L)
+            .setPriceData(
+              SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency("cad")
+                .setUnitAmount(amountInCents)
+                .setProductData(
+                  SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                    .setName("BuildIt Matchmaking Fee - " + totalWorkersRequested + " Worker(s)")
+                    .setDescription("Job Site: " + jobPosting.getAddress())
+                    .build())
+                .build())
+            .build())
+        .build();
+
+      Session session = Session.create(params);
+      return session.getUrl();
+
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to generate payment session: " + e.getMessage());
+    }
   }
 }

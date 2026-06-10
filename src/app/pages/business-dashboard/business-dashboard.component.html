@@ -100,8 +100,12 @@
           </div>
         </div>
 
-        <div class="p-4 border-t border-slate-100 bg-white">
-          <p-button label="Manage Site & Roles" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary hover:bg-slate-50" (onClick)="viewJobDetails(job)"></p-button>
+        <div class="p-4 border-t border-slate-100 bg-white flex flex-col gap-2">
+          @if (job.status === 'PENDING_PAYMENT') {
+            <p-button label="Complete Payment" icon="pi pi-credit-card" styleClass="w-full p-button-warning shadow-md" [loading]="isPaying[job.jobPostingId]" (onClick)="resumePayment(job.jobPostingId)"></p-button>
+          } @else {
+            <p-button label="Manage Site & Roles" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary hover:bg-slate-50" (onClick)="viewJobDetails(job)"></p-button>
+          }
         </div>
       </div>
     </div>
