@@ -93,6 +93,12 @@
     "RADIO_COMPANY_DESC": "We are a registered commercial entity hiring trade crews.",
     "LAB_COMPANY_NAME": "Name / Company Name",
     "LAB_CONTACT_PERSON": "Contact Person",
+    "LAB_SEARCH_ADDRESS": "Search Corporate Address",
+    "PLACEHOLDER_SEARCH_ADDRESS": "Search for an address...",
+    "LAB_STREET_ADDRESS": "Street Address",
+    "LAB_CITY": "City",
+    "LAB_PROVINCE": "Province",
+    "LAB_POSTAL_CODE": "Postal Code",
     "LAB_BILLING_ADDRESS": "Billing Address",
     "PLACEHOLDER_BILLING": "123 Constructor Blvd, Montreal, QC",
     "LAB_RBQ": "Licence RBQ",
@@ -238,7 +244,11 @@
         "HEADER_DB_CODE": "Database Code",
         "HEADER_DISPLAY_NAME": "Display Name",
         "HEADER_ACTIONS": "Actions"
-      }
+      },
+      "LABEL_UI_NAME_EN": "Trade Name (English)",
+        "LABEL_UI_NAME_FR": "Trade Name (French)",
+        "PLACEHOLDER_UI_NAME_EN": "e.g. Concrete Finisher",
+        "PLACEHOLDER_UI_NAME_FR": "e.g. Concrete Finisher (FR)"
     },
     "DIRECTORY": {
       "USER_ID": "ID",

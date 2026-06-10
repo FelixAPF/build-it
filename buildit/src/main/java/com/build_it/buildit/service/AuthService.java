@@ -105,7 +105,10 @@ public class AuthService {
       .phoneNumber(request.getPhoneNumber())
       .rbqNumber(request.getRbqNumber())
       .neqNumber(request.getNeqNumber())
-      .billingAddress(request.getBillingAddress())
+      .address(request.getAddress())
+      .city(request.getCity())
+      .province(request.getProvince())
+      .postalCode(request.getPostalCode())
       .build();
 
     businessProfileRepository.save(profile);

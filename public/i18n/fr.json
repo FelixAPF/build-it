@@ -93,6 +93,12 @@
     "RADIO_COMPANY_DESC": "Nous sommes une entité commerciale enregistrée embauchant des équipes.",
     "LAB_COMPANY_NAME": "Nom / Nom de l'entreprise",
     "LAB_CONTACT_PERSON": "Personne-ressource",
+    "LAB_SEARCH_ADDRESS": "Rechercher l'adresse de l'entreprise",
+    "PLACEHOLDER_SEARCH_ADDRESS": "Rechercher une adresse...",
+    "LAB_STREET_ADDRESS": "Adresse civique",
+    "LAB_CITY": "Ville",
+    "LAB_PROVINCE": "Province",
+    "LAB_POSTAL_CODE": "Code postal",
     "LAB_BILLING_ADDRESS": "Adresse de facturation",
     "PLACEHOLDER_BILLING": "123 Boul. Constructeur, Montréal, QC",
     "LAB_RBQ": "Licence RBQ",
@@ -238,7 +244,11 @@
         "HEADER_DB_CODE": "Code BD",
         "HEADER_DISPLAY_NAME": "Nom d'affichage",
         "HEADER_ACTIONS": "Actions"
-      }
+      },
+      "LABEL_UI_NAME_EN": "Nom du métier (Anglais)",
+        "LABEL_UI_NAME_FR": "Nom du métier (Français)",
+        "PLACEHOLDER_UI_NAME_EN": "ex. Concrete Finisher",
+        "PLACEHOLDER_UI_NAME_FR": "ex. Finisseur de béton"
     },
     "DIRECTORY": {
       "USER_ID": "ID",

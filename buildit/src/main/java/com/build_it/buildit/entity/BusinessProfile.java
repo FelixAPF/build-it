@@ -31,15 +31,24 @@ public class BusinessProfile {
   @Column(name = "phone_number", nullable = false, length = 20)
   private String phoneNumber;
 
-  // CRITICAL FIX: Removed `nullable = false` so Private Individuals can save to the DB!
   @Column(name = "rbq_number", unique = true, length = 50)
   private String rbqNumber;
 
   @Column(name = "neq_number", length = 50)
   private String neqNumber;
 
-  @Column(name = "billing_address")
-  private String billingAddress;
+  // --- NEW ADDRESS SUITE ---
+  @Column(nullable = false, length = 255)
+  private String address;
+
+  @Column(nullable = false, length = 100)
+  private String city;
+
+  @Column(nullable = false, length = 50)
+  private String province;
+
+  @Column(name = "postal_code", nullable = false, length = 20)
+  private String postalCode;
 
   @Column(name = "average_rating")
   private Double averageRating;

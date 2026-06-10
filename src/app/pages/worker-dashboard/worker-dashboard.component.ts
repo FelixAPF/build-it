@@ -75,6 +75,7 @@ export class WorkerDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.isAdminImpersonating = !!localStorage.getItem('admin_token'); 
+    this.authService.getTrades().subscribe(res => this.jobTypes = res); // <-- ADD THIS LINE
     this.loadData();
     this.initReviewForm();
   }

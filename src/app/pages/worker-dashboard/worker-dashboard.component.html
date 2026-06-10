@@ -212,7 +212,7 @@
 
     <div class="flex flex-col gap-2">
       <label class="font-bold text-slate-700">{{ 'WORKER_DASHBOARD.SETTINGS.LAB_APPROVED_TRADES' | translate }}</label>
-      <p-multiSelect [options]="jobTypes" [(ngModel)]="selectedSpecialties" optionLabel="label" optionValue="value" [placeholder]="'WORKER_DASHBOARD.SETTINGS.PLACEHOLDER_TRADES' | translate" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" appendTo="body" display="chip"></p-multiSelect>
+      <p-multiSelect [options]="jobTypes" [(ngModel)]="selectedSpecialties" optionValue="value" [optionLabel]="translate.getCurrentLang() === 'fr' ? 'labelFr' : 'labelEn'" [placeholder]="'WORKER_DASHBOARD.SETTINGS.PLACEHOLDER_TRADES' | translate" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" appendTo="body" display="chip"></p-multiSelect>
       <small class="text-slate-500 font-medium">{{ 'WORKER_DASHBOARD.SETTINGS.HINT_TRADES' | translate }}</small>
     </div>
 

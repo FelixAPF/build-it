@@ -1,4 +1,5 @@
 package com.build_it.buildit.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,8 +12,11 @@ public class Trade {
   private Long id;
 
   @Column(nullable = false, unique = true)
-  private String value; // e.g., "ELECTRICIEN"
+  private String value;
 
-  @Column(nullable = false)
-  private String label; // e.g., "Electrician"
+  @Column(name = "label_en", nullable = false)
+  private String labelEn;
+
+  @Column(name = "label_fr", nullable = false)
+  private String labelFr;
 }

@@ -222,7 +222,7 @@
           
           <div class="flex-1 min-w-[150px] flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_TRADE' | translate }}</label>
-            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_SELECT' | translate" appendTo="body" styleClass="w-full" (onChange)="onTradeChange($event, i)"></p-dropdown>
+            <p-dropdown [options]="jobTypes" formControlName="jobType" optionValue="value" [optionLabel]="translate.getCurrentLang() === 'fr' ? 'labelFr' : 'labelEn'" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_SELECT' | translate" appendTo="body" styleClass="w-full" (onChange)="onTradeChange($event, i)"></p-dropdown>
           </div>
           
             <div class="w-full sm:w-40 flex flex-col gap-2">

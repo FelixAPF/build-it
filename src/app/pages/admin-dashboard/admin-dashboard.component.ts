@@ -35,6 +35,9 @@ export class AdminDashboardComponent implements OnInit {
   pendingUsers: any[] = [];
   allUsers: any[] = [];
   isLoading: boolean = true;
+  newTradeLabelEn: string = '';
+  newTradeLabelFr: string = '';
+  newTradeValue: string = '';
 
   userLogs: any[] = [];
   showLogsDialog: boolean = false;
@@ -55,7 +58,7 @@ export class AdminDashboardComponent implements OnInit {
   jobTypes: any[] = [];
   trades: any[] = [];
   newTradeLabel: string = '';
-  newTradeValue: string = '';
+  
   newQuestionTextEn: string = '';
   newQuestionTextFr: string = '';
 
@@ -75,11 +78,17 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  addTrade() {
-    if (!this.newTradeLabel || !this.newTradeValue) return;
-    this.adminService.addTrade({ label: this.newTradeLabel, value: this.newTradeValue.toUpperCase().replace(/\s+/g, '_') }).subscribe(() => {
-      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Trade added'});
-      this.newTradeLabel = '';
+addTrade() {
+    if (!this.newTradeLabelEn || !this.newTradeLabelFr || !this.newTradeValue) return;
+    
+    this.adminService.addTrade({ 
+      labelEn: this.newTradeLabelEn, 
+      labelFr: this.newTradeLabelFr, 
+      value: this.newTradeValue.toUpperCase().replace(/\s+/g, '_') 
+    }).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Bilingual trade added successfully'});
+      this.newTradeLabelEn = '';
+      this.newTradeLabelFr = '';
       this.newTradeValue = '';
       this.loadTrades();
     });

@@ -25,8 +25,18 @@ public class BusinessRegisterRequest {
   @NotBlank(message = "Phone number is required")
   private String phoneNumber;
 
-  @NotBlank(message = "Billing address is required")
-  private String billingAddress;
+  // --- NEW ADDRESS SUITE ---
+  @NotBlank(message = "Street address is required")
+  private String address;
+
+  @NotBlank(message = "City is required")
+  private String city;
+
+  @NotBlank(message = "Province is required")
+  private String province;
+
+  @NotBlank(message = "Postal Code is required")
+  private String postalCode;
 
   private String rbqNumber;
   private String neqNumber;
