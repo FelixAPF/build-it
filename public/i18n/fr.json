@@ -1,0 +1,407 @@
+{
+  "COMMON": {
+    "BRAND_FIRST": "Build",
+    "BRAND_LAST": "It"
+  },
+  "LANDING": {
+    "NAV": {
+      "GO_TO_DASHBOARD": "Aller au tableau de bord",
+      "LOG_IN": "Connexion",
+      "JOIN_NETWORK": "Rejoindre le réseau",
+      "LOG_IN_SHORT": "Connexion"
+    },
+    "HERO": {
+      "BADGE_TEXT": "Maintenant disponible partout au Québec",
+      "TITLE_LINE1": "Déployez votre personnel.",
+      "TITLE_COLOR": "Sans le stress.",
+      "SUBTITLE": "Connectez-vous instantanément avec des travailleurs certifiés CCQ et des entrepreneurs RBQ. Remplissez vos quarts vides en quelques minutes et respectez vos échéanciers.",
+      "BTN_HIRE": "J'ai besoin de main-d'œuvre",
+      "BTN_WORK": "Je cherche des quarts de travail"
+    },
+    "STATS": {
+      "STAT1_VAL": "100%",
+      "STAT1_LAB": "Vérifié CCQ",
+      "STAT2_VAL": "24/7",
+      "STAT2_LAB": "Jumelage Instantané",
+      "STAT3_VAL": "R-20",
+      "STAT3_LAB": "Conformité Totale"
+    },
+    "FEATURES": {
+      "SECTION_TITLE": "Conçu spécifiquement pour l'industrie de la construction.",
+      "SECTION_SUBTITLE": "Nous gérons la vérification et le jumelage pour que vous puissiez vous concentrer sur vos chantiers.",
+      "FEAT1_TITLE": "Conforme à la Loi R-20",
+      "FEAT1_DESC": "Conçu exclusivement pour le marché québécois. Les entrepreneurs conservent 100% du contrôle sur la paie CCQ, les cotisations syndicales et les obligations CNESST.",
+      "FEAT2_TITLE": "Métiers Vérifiés",
+      "FEAT2_DESC": "Nous exigeons strictement les numéros CCQ et RBQ lors de l'inscription. Nos administrateurs vérifient chaque accréditation avant l'accès au réseau.",
+      "FEAT3_TITLE": "Jumelage Instantané",
+      "FEAT3_DESC": "Affichez un quart et nous informons instantanément les travailleurs disponibles dans votre région possédant les compétences requises."
+    },
+    "CTA": {
+      "TITLE": "Prêt à optimiser vos chantiers?",
+      "SUBTITLE": "Rejoignez des centaines d'entrepreneurs et de travailleurs qui utilisent déjà BuildIt.",
+      "BTN": "Créez votre compte gratuit aujourd'hui"
+    },
+    "FOOTER": {
+      "COMPANY_NAME": "Technologies BuildIt Inc.",
+      "COPYRIGHT": "© 2026 BuildIt Montréal, QC. Tous droits réservés."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Bon retour",
+    "SUBTITLE": "Connectez-vous à votre compte BuildIt",
+    "LAB_EMAIL": "Adresse Courriel",
+    "PLACEHOLDER_EMAIL": "nom@entreprise.com",
+    "LINK_FORGOT_PASSWORD": "Mot de passe oublié?",
+    "LAB_PASSWORD": "Mot de passe",
+    "PLACEHOLDER_PASSWORD": "••••••••",
+    "BTN_SIGN_IN": "Se Connecter",
+    "TEXT_NO_ACCOUNT": "Vous n'avez pas encore de compte?",
+    "LINK_CREATE_ACCOUNT": "Créez-en un maintenant",
+    "DIALOG_FORGOT_TITLE": "Réinitialiser le mot de passe",
+    "DIALOG_FORGOT_DESC": "Entrez l'adresse courriel associée à votre compte et nous vous enverrons un lien magique pour réinitialiser votre mot de passe.",
+    "BTN_CANCEL": "Annuler",
+    "BTN_SEND_LINK": "Envoyer le lien"
+  },
+  "REGISTER": {
+    "TITLE": "Créez votre compte",
+    "SUBTITLE": "Rejoignez le premier marché de la construction.",
+    "TABS": {
+      "WORKER": "Je suis un Travailleur",
+      "EMPLOYER": "Je suis un Employeur"
+    },
+    "LAB_FIRST_NAME": "Prénom",
+    "LAB_LAST_NAME": "Nom de famille",
+    "LAB_EMAIL": "Adresse Courriel",
+    "LAB_PHONE": "Numéro de téléphone",
+    "PLACEHOLDER_PHONE": "(514) 555-0123",
+    "LAB_PASSWORD": "Mot de passe",
+    "LAB_EXPERIENCE": "Années d'expérience",
+    "LAB_CCQ": "Numéro CCQ",
+    "PLACEHOLDER_CCQ": "ex. 12345678",
+    "LAB_TRADES": "Métiers / Spécialités",
+    "PLACEHOLDER_TRADES": "Sélectionner les métiers",
+    "TERMS_WORKER": {
+      "PART1": "J'accepte les",
+      "LINK": "Conditions d'utilisation",
+      "PART2": ". Je comprends que je postule pour être un employé temporaire de l'Entreprise, et j'assume la responsabilité de maintenir des cartes de compétence CCQ valides."
+    },
+    "BTN_REGISTER_WORKER": "S'inscrire comme Travailleur",
+    "LAB_INTENTION": "Intention du Compte",
+    "RADIO_PRIVATE_TITLE": "Particulier",
+    "RADIO_PRIVATE_DESC": "Je souhaite embaucher des gens de métier directement pour ma résidence personnelle.",
+    "RADIO_COMPANY_TITLE": "Entreprise de Construction",
+    "RADIO_COMPANY_DESC": "Nous sommes une entité commerciale enregistrée embauchant des équipes.",
+    "LAB_COMPANY_NAME": "Nom / Nom de l'entreprise",
+    "LAB_CONTACT_PERSON": "Personne-ressource",
+    "LAB_BILLING_ADDRESS": "Adresse de facturation",
+    "PLACEHOLDER_BILLING": "123 Boul. Constructeur, Montréal, QC",
+    "LAB_RBQ": "Licence RBQ",
+    "PLACEHOLDER_RBQ": "ex. 1234-5678-90",
+    "HINT_RBQ": "Obligatoire selon les règles de la Régie du bâtiment.",
+    "LAB_NEQ": "Numéro NEQ",
+    "PLACEHOLDER_NEQ": "ex. 987654321",
+    "HINT_NEQ": "Requis pour l'enregistrement légal de la main-d'œuvre.",
+    "TERMS_BUSINESS": {
+      "PART1": "J'accepte les",
+      "LINK": "Conditions d'utilisation",
+      "PART2": ". Je reconnais être le seul employeur légal de tout travailleur embauché via BuildIt, et j'assume 100% de la responsabilité de la paie CCQ, des cotisations syndicales et de la conformité CNESST en vertu de la loi R-20."
+    },
+    "BTN_REGISTER_BUSINESS": "Enregistrer le compte",
+    "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte?",
+    "LINK_LOGIN": "Connectez-vous ici",
+    "DIALOG_TERMS_TITLE": "BuildIt - Conditions d'utilisation",
+    "TERMS": {
+      "LAST_UPDATED": "Dernière mise à jour : Juin 2026",
+      "SEC1_TITLE": "1. Nature du Service",
+      "SEC1_DESC": "BuildIt fournit une plateforme de jumelage en tant que service (SaaS). BuildIt n'est pas un employeur, un co-employeur, un entrepreneur, un sous-traitant ou une agence de placement de personnel. L'utilisation de la Plateforme ne crée pas de relation d'emploi entre BuildIt et toute Entreprise ou Travailleur.",
+      "SEC2_TITLE": "2. Responsabilités de l'Entreprise (Employeur)",
+      "SEC2_DESC": "Lorsqu'une Entreprise sélectionne un Travailleur via la Plateforme, l'Entreprise assume le rôle de seul employeur légal de ce Travailleur. L'Entreprise est exclusivement responsable du respect de la Loi sur les relations de travail, la formation professionnelle et la gestion de la main-d'œuvre dans l'industrie de la construction (Loi R-20) et de la CCQ. L'Entreprise est exclusivement responsable du paiement des salaires, des cotisations syndicales et des primes CNESST (le cas échéant).",
+      "SEC3_TITLE": "3. Responsabilités du Travailleur (Employé)",
+      "SEC3_DESC": "Vous comprenez qu'en acceptant une offre, vous entrez dans une relation d'emploi temporaire directement avec l'Entreprise, et non avec BuildIt. Vous garantissez que vous détenez des cartes de compétence CCQ valides pour les métiers sélectionnés.",
+      "SEC4_TITLE": "4. Frais et Paiements",
+      "SEC4_DESC": "BuildIt facture des frais de jumelage non remboursables pour l'utilisation du logiciel. BuildIt ne traite pas les salaires des travailleurs ni ne facilite le transfert des fonds de paie.",
+      "SEC5_TITLE": "5. Indemnisation",
+      "SEC5_DESC": "Vous acceptez d'indemniser et de dégager BuildIt de toute responsabilité concernant toute réclamation, amende CCQ, grief syndical ou dommage découlant de votre utilisation de la Plateforme.",
+      "BTN_UNDERSTAND": "Je comprends"
+    }
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Nouveau mot de passe",
+    "ERROR_INVALID_TOKEN": "Jeton de réinitialisation invalide ou manquant.",
+    "BTN_RETURN_LOGIN": "Retour à la connexion",
+    "SUCCESS_TITLE": "Succès!",
+    "SUCCESS_DESC": "Votre mot de passe a été réinitialisé. Redirection vers la connexion...",
+    "LAB_NEW_PASSWORD": "Entrez votre nouveau mot de passe",
+    "PLACEHOLDER_PASSWORD": "••••••••",
+    "BTN_SUBMIT": "Sécuriser mon compte"
+  },
+  "VERIFY_EMAIL": {
+    "LOADING": {
+      "TITLE": "Vérification..."
+    },
+    "INBOX": {
+      "TITLE": "Vérifiez votre boîte de réception",
+      "DESC": "Nous avons envoyé un lien de vérification sécurisé à votre adresse courriel. Veuillez cliquer dessus pour activer votre compte."
+    },
+    "SUCCESS": {
+      "TITLE": "Courriel vérifié!"
+    },
+    "ERROR": {
+      "TITLE": "Échec de la vérification"
+    },
+    "BTN_RETURN_LOGIN": "Retour à la connexion",
+    "BTN_PROCEED_LOGIN": "Aller à la connexion"
+  },
+  "PAYMENT_STATUS": {
+    "LOADING": {
+      "TITLE": "Confirmation du paiement...",
+      "DESC": "Veuillez ne pas fermer cette fenêtre."
+    },
+    "SUCCESS": {
+      "TITLE": "Paiement réussi!",
+      "DESC": "Votre offre d'emploi est maintenant en ligne et diffusée aux travailleurs correspondants dans votre région."
+    },
+    "ERROR": {
+      "TITLE": "Échec de la vérification",
+      "DESC": "Nous n'avons pas pu confirmer votre paiement. Veuillez vérifier votre tableau de bord."
+    },
+    "BTN_RETURN": "Retour au tableau de bord"
+  },
+  "PENDING": {
+    "IMPERSONATION_WARNING": "Vous consultez actuellement ce tableau de bord en tant qu'utilisateur.",
+    "RETURN_TO_ADMIN": "Retour au contrôle administrateur",
+    "UNVERIFIED": {
+      "TITLE": "Vérifiez votre boîte de réception",
+      "SUBTITLE": "Nous avons envoyé un lien de vérification magique à :",
+      "FALLBACK_EMAIL": "votre adresse courriel",
+      "INSTRUCTIONS": "Cliquez sur le lien dans ce courriel pour activer votre compte. Vous pouvez fermer cette fenêtre en toute sécurité.",
+      "BTN_RETURN": "Retour à la connexion"
+    },
+    "UPLOAD": {
+      "TITLE": "Documents de conformité",
+      "SUBTITLE": "Veuillez télécharger de manière sécurisée des photos ou des numérisations de vos pièces d'identité requises (CCQ pour les travailleurs, RBQ/NEQ pour les entreprises) pour continuer.",
+      "READY": "Prêt à être téléchargé",
+      "BROWSE": "Cliquez pour parcourir ou glissez et déposez",
+      "HINT": "PDF, JPG ou PNG (Max 20 Mo)",
+      "BTN_SUBMIT": "Soumettre les documents",
+      "BTN_SAVE_SIGNOUT": "Enregistrer et se déconnecter"
+    },
+    "VERIFICATION": {
+      "TITLE": "En cours d'examen",
+      "DESC_PART1": "Votre courriel est vérifié! Notre équipe administrative examine actuellement vos",
+      "DESC_CREDENTIALS": "accréditations CCQ/RBQ",
+      "DESC_PART2": "pour assurer la conformité de la plateforme.",
+      "NOTICE": "Ce processus prend généralement moins de 24 heures. Nous vous informerons dès que votre compte sera entièrement activé.",
+      "BTN_SIGNOUT": "Se déconnecter"
+    },
+    "LOADING": "Chargement de votre profil..."
+  },
+  "ADMIN_DASHBOARD": {
+    "IMPERSONATION_WARNING": "Vous consultez actuellement ce tableau de bord en tant qu'utilisateur.",
+    "RETURN_TO_ADMIN": "Retour au contrôle administrateur",
+    "PORTAL_SUBTITLE": "Centre d'administration",
+    "TITLE": "Contrôle d'accès",
+    "DESCRIPTION": "Vérifiez les licences et inspectez l'activité spécifique des utilisateurs.",
+    "BTN_LOGOUT": "Déconnexion",
+    "TABS": {
+      "PENDING_APPROVALS": "Approbations en attente",
+      "TRADE_QUESTIONS": "Questions de métier",
+      "MANAGE_TRADES": "Gérer les métiers",
+      "USER_DIRECTORY": "Répertoire des utilisateurs"
+    },
+    "PENDING": {
+      "INBOX_ZERO_TITLE": "Boîte de réception vide!",
+      "INBOX_ZERO_DESC": "Tous les utilisateurs ont été vérifiés et activés.",
+      "APPLIED_ON": "A postulé le",
+      "BTN_REVIEW_FILE": "Examiner le dossier"
+    },
+    "QUESTIONS": {
+      "TITLE": "Gérer les détails prédéfinis des métiers",
+      "PLACEHOLDER_NEW_QUESTION": "ex. Revêtement de sol requis?",
+      "BTN_ADD": "Ajouter un champ",
+      "TABLE": {
+        "HEADER_TRADE": "Métier",
+        "HEADER_QUESTION": "Question / Détail requis",
+        "HEADER_ACTIONS": "Actions"
+      },
+      "PLACEHOLDER_EN": "Question en anglais (ex. Flooring type?)",
+      "PLACEHOLDER_FR": "Question en français (ex. Type de plancher?)"
+    },
+    "TRADES": {
+      "TITLE": "Ajouter / Supprimer des métiers disponibles",
+      "LABEL_UI_NAME": "Nom du métier (Interface)",
+      "PLACEHOLDER_UI_NAME": "ex. Finisseur de béton",
+      "LABEL_DB_CODE": "Code base de données",
+      "PLACEHOLDER_DB_CODE": "ex. FINISSEUR_BETON",
+      "BTN_ADD": "Ajouter un métier",
+      "TABLE": {
+        "HEADER_DB_CODE": "Code BD",
+        "HEADER_DISPLAY_NAME": "Nom d'affichage",
+        "HEADER_ACTIONS": "Actions"
+      }
+    },
+    "DIRECTORY": {
+      "USER_ID": "ID",
+      "BTN_VIEW_FILE": "Voir le fichier",
+      "BTN_AUDIT_LOGS": "Journaux d'audit",
+      "BTN_VIEW_AS_USER": "Voir en tant qu'utilisateur"
+    },
+    "LOGS": {
+      "DIALOG_HEADER": "Audit d'activité : ",
+      "LOADING": "Extraction des registres sécurisés...",
+      "NO_LOGS_TITLE": "Aucune activité détectée",
+      "NO_LOGS_DESC": "Cet utilisateur n'a pas encore effectué d'actions enregistrées."
+    },
+    "REVIEW": {
+      "DIALOG_HEADER": "Examen des accréditations : ",
+      "LOADING": "Déchiffrement et chargement du document sécurisé...",
+      "NO_DOC_TITLE": "Aucun document joint",
+      "NO_DOC_DESC": "Ce compte a été enregistré avant l'activation de l'exigence de téléchargement de conformité.",
+      "ALT_DOC": "Document d'accréditation",
+      "BTN_CLOSE": "Fermer la visionneuse",
+      "BTN_APPROVE": "Approuver et activer le compte"
+    }
+  },
+  "BUSINESS_DASHBOARD": {
+    "IMPERSONATION_WARNING": "Vous consultez actuellement ce tableau de bord en tant qu'utilisateur.",
+    "RETURN_TO_ADMIN": "Retour au contrôle administrateur",
+    "PORTAL_SUBTITLE": "Portail Employeur",
+    "ACTIVE_LICENSING": "Statut de licence actif",
+    "TITLE": "Mes Chantiers",
+    "PRIVATE_ACCOUNT": "Compte de particulier",
+    "RESIDENTIAL_POSTINGS": "Affichages résidentiels",
+    "CORPORATE_PROFILE": "Profil d'hôte d'entreprise",
+    "RBQ_REGISTRY": "Registre de vérification RBQ :",
+    "STATUS_VALID": "Valide",
+    "CCQ_LEDGER": "Registre de paie CCQ :",
+    "STATUS_LINKED": "Lié",
+    "BTN_POST_JOB": "Afficher un emploi",
+    "BTN_LOGOUT": "Déconnexion",
+    "NO_JOBS_TITLE": "Aucun chantier actif",
+    "NO_JOBS_DESC": "Vous n'avez pas encore publié d'offres d'emploi. Cliquez sur le bouton ci-dessus pour commencer.",
+    "SUPPLY_CHAIN_PROVIDED": "Matériaux fournis sur place",
+    "BRING_MATERIALS": "Apporter les matériaux :",
+    "BRING_TOOLS": "Apporter les outils :",
+    "ROLES_REQUIRED": "Rôles requis",
+    "BTN_COMPLETE_PAYMENT": "Finaliser le paiement",
+    "BTN_MANAGE_SITE": "Gérer le chantier et les rôles",
+    "DIALOG_POST_TITLE": "Publier une nouvelle offre",
+    "LAB_SEARCH_ADDRESS": "Rechercher une adresse",
+    "LAB_STREET_ADDRESS": "Adresse civique",
+    "LAB_CITY": "Ville",
+    "LAB_PROVINCE": "Province",
+    "LAB_POSTAL_CODE": "Code postal",
+    "LAB_START_DATE": "Date de début",
+    "LAB_END_DATE": "Date de fin",
+    "LAB_SPECIFIC_TIME": "Ajouter une heure spécifique (Flexibles / À déterminer par défaut)",
+    "LAB_PROVIDES_SUPPLY": "Fournit la chaîne d'approvisionnement?",
+    "LAB_NEED_MATERIALS": "Matériaux à apporter requis?",
+    "LAB_NEED_TOOLS": "Outils spécifiques requis?",
+    "MATERIALS_REQUIRED_TITLE": "Matériaux requis",
+    "PLACEHOLDER_MATERIAL": "ex. 2 boîtes de vis 3/4, 1 rouleau de poly",
+    "BTN_ADD_MATERIAL": "Ajouter un autre matériau",
+    "TOOLS_REQUIRED_TITLE": "Outils requis à apporter",
+    "PLACEHOLDER_TOOL": "ex. Perceuse à percussion, Scie à carreaux",
+    "BTN_ADD_TOOL": "Ajouter un autre outil",
+    "WORKER_REQUIREMENTS_TITLE": "Besoins en main-d'œuvre",
+    "BTN_ADD_TRADE": "Ajouter un métier",
+    "LAB_TRADE": "Métier",
+    "PLACEHOLDER_SELECT": "Sélectionner",
+    "LAB_PAY_TYPE": "Type de paie",
+    "LAB_AMOUNT": "Montant",
+    "LAB_QTY": "Qté",
+    "TRADE_DETAILS_TITLE": "Détails requis pour ce métier",
+    "PLACEHOLDER_DETAIL": "Saisir le détail...",
+    "BTN_ADD_ITEM": "Ajouter un autre élément",
+    "BTN_CANCEL": "Annuler",
+    "BTN_POST_PAY": "Publier l'emploi et payer",
+    "DIALOG_MANAGE_TITLE": "Gérer les rôles du chantier",
+    "FILLED_COUNT": "Pourvus",
+    "BTN_VIEW_APPLICANTS": "Voir les candidats",
+    "TAG_FULLY_STAFFED": "Équipe complète",
+    "HIRED_CREW_TITLE": "Équipe embauchée",
+    "NEW_WORKER": "Nouveau",
+    "BTN_RATE_WORKER": "Évaluer le travailleur",
+    "DIALOG_APPLICANTS_TITLE": "Candidats en attente",
+    "NO_APPLICANTS": "Aucune candidature pour ce rôle pour le moment.",
+    "YEARS_EXP": "Années Exp.",
+    "APPLIED_ON": "A postulé le",
+    "NEW_ON_PLATFORM": "Nouveau sur la plateforme",
+    "BTN_REJECT": "Rejeter",
+    "BTN_HIRE": "Embaucher",
+    "DIALOG_RATE_TITLE": "Évaluer le travailleur",
+    "LAB_PERFORMANCE": "Comment a été leur performance?",
+    "LAB_COMMENTS": "Commentaires",
+    "PLACEHOLDER_FEEDBACK": "Commentaires sur leur ponctualité et leurs compétences...",
+    "BTN_SUBMIT_RATING": "Soumettre l'évaluation"
+  },
+  "WORKER_DASHBOARD": {
+    "IMPERSONATION_WARNING": "Vous consultez actuellement ce tableau de bord en tant qu'utilisateur.",
+    "RETURN_TO_ADMIN": "Retour au contrôle administrateur",
+    "PORTAL_SUBTITLE": "Portail Travailleur",
+    "TITLE": "Mon Tableau de bord",
+    "BTN_LOGOUT": "Déconnexion",
+    "TABS": {
+      "FIND_SHIFTS": "Trouver des Quarts",
+      "MY_SCHEDULE": "Mon Horaire"
+    },
+    "FEED": {
+      "EMPTY_TITLE": "Aucun quart de travail disponible",
+      "EMPTY_DESC": "Il n'y a actuellement aucun emploi ouvert correspondant à vos métiers. Revenez plus tard!",
+      "TAG_NEW_SHIFT": "NOUVEAU QUART",
+      "JOB_DETAILS": "Détails de l'emploi",
+      "SUPPLY_CHAIN_PROVIDED": "Chaîne d'approvisionnement fournie",
+      "BRING_MATERIALS": "Apporter les matériaux :",
+      "BRING_TOOLS": "Apporter les outils :",
+      "SPOTS_REMAINING": "place(s) restante(s)",
+      "BTN_APPLY": "Postuler maintenant"
+    },
+    "SCHEDULE": {
+      "EMPTY_TITLE": "L'horaire est vide",
+      "EMPTY_DESC": "Vous n'avez encore postulé à aucun emploi.",
+      "LBL_SITE": "Chantier :",
+      "EMAIL_CONTACT": "Contact Courriel",
+      "BTN_ADD_CALENDAR": "Ajouter au calendrier",
+      "BTN_RATE_CONTRACTOR": "Évaluer l'entrepreneur"
+    },
+    "REVIEW": {
+      "TITLE": "Évaluer l'entrepreneur général",
+      "LAB_PERFORMANCE": "Comment s'est passée votre expérience sur le chantier?",
+      "LAB_COMMENTS": "Commentaires",
+      "PLACEHOLDER": "Ont-ils payé correctement? Le chantier était-il sécuritaire?",
+      "BTN_CANCEL": "Annuler",
+      "BTN_SUBMIT": "Soumettre l'évaluation"
+    },
+    "SETTINGS": {
+      "TITLE": "Paramètres du compte",
+      "LAB_APPROVED_TRADES": "Mes métiers approuvés",
+      "PLACEHOLDER_TRADES": "Sélectionnez vos métiers",
+      "HINT_TRADES": "Seuls les quarts correspondant à ces métiers sélectionnés apparaîtront dans votre flux.",
+      "DANGER_ZONE": "Zone de danger",
+      "DELETE_TITLE": "Supprimer le compte",
+      "DELETE_DESC": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+      "BTN_DELETE": "Supprimer",
+      "BTN_CANCEL": "Annuler",
+      "BTN_SAVE": "Enregistrer les modifications"
+    }
+  },
+  "PAYMENT_TYPES": {
+    "HOURLY": "Taux horaire /h",
+    "FIXED": "Salaire fixe",
+    "PER_SQFT": "Au pied carré"
+  },
+"JOB_FORMAT": {
+    "HOURLY_SHORT": "h",
+    "FLEXIBLE": "Horaire flexible / À déterminer",
+    "UNTIL": "Jusqu'au",
+    "AT": "à",
+    "FIXED_LABEL": "Fixe",
+    "PER_SQFT_LABEL": "pi²"
+  },
+  "DIALOGS": {
+    "CONFIRM_APPLICATION_TITLE": "Confirmer la candidature",
+    "CONFIRM_APPLICATION_MSG": "Êtes-vous certain de vouloir postuler pour le poste de {{jobType}} chez {{companyName}} ?",
+    "CONFIRM_HIRE_TITLE": "Confirmer l'embauche",
+    "CONFIRM_HIRE_MSG": "Êtes-vous certain de vouloir embaucher {{workerName}} ? Cela bloquera son horaire et lui enverra une notification immédiatement."
+  }
+}

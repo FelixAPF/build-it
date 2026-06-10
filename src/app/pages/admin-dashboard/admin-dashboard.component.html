@@ -52,10 +52,11 @@
         <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.TRADE_QUESTIONS' | translate">
           <div class="bg-white p-6 rounded-2xl border border-slate-200">
             <h3 class="text-xl font-bold text-slate-800 mb-4">{{ 'ADMIN_DASHBOARD.QUESTIONS.TITLE' | translate }}</h3>
-            
+                        
             <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
               <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="label" optionValue="value" styleClass="w-full sm:w-48"></p-dropdown>
-              <input pInputText [(ngModel)]="newQuestionText" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_NEW_QUESTION' | translate" class="flex-1 w-full" />
+              <input pInputText [(ngModel)]="newQuestionTextEn" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_EN' | translate" class="flex-1 w-full" />
+              <input pInputText [(ngModel)]="newQuestionTextFr" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_FR' | translate" class="flex-1 w-full" />
               <p-button [label]="'ADMIN_DASHBOARD.QUESTIONS.BTN_ADD' | translate" icon="pi pi-plus" styleClass="p-button-danger" (onClick)="addTradeQuestion()"></p-button>
             </div>
 
@@ -70,8 +71,11 @@
               <ng-template pTemplate="body" let-q>
                 <tr>
                   <td class="font-bold text-slate-700">{{ q.jobType }}</td>
-                  <td class="font-bold">{{ q.questionText }}</td>
-                  <td class="text-right">
+                    <td>
+                      <div class="font-bold text-sm text-slate-800">EN: {{ q.questionEn }}</div>
+                      <div class="font-bold text-sm text-slate-600 mt-1">FR: {{ q.questionFr }}</div>
+                    </td>
+                    <td class="text-right">
                     <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTradeQuestion(q.id)"></p-button>
                   </td>
                 </tr>

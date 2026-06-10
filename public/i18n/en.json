@@ -1,0 +1,407 @@
+{
+  "COMMON": {
+    "BRAND_FIRST": "Build",
+    "BRAND_LAST": "It"
+  },
+  "LANDING": {
+    "NAV": {
+      "GO_TO_DASHBOARD": "Go to Dashboard",
+      "LOG_IN": "Log in",
+      "JOIN_NETWORK": "Join the Network",
+      "LOG_IN_SHORT": "Login"
+    },
+    "HERO": {
+      "BADGE_TEXT": "Now live across all of Quebec",
+      "TITLE_LINE1": "Staff your sites.",
+      "TITLE_COLOR": "Without the stress.",
+      "SUBTITLE": "Instantly connect with verified CCQ tradespeople and RBQ contractors. Fill your empty shifts in minutes and keep your projects on schedule.",
+      "BTN_HIRE": "I need to hire workers",
+      "BTN_WORK": "I am looking for shifts"
+    },
+    "STATS": {
+      "STAT1_VAL": "100%",
+      "STAT1_LAB": "CCQ Verified",
+      "STAT2_VAL": "24/7",
+      "STAT2_LAB": "Instant Matches",
+      "STAT3_VAL": "R-20",
+      "STAT3_LAB": "Fully Compliant"
+    },
+    "FEATURES": {
+      "SECTION_TITLE": "Built specifically for the construction industry.",
+      "SECTION_SUBTITLE": "We handle the verification and matchmaking so you can focus on building.",
+      "FEAT1_TITLE": "Act R-20 Compliant",
+      "FEAT1_DESC": "Designed exclusively for the Quebec market. Contractors maintain 100% control over CCQ payroll, union dues, and CNESST obligations.",
+      "FEAT2_TITLE": "Verified Trades",
+      "FEAT2_DESC": "We strictly require CCQ and RBQ numbers upon registration. Our admins verify every credential before anyone can join the network.",
+      "FEAT3_TITLE": "Instant Matchmaking",
+      "FEAT3_DESC": "Post a shift and we instantly notify available workers in your region with the right skills. Review applications and hire with a single click."
+    },
+    "CTA": {
+      "TITLE": "Ready to streamline your job sites?",
+      "SUBTITLE": "Join hundreds of contractors and workers already using BuildIt.",
+      "BTN": "Create your free account today"
+    },
+    "FOOTER": {
+      "COMPANY_NAME": "BuildIt Technologies Inc.",
+      "COPYRIGHT": "© 2026 BuildIt Montreal, QC. All rights reserved."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Welcome back",
+    "SUBTITLE": "Log in to your BuildIt account",
+    "LAB_EMAIL": "Email Address",
+    "PLACEHOLDER_EMAIL": "name@company.com",
+    "LINK_FORGOT_PASSWORD": "Forgot password?",
+    "LAB_PASSWORD": "Password",
+    "PLACEHOLDER_PASSWORD": "••••••••",
+    "BTN_SIGN_IN": "Sign In",
+    "TEXT_NO_ACCOUNT": "Don't have an account yet?",
+    "LINK_CREATE_ACCOUNT": "Create one now",
+    "DIALOG_FORGOT_TITLE": "Reset Password",
+    "DIALOG_FORGOT_DESC": "Enter the email associated with your account, and we'll send you a magic link to reset your password.",
+    "BTN_CANCEL": "Cancel",
+    "BTN_SEND_LINK": "Send Link"
+  },
+  "REGISTER": {
+    "TITLE": "Create your account",
+    "SUBTITLE": "Join the premier construction marketplace.",
+    "TABS": {
+      "WORKER": "I am a Worker",
+      "EMPLOYER": "I am an Employer"
+    },
+    "LAB_FIRST_NAME": "First Name",
+    "LAB_LAST_NAME": "Last Name",
+    "LAB_EMAIL": "Email Address",
+    "LAB_PHONE": "Phone Number",
+    "PLACEHOLDER_PHONE": "(514) 555-0123",
+    "LAB_PASSWORD": "Password",
+    "LAB_EXPERIENCE": "Years of Experience",
+    "LAB_CCQ": "CCQ Number",
+    "PLACEHOLDER_CCQ": "e.g. 12345678",
+    "LAB_TRADES": "Trades / Specialties",
+    "PLACEHOLDER_TRADES": "Select Trades",
+    "TERMS_WORKER": {
+      "PART1": "I agree to the",
+      "LINK": "Terms of Service",
+      "PART2": ". I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards."
+    },
+    "BTN_REGISTER_WORKER": "Register as Worker",
+    "LAB_INTENTION": "Account Intention",
+    "RADIO_PRIVATE_TITLE": "Private Individual",
+    "RADIO_PRIVATE_DESC": "I want to hire tradespeople directly for my personal residence.",
+    "RADIO_COMPANY_TITLE": "Construction Business",
+    "RADIO_COMPANY_DESC": "We are a registered commercial entity hiring trade crews.",
+    "LAB_COMPANY_NAME": "Name / Company Name",
+    "LAB_CONTACT_PERSON": "Contact Person",
+    "LAB_BILLING_ADDRESS": "Billing Address",
+    "PLACEHOLDER_BILLING": "123 Constructor Blvd, Montreal, QC",
+    "LAB_RBQ": "Licence RBQ",
+    "PLACEHOLDER_RBQ": "e.g., 1234-5678-90",
+    "HINT_RBQ": "Mandatory under Régie du bâtiment rules.",
+    "LAB_NEQ": "Employer NEQ ID",
+    "PLACEHOLDER_NEQ": "e.g., 987654321",
+    "HINT_NEQ": "Required for statutory workforce registration.",
+    "TERMS_BUSINESS": {
+      "PART1": "I agree to the",
+      "LINK": "Terms of Service",
+      "PART2": ". I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20."
+    },
+    "BTN_REGISTER_BUSINESS": "Register Account",
+    "ALREADY_HAVE_ACCOUNT": "Already have an account?",
+    "LINK_LOGIN": "Log in here",
+    "DIALOG_TERMS_TITLE": "BuildIt - Terms of Service",
+    "TERMS": {
+      "LAST_UPDATED": "Last Updated: June 2026",
+      "SEC1_TITLE": "1. Nature of the Service",
+      "SEC1_DESC": "BuildIt provides a software-as-a-service (SaaS) matching platform. BuildIt is not an employer, a joint employer, a contractor, a subcontractor, or a personnel placement agency. The use of the Platform does not create an employment relationship between BuildIt and any Business or Worker.",
+      "SEC2_TITLE": "2. Responsibilities of the Business (Employer)",
+      "SEC2_DESC": "When a Business selects a Worker through the Platform, the Business assumes the role of the sole legal employer of that Worker. The Business is exclusively responsible for complying with the Act respecting labour relations, vocational training and workforce management in the construction industry (Act R-20) and the CCQ. The Business is exclusively responsible for the payment of wages, union dues, and CNESST premiums (if applicable).",
+      "SEC3_TITLE": "3. Responsibilities of the Worker (Employee)",
+      "SEC3_DESC": "You understand that by accepting a job requirement, you are entering into a temporary employment relationship directly with the Business, not with BuildIt. You represent and warrant that you hold valid CCQ competency cards for the trades you select.",
+      "SEC4_TITLE": "4. Fees and Payments",
+      "SEC4_DESC": "BuildIt charges a non-refundable matchmaking fee for the use of the software. BuildIt does not process worker wages or facilitate the transfer of payroll funds.",
+      "SEC5_TITLE": "5. Indemnification",
+      "SEC5_DESC": "You agree to indemnify and hold harmless BuildIt from any claims, CCQ fines, union grievances, or damages arising out of your use of the Platform.",
+      "BTN_UNDERSTAND": "I Understand"
+    }
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "New Password",
+    "ERROR_INVALID_TOKEN": "Invalid or missing password reset token.",
+    "BTN_RETURN_LOGIN": "Return to Login",
+    "SUCCESS_TITLE": "Success!",
+    "SUCCESS_DESC": "Your password has been reset. Redirecting you to login...",
+    "LAB_NEW_PASSWORD": "Enter your new password",
+    "PLACEHOLDER_PASSWORD": "••••••••",
+    "BTN_SUBMIT": "Secure My Account"
+  },
+  "VERIFY_EMAIL": {
+    "LOADING": {
+      "TITLE": "Verifying..."
+    },
+    "INBOX": {
+      "TITLE": "Check your inbox",
+      "DESC": "We've sent a secure verification link to your email address. Please click it to activate your account."
+    },
+    "SUCCESS": {
+      "TITLE": "Email Verified!"
+    },
+    "ERROR": {
+      "TITLE": "Verification Failed"
+    },
+    "BTN_RETURN_LOGIN": "Return to Login",
+    "BTN_PROCEED_LOGIN": "Proceed to Login"
+  },
+  "PAYMENT_STATUS": {
+    "LOADING": {
+      "TITLE": "Confirming Payment...",
+      "DESC": "Please do not close this window."
+    },
+    "SUCCESS": {
+      "TITLE": "Payment Successful!",
+      "DESC": "Your job posting is now live and broadcasted to matching workers in your area."
+    },
+    "ERROR": {
+      "TITLE": "Verification Failed",
+      "DESC": "We couldn't confirm your payment. Please check your dashboard."
+    },
+    "BTN_RETURN": "Return to Dashboard"
+  },
+  "PENDING": {
+    "IMPERSONATION_WARNING": "You are currently viewing this dashboard as a user.",
+    "RETURN_TO_ADMIN": "Return to Admin Control",
+    "UNVERIFIED": {
+      "TITLE": "Check your inbox",
+      "SUBTITLE": "We've sent a magic verification link to:",
+      "FALLBACK_EMAIL": "your email address",
+      "INSTRUCTIONS": "Click the link in that email to activate your account. You can safely close this window.",
+      "BTN_RETURN": "Return to Login"
+    },
+    "UPLOAD": {
+      "TITLE": "Compliance Documents",
+      "SUBTITLE": "Please securely upload photos or scans of your required identification (CCQ for workers, RBQ/NEQ for businesses) to proceed.",
+      "READY": "Ready to upload",
+      "BROWSE": "Click to browse or drag and drop",
+      "HINT": "PDF, JPG, or PNG (Max 20MB)",
+      "BTN_SUBMIT": "Submit Documents",
+      "BTN_SAVE_SIGNOUT": "Save & Sign Out"
+    },
+    "VERIFICATION": {
+      "TITLE": "Under Review",
+      "DESC_PART1": "Your email is verified! Our administrative team is currently reviewing your",
+      "DESC_CREDENTIALS": "CCQ/RBQ credentials",
+      "DESC_PART2": "to ensure platform compliance.",
+      "NOTICE": "This process usually takes less than 24 hours. We will notify you the moment your account is fully activated.",
+      "BTN_SIGNOUT": "Sign Out"
+    },
+    "LOADING": "Loading your profile..."
+  },
+  "ADMIN_DASHBOARD": {
+    "IMPERSONATION_WARNING": "You are currently viewing this dashboard as a user.",
+    "RETURN_TO_ADMIN": "Return to Admin Control",
+    "PORTAL_SUBTITLE": "Admin Center",
+    "TITLE": "Access Control",
+    "DESCRIPTION": "Verify licenses and inspect specific user activity.",
+    "BTN_LOGOUT": "Logout",
+    "TABS": {
+      "PENDING_APPROVALS": "Pending Approvals",
+      "TRADE_QUESTIONS": "Trade Questions",
+      "MANAGE_TRADES": "Manage Trades",
+      "USER_DIRECTORY": "User Directory"
+    },
+    "PENDING": {
+      "INBOX_ZERO_TITLE": "Inbox Zero!",
+      "INBOX_ZERO_DESC": "All users have been verified and activated.",
+      "APPLIED_ON": "Applied",
+      "BTN_REVIEW_FILE": "Review File"
+    },
+    "QUESTIONS": {
+      "TITLE": "Manage Predefined Trade Details",
+      "PLACEHOLDER_NEW_QUESTION": "e.g. Required Flooring?",
+      "BTN_ADD": "Add Detail Field",
+      "TABLE": {
+        "HEADER_TRADE": "Trade",
+        "HEADER_QUESTION": "Question / Detail Required",
+        "HEADER_ACTIONS": "Actions"
+      },
+      "PLACEHOLDER_EN": "English Question (e.g. Flooring type?)",
+      "PLACEHOLDER_FR": "French Question (e.g. Type de plancher?)"
+    },
+    "TRADES": {
+      "TITLE": "Add / Remove Available Trades",
+      "LABEL_UI_NAME": "Trade Name (UI)",
+      "PLACEHOLDER_UI_NAME": "e.g. Concrete Finisher",
+      "LABEL_DB_CODE": "Database Code",
+      "PLACEHOLDER_DB_CODE": "e.g. CONCRETE_FINISHER",
+      "BTN_ADD": "Add Trade",
+      "TABLE": {
+        "HEADER_DB_CODE": "Database Code",
+        "HEADER_DISPLAY_NAME": "Display Name",
+        "HEADER_ACTIONS": "Actions"
+      }
+    },
+    "DIRECTORY": {
+      "USER_ID": "ID",
+      "BTN_VIEW_FILE": "View File",
+      "BTN_AUDIT_LOGS": "Audit Logs",
+      "BTN_VIEW_AS_USER": "View As User"
+    },
+    "LOGS": {
+      "DIALOG_HEADER": "Activity Audit: ",
+      "LOADING": "Extracting secure ledgers...",
+      "NO_LOGS_TITLE": "No Activity Detected",
+      "NO_LOGS_DESC": "This user hasn't performed any logged actions yet."
+    },
+    "REVIEW": {
+      "DIALOG_HEADER": "Review Credentials: ",
+      "LOADING": "Decrypting and loading secure document...",
+      "NO_DOC_TITLE": "No Document Attached",
+      "NO_DOC_DESC": "This account was registered before the compliance upload requirement was activated.",
+      "ALT_DOC": "Credential Document",
+      "BTN_CLOSE": "Close Viewer",
+      "BTN_APPROVE": "Approve & Activate Account"
+    }
+  },
+  "BUSINESS_DASHBOARD": {
+    "IMPERSONATION_WARNING": "You are currently viewing this dashboard as a user.",
+    "RETURN_TO_ADMIN": "Return to Admin Control",
+    "PORTAL_SUBTITLE": "Employer Portal",
+    "ACTIVE_LICENSING": "Active Licensing Status",
+    "TITLE": "My Job Sites",
+    "PRIVATE_ACCOUNT": "Private Individual Account",
+    "RESIDENTIAL_POSTINGS": "Residential Postings",
+    "CORPORATE_PROFILE": "Corporate Host Profile",
+    "RBQ_REGISTRY": "RBQ Verification Registry:",
+    "STATUS_VALID": "Valid",
+    "CCQ_LEDGER": "CCQ Payroll Ledger:",
+    "STATUS_LINKED": "Linked",
+    "BTN_POST_JOB": "Post New Job",
+    "BTN_LOGOUT": "Logout",
+    "NO_JOBS_TITLE": "No active job sites",
+    "NO_JOBS_DESC": "You haven't posted any jobs yet. Click the button above to get started.",
+    "SUPPLY_CHAIN_PROVIDED": "Supply Chain Provided",
+    "BRING_MATERIALS": "Bring Materials:",
+    "BRING_TOOLS": "Bring Tools:",
+    "ROLES_REQUIRED": "Roles Required",
+    "BTN_COMPLETE_PAYMENT": "Complete Payment",
+    "BTN_MANAGE_SITE": "Manage Site & Roles",
+    "DIALOG_POST_TITLE": "Post a New Job",
+    "LAB_SEARCH_ADDRESS": "Search Address",
+    "LAB_STREET_ADDRESS": "Street Address",
+    "LAB_CITY": "City",
+    "LAB_PROVINCE": "Province",
+    "LAB_POSTAL_CODE": "Postal Code",
+    "LAB_START_DATE": "Start Date",
+    "LAB_END_DATE": "End Date",
+    "LAB_SPECIFIC_TIME": "Add a specific time (Defaults to Flexible / TBD)",
+    "LAB_PROVIDES_SUPPLY": "Provides Supply Chain?",
+    "LAB_NEED_MATERIALS": "Need Materials Brought?",
+    "LAB_NEED_TOOLS": "Need Specific Tools?",
+    "MATERIALS_REQUIRED_TITLE": "Materials Required",
+    "PLACEHOLDER_MATERIAL": "e.g., 2 boxes of 3/4 screws, 1 roll poly",
+    "BTN_ADD_MATERIAL": "Add Another Material",
+    "TOOLS_REQUIRED_TITLE": "Required Tools to Bring",
+    "PLACEHOLDER_TOOL": "e.g., Hammer Drill, Wet Tile Saw",
+    "BTN_ADD_TOOL": "Add Another Tool",
+    "WORKER_REQUIREMENTS_TITLE": "Worker Requirements",
+    "BTN_ADD_TRADE": "Add Trade",
+    "LAB_TRADE": "Trade",
+    "PLACEHOLDER_SELECT": "Select",
+    "LAB_PAY_TYPE": "Pay Type",
+    "LAB_AMOUNT": "Amount",
+    "LAB_QTY": "Qty",
+    "TRADE_DETAILS_TITLE": "Required Details for this Trade",
+    "PLACEHOLDER_DETAIL": "Enter detail line...",
+    "BTN_ADD_ITEM": "Add Another Item",
+    "BTN_CANCEL": "Cancel",
+    "BTN_POST_PAY": "Post Job & Pay Fee",
+    "DIALOG_MANAGE_TITLE": "Manage Job Roles",
+    "FILLED_COUNT": "Filled",
+    "BTN_VIEW_APPLICANTS": "View Applicants",
+    "TAG_FULLY_STAFFED": "Fully Staffed",
+    "HIRED_CREW_TITLE": "Hired Crew",
+    "NEW_WORKER": "New",
+    "BTN_RATE_WORKER": "Rate Worker",
+    "DIALOG_APPLICANTS_TITLE": "Pending Applicants",
+    "NO_APPLICANTS": "No applications for this role yet.",
+    "YEARS_EXP": "Years Exp.",
+    "APPLIED_ON": "Applied",
+    "NEW_ON_PLATFORM": "New on platform",
+    "BTN_REJECT": "Reject",
+    "BTN_HIRE": "Hire",
+    "DIALOG_RATE_TITLE": "Rate Worker",
+    "LAB_PERFORMANCE": "How was their performance?",
+    "LAB_COMMENTS": "Comments",
+    "PLACEHOLDER_FEEDBACK": "Feedback on their punctuality and skills...",
+    "BTN_SUBMIT_RATING": "Submit Rating"
+  },
+  "WORKER_DASHBOARD": {
+    "IMPERSONATION_WARNING": "You are currently viewing this dashboard as a user.",
+    "RETURN_TO_ADMIN": "Return to Admin Control",
+    "PORTAL_SUBTITLE": "Worker Portal",
+    "TITLE": "My Dashboard",
+    "BTN_LOGOUT": "Logout",
+    "TABS": {
+      "FIND_SHIFTS": "Find Shifts",
+      "MY_SCHEDULE": "My Schedule"
+    },
+    "FEED": {
+      "EMPTY_TITLE": "No shifts available",
+      "EMPTY_DESC": "There are currently no open jobs matching your trades. Check back later!",
+      "TAG_NEW_SHIFT": "NEW SHIFT",
+      "JOB_DETAILS": "Job Details",
+      "SUPPLY_CHAIN_PROVIDED": "Supply Chain Provided",
+      "BRING_MATERIALS": "Bring Materials:",
+      "BRING_TOOLS": "Bring Tools:",
+      "SPOTS_REMAINING": "spot(s) remaining",
+      "BTN_APPLY": "Apply Now"
+    },
+    "SCHEDULE": {
+      "EMPTY_TITLE": "Schedule is empty",
+      "EMPTY_DESC": "You haven't applied to any jobs yet.",
+      "LBL_SITE": "Site:",
+      "EMAIL_CONTACT": "Email Contact",
+      "BTN_ADD_CALENDAR": "Add to Calendar",
+      "BTN_RATE_CONTRACTOR": "Rate Contractor"
+    },
+    "REVIEW": {
+      "TITLE": "Rate General Contractor",
+      "LAB_PERFORMANCE": "How was your experience on site?",
+      "LAB_COMMENTS": "Comments",
+      "PLACEHOLDER": "Did they pay correctly? Was the site safe?",
+      "BTN_CANCEL": "Cancel",
+      "BTN_SUBMIT": "Submit Review"
+    },
+    "SETTINGS": {
+      "TITLE": "Account Settings",
+      "LAB_APPROVED_TRADES": "My Approved Trades",
+      "PLACEHOLDER_TRADES": "Select your trades",
+      "HINT_TRADES": "Only shifts matching these selected trades will appear in your feed.",
+      "DANGER_ZONE": "Danger Zone",
+      "DELETE_TITLE": "Delete Account",
+      "DELETE_DESC": "Permanently remove your account and all associated data. This action cannot be undone.",
+      "BTN_DELETE": "Delete",
+      "BTN_CANCEL": "Cancel",
+      "BTN_SAVE": "Save Changes"
+    }
+  },
+  "PAYMENT_TYPES": {
+    "HOURLY": "Hourly /hr",
+    "FIXED": "Fixed Salary",
+    "PER_SQFT": "Per Sq. Ft."
+  },
+"JOB_FORMAT": {
+    "HOURLY_SHORT": "hr",
+    "FLEXIBLE": "Flexible schedule / TBD",
+    "UNTIL": "Until",
+    "AT": "at",
+    "FIXED_LABEL": "Fixed",
+    "PER_SQFT_LABEL": "sqft"
+  },
+  "DIALOGS": {
+    "CONFIRM_APPLICATION_TITLE": "Confirm Application",
+    "CONFIRM_APPLICATION_MSG": "Are you sure you want to apply for the {{jobType}} position at {{companyName}}?",
+    "CONFIRM_HIRE_TITLE": "Confirm Hire",
+    "CONFIRM_HIRE_MSG": "Are you sure you want to hire {{workerName}}? This will lock them into the schedule and notify them immediately."
+  }
+}

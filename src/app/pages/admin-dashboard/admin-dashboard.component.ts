@@ -56,6 +56,8 @@ export class AdminDashboardComponent implements OnInit {
   trades: any[] = [];
   newTradeLabel: string = '';
   newTradeValue: string = '';
+  newQuestionTextEn: string = '';
+  newQuestionTextFr: string = '';
 
   ngOnInit() {
     this.loadUsers();
@@ -94,11 +96,18 @@ export class AdminDashboardComponent implements OnInit {
     this.adminService.getTradeQuestions().subscribe(res => this.tradeQuestions = res);
   }
 
-  addTradeQuestion() {
-    if (!this.newQuestionText.trim() || !this.selectedJobTypeForQuestion) return;
-    this.adminService.addTradeQuestion({ jobType: this.selectedJobTypeForQuestion, questionText: this.newQuestionText }).subscribe(() => {
-      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Question added'});
-      this.newQuestionText = '';
+addTradeQuestion() {
+    if (!this.newQuestionTextEn.trim() || !this.newQuestionTextFr.trim() || !this.selectedJobTypeForQuestion) return;
+    
+    // Send both languages to your backend
+    this.adminService.addTradeQuestion({ 
+      jobType: this.selectedJobTypeForQuestion, 
+      questionEn: this.newQuestionTextEn,
+      questionFr: this.newQuestionTextFr 
+    }).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Added', detail: 'Question added in both languages'});
+      this.newQuestionTextEn = '';
+      this.newQuestionTextFr = '';
       this.loadTradeQuestions();
     });
   }

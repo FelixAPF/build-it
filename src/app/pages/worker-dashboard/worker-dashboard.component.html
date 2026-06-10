@@ -59,7 +59,12 @@
                   <div *ngIf="job.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{{ 'WORKER_DASHBOARD.FEED.JOB_DETAILS' | translate }}</div>
                     <div *ngFor="let ans of job.answers" class="text-sm">
-                      <span class="font-bold text-slate-700"><i class="pi pi-info-circle mr-1 text-slate-400"></i>{{ans.question}}:</span> <span class="text-slate-600 ml-1">{{ans.answer}}</span>
+                      <span class="font-bold text-slate-700">
+                          <i class="pi pi-info-circle mr-1 text-slate-400"></i>
+                          {{ translate.currentLang === 'fr' ? ans.questionFr : ans.questionEn }}:
+                        </span> 
+                        <span class="text-slate-600 ml-1">{{ ans.answer }}</span> 
+                      </div>
                     </div>
                   </div>
 
