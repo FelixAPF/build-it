@@ -46,7 +46,7 @@ export class BusinessDashboardComponent implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private ngZone = inject(NgZone);
-  private translate = inject(TranslateService);
+  public translate = inject(TranslateService);
   private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('autocompleteContainer') autocompleteContainerRef!: ElementRef;

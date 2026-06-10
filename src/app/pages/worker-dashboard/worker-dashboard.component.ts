@@ -34,7 +34,7 @@ export class WorkerDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private workerService = inject(WorkerService);
   private reviewService = inject(ReviewService);
-  private translate = inject(TranslateService);
+  public translate = inject(TranslateService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
