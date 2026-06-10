@@ -7,34 +7,34 @@
     
     <div *ngIf="status === 'LOADING'" class="py-8">
       <i class="pi pi-spin pi-spinner text-5xl text-red-600 mb-6 drop-shadow-sm"></i>
-      <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Verifying...</h2>
+      <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">{{ 'VERIFY_EMAIL.LOADING.TITLE' | translate }}</h2>
     </div>
 
     <div *ngIf="status === 'CHECK_INBOX'">
       <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
         <i class="pi pi-envelope text-5xl text-red-600"></i>
       </div>
-      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Check your inbox</h2>
-      <p class="text-slate-500 mb-8 text-lg leading-relaxed">We've sent a secure verification link to your email address. Please click it to activate your account.</p>
-      <a routerLink="/login" class="text-red-600 font-bold hover:underline hover:text-red-800 transition-colors text-lg">Return to Login</a>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">{{ 'VERIFY_EMAIL.INBOX.TITLE' | translate }}</h2>
+      <p class="text-slate-500 mb-8 text-lg leading-relaxed">{{ 'VERIFY_EMAIL.INBOX.DESC' | translate }}</p>
+      <a routerLink="/login" class="text-red-600 font-bold hover:underline hover:text-red-800 transition-colors text-lg">{{ 'VERIFY_EMAIL.BTN_RETURN_LOGIN' | translate }}</a>
     </div>
 
     <div *ngIf="status === 'SUCCESS'">
       <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
         <i class="pi pi-check text-5xl text-emerald-500"></i>
       </div>
-      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Email Verified!</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">{{ 'VERIFY_EMAIL.SUCCESS.TITLE' | translate }}</h2>
       <p class="text-slate-500 mb-8 text-lg">{{ message }}</p>
-      <a routerLink="/login" class="inline-block w-full bg-slate-900 text-white font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:-translate-y-1">Proceed to Login</a>
+      <a routerLink="/login" class="inline-block w-full bg-slate-900 text-white font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:-translate-y-1">{{ 'VERIFY_EMAIL.BTN_PROCEED_LOGIN' | translate }}</a>
     </div>
 
     <div *ngIf="status === 'ERROR'">
       <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
         <i class="pi pi-times text-5xl text-red-500"></i>
       </div>
-      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">Verification Failed</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-4">{{ 'VERIFY_EMAIL.ERROR.TITLE' | translate }}</h2>
       <p class="text-slate-500 mb-8 text-lg">{{ message }}</p>
-      <a routerLink="/login" class="inline-block w-full bg-slate-100 text-slate-700 font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-200 transition-colors">Return to Login</a>
+      <a routerLink="/login" class="inline-block w-full bg-slate-100 text-slate-700 font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-200 transition-colors">{{ 'VERIFY_EMAIL.BTN_RETURN_LOGIN' | translate }}</a>
     </div>
 
   </div>

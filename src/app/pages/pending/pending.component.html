@@ -1,6 +1,6 @@
 <div *ngIf="isAdminImpersonating" class="bg-red-600 text-white p-3 text-center font-bold flex flex-col md:flex-row justify-center items-center gap-4 shadow-lg sticky top-0 z-50">
-  <span><i class="pi pi-eye mr-2"></i> You are currently viewing this dashboard as a user.</span>
-  <p-button label="Return to Admin Control" icon="pi pi-arrow-left" size="small" styleClass="p-button-outlined p-button-contrast text-white border-white hover:bg-red-700" (onClick)="returnToAdmin()"></p-button>
+  <span><i class="pi pi-eye mr-2"></i> {{ 'PENDING.IMPERSONATION_WARNING' | translate }}</span>
+  <p-button [label]="'PENDING.RETURN_TO_ADMIN' | translate" icon="pi pi-arrow-left" size="small" styleClass="p-button-outlined p-button-contrast text-white border-white hover:bg-red-700" (onClick)="returnToAdmin()"></p-button>
 </div>
 
 <div class="min-h-screen relative flex items-center justify-center bg-slate-50 overflow-hidden p-4">
@@ -14,24 +14,24 @@
       <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
         <i class="pi pi-envelope text-4xl text-blue-600"></i>
       </div>
-      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">Check your inbox</h1>
-      <p class="text-slate-500 text-lg mb-2">We've sent a magic verification link to:</p>
+      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">{{ 'PENDING.UNVERIFIED.TITLE' | translate }}</h1>
+      <p class="text-slate-500 text-lg mb-2">{{ 'PENDING.UNVERIFIED.SUBTITLE' | translate }}</p>
       <div class="font-mono font-bold text-slate-800 bg-slate-100 py-2 px-4 rounded-lg inline-block mb-8">
-        {{ email || 'your email address' }}
+        {{ email || ('PENDING.UNVERIFIED.FALLBACK_EMAIL' | translate) }}
       </div>
       <p class="text-slate-500 text-sm mb-8 leading-relaxed">
-        Click the link in that email to activate your account. You can safely close this window.
+        {{ 'PENDING.UNVERIFIED.INSTRUCTIONS' | translate }}
       </p>
-      <p-button label="Return to Login" icon="pi pi-arrow-left" styleClass="p-button-outlined p-button-secondary w-full" (onClick)="logout()"></p-button>
+      <p-button [label]="'PENDING.UNVERIFIED.BTN_RETURN' | translate" icon="pi pi-arrow-left" styleClass="p-button-outlined p-button-secondary w-full" (onClick)="logout()"></p-button>
     }
 
     @else if (status === 'PENDING_UPLOAD') {
       <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="pi pi-cloud-upload text-4xl text-blue-600"></i>
       </div>
-      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">Compliance Documents</h1>
+      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">{{ 'PENDING.UPLOAD.TITLE' | translate }}</h1>
       <p class="text-slate-500 text-lg mb-6 leading-relaxed">
-        Please securely upload photos or scans of your required identification (CCQ for workers, RBQ/NEQ for businesses) to proceed.
+        {{ 'PENDING.UPLOAD.SUBTITLE' | translate }}
       </p>
       
       <div class="border-2 border-dashed border-slate-300 rounded-2xl p-8 mb-6 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group" (click)="fileInput.click()">
@@ -40,37 +40,37 @@
          
          @if (selectedFile) {
             <p class="font-bold text-slate-800">{{ selectedFile.name }}</p>
-            <p class="text-xs text-slate-400 mt-1">Ready to upload</p>
+            <p class="text-xs text-slate-400 mt-1">{{ 'PENDING.UPLOAD.READY' | translate }}</p>
          } @else {
-            <p class="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">Click to browse or drag and drop</p>
-            <p class="text-xs text-slate-400 mt-1">PDF, JPG, or PNG (Max 20MB)</p>
+            <p class="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{{ 'PENDING.UPLOAD.BROWSE' | translate }}</p>
+            <p class="text-xs text-slate-400 mt-1">{{ 'PENDING.UPLOAD.HINT' | translate }}</p>
          }
       </div>
 
-      <p-button label="Submit Documents" icon="pi pi-check" [disabled]="!selectedFile" [loading]="isUploading" styleClass="w-full mb-4 bg-blue-600 hover:bg-blue-700 border-none p-4 font-bold shadow-lg shadow-blue-500/30" (onClick)="submitDocuments()"></p-button>
-      <p-button label="Save & Sign Out" icon="pi pi-sign-out" styleClass="p-button-text p-button-secondary w-full" (onClick)="logout()"></p-button>
+      <p-button [label]="'PENDING.UPLOAD.BTN_SUBMIT' | translate" icon="pi pi-check" [disabled]="!selectedFile" [loading]="isUploading" styleClass="w-full mb-4 bg-blue-600 hover:bg-blue-700 border-none p-4 font-bold shadow-lg shadow-blue-500/30" (onClick)="submitDocuments()"></p-button>
+      <p-button [label]="'PENDING.UPLOAD.BTN_SAVE_SIGNOUT' | translate" icon="pi pi-sign-out" styleClass="p-button-text p-button-secondary w-full" (onClick)="logout()"></p-button>
     }
 
     @else if (status === 'PENDING_VERIFICATION') {
       <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="pi pi-shield text-4xl text-amber-600"></i>
       </div>
-      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">Under Review</h1>
+      <h1 class="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">{{ 'PENDING.VERIFICATION.TITLE' | translate }}</h1>
       <p class="text-slate-500 text-lg mb-8 leading-relaxed">
-        Your email is verified! Our administrative team is currently reviewing your <strong>CCQ/RBQ credentials</strong> to ensure platform compliance.
+        {{ 'PENDING.VERIFICATION.DESC_PART1' | translate }} <strong>{{ 'PENDING.VERIFICATION.DESC_CREDENTIALS' | translate }}</strong> {{ 'PENDING.VERIFICATION.DESC_PART2' | translate }}
       </p>
       <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-left mb-8 flex gap-4 items-start">
         <i class="pi pi-clock text-amber-500 mt-1"></i>
         <p class="text-sm text-slate-600">
-          This process usually takes less than 24 hours. We will notify you the moment your account is fully activated.
+          {{ 'PENDING.VERIFICATION.NOTICE' | translate }}
         </p>
       </div>
-      <p-button label="Sign Out" icon="pi pi-sign-out" styleClass="p-button-outlined p-button-secondary w-full" (onClick)="logout()"></p-button>
+      <p-button [label]="'PENDING.VERIFICATION.BTN_SIGNOUT' | translate" icon="pi pi-sign-out" styleClass="p-button-outlined p-button-secondary w-full" (onClick)="logout()"></p-button>
     }
 
     @else {
       <i class="pi pi-spin pi-spinner text-4xl text-slate-400 mb-4"></i>
-      <h2 class="text-xl font-bold text-slate-700">Loading your profile...</h2>
+      <h2 class="text-xl font-bold text-slate-700">{{ 'PENDING.LOADING' | translate }}</h2>
     }
 
   </div>

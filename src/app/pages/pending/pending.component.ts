@@ -5,11 +5,12 @@ import { AuthService } from '../../services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pending',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ToastModule],
+  imports: [CommonModule, ButtonModule, ToastModule, TranslatePipe],
   providers: [MessageService],
   templateUrl: './pending.component.html'
 })

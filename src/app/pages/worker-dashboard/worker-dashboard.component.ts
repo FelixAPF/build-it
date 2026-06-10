@@ -17,6 +17,7 @@ import { RatingModule } from 'primeng/rating';
 import { MessageService, ConfirmationService } from 'primeng/api'; 
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
 import { MultiSelectModule } from 'primeng/multiselect'; // <-- NEW
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-worker-dashboard',
@@ -24,7 +25,7 @@ import { MultiSelectModule } from 'primeng/multiselect'; // <-- NEW
   imports: [
     CommonModule, DatePipe, TableModule, ButtonModule, TagModule, 
     TabViewModule, CardModule, ToastModule, DialogModule, RatingModule,
-    ReactiveFormsModule, FormsModule, ConfirmDialogModule, MultiSelectModule
+    ReactiveFormsModule, FormsModule, ConfirmDialogModule, MultiSelectModule, TranslatePipe
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './worker-dashboard.component.html'
@@ -33,6 +34,7 @@ export class WorkerDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private workerService = inject(WorkerService);
   private reviewService = inject(ReviewService);
+  private translate = inject(TranslateService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
@@ -160,9 +162,13 @@ export class WorkerDashboardComponent implements OnInit {
   }
 
   confirmApply(job: any) {
+    const translatedJobType = this.formatStatus(job.jobType);
     this.confirmationService.confirm({
-      message: `Are you sure you want to apply for the ${this.formatStatus(job.jobType)} position at ${job.companyName}?`,
-      header: 'Confirm Application',
+    message: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_MSG', { 
+        jobType: translatedJobType, 
+        companyName: job.companyName 
+      }),
+      header: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_TITLE'),
       icon: 'pi pi-exclamation-triangle',
       acceptIcon: "none",
       rejectIcon: "none",
@@ -292,7 +298,7 @@ export class WorkerDashboardComponent implements OnInit {
       .join(' ');
   }
 
-  formatDateRange(startStr: string, endStr: string, isTimeFlexible: boolean = false): string {
+formatDateRange(startStr: string, endStr: string, isTimeFlexible: boolean = false): string {
     if (!startStr || !endStr) return '';
     const start = new Date(startStr);
     const end = new Date(endStr);
@@ -305,7 +311,9 @@ export class WorkerDashboardComponent implements OnInit {
                       start.getDate() === end.getDate();
 
     if (isTimeFlexible) {
-      return isSameDay ? 'Flexible schedule / TBD' : `Until ${end.toLocaleDateString([], dateOptions)}`;
+      return isSameDay 
+        ? this.translate.instant('JOB_FORMAT.FLEXIBLE') 
+        : `${this.translate.instant('JOB_FORMAT.UNTIL')} ${end.toLocaleDateString([], dateOptions)}`;
     }
 
     const startTime = start.toLocaleTimeString([], timeOptions);
@@ -315,16 +323,16 @@ export class WorkerDashboardComponent implements OnInit {
       return `${startTime} - ${endTime}`;
     } else {
       const endDate = end.toLocaleDateString([], dateOptions);
-      return `${startTime} - ${endDate} at ${endTime}`;
+      return `${startTime} - ${endDate} ${this.translate.instant('JOB_FORMAT.AT')} ${endTime}`;
     }
   }
 
-  formatPay(rate: number, type: string): string {
+formatPay(rate: number, type: string): string {
     if (!rate) return '';
     switch(type) {
-      case 'HOURLY': return `$${rate}/hr`;
-      case 'FIXED': return `$${rate} Fixed`;
-      case 'PER_SQFT': return `$${rate}/sqft`;
+      case 'HOURLY': return `$${rate}/${this.translate.instant('JOB_FORMAT.HOURLY_SHORT') || 'hr'}`;
+      case 'FIXED': return `$${rate} ${this.translate.instant('JOB_FORMAT.FIXED_LABEL')}`;
+      case 'PER_SQFT': return `$${rate}/${this.translate.instant('JOB_FORMAT.PER_SQFT_LABEL')}`;
       default: return `$${rate}`;
     }
   }

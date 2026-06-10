@@ -9,8 +9,8 @@
       <a routerLink="/" class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center shadow-xl shadow-red-500/30 mb-5 hover:scale-105 transition-transform">
         <i class="pi pi-building text-white text-3xl font-bold"></i>
       </a>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">Create your account</h1>
-      <p class="text-slate-500 mt-2 text-lg font-medium">Join the premier construction marketplace.</p>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">{{ 'REGISTER.TITLE' | translate }}</h1>
+      <p class="text-slate-500 mt-2 text-lg font-medium">{{ 'REGISTER.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl shadow-slate-200/50 rounded-[2rem] p-4 sm:p-8 overflow-hidden">
@@ -21,76 +21,76 @@
 
       <p-tabView [(activeIndex)]="activeTabIndex">
         
-        <p-tabPanel header="I am a Worker">
+        <p-tabPanel [header]="'REGISTER.TABS.WORKER' | translate">
           <form *ngIf="workerForm" [formGroup]="workerForm" (ngSubmit)="onWorkerSubmit()" class="flex flex-col gap-5 mt-6">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">First Name</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_FIRST_NAME' | translate }}</label>
                 <input pInputText formControlName="firstName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Last Name</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_LAST_NAME' | translate }}</label>
                 <input pInputText formControlName="lastName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Email Address</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_EMAIL' | translate }}</label>
                 <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Phone Number</label>
-                <input pInputText formControlName="phoneNumber" placeholder="(514) 555-0123" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_PHONE' | translate }}</label>
+                <input pInputText formControlName="phoneNumber" [placeholder]="'REGISTER.PLACEHOLDER_PHONE' | translate" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Password</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_PASSWORD' | translate }}</label>
                 <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-password>              
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Years of Experience</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_EXPERIENCE' | translate }}</label>
                 <p-inputNumber formControlName="yearsExperience" [min]="0" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-inputNumber>              
               </div>
             </div>
 
            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-2">
-                  <label class="font-bold text-slate-700">CCQ Number</label>
-                  <input pInputText formControlName="ccqNumber" placeholder="e.g. 12345678" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
+                  <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_CCQ' | translate }}</label>
+                  <input pInputText formControlName="ccqNumber" [placeholder]="'REGISTER.PLACEHOLDER_CCQ' | translate" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
-                  <label class="font-bold text-slate-700">Trades / Specialties</label>
-                  <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" placeholder="Select Trades" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" appendTo="body" display="chip"></p-multiSelect>
+                  <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_TRADES' | translate }}</label>
+                  <p-multiSelect [options]="tradeOptions" formControlName="specialties" optionLabel="label" optionValue="value" [placeholder]="'REGISTER.PLACEHOLDER_TRADES' | translate" styleClass="w-full rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" appendTo="body" display="chip"></p-multiSelect>
               </div>
             </div>
 
             <div class="flex items-start gap-3 mt-4 mb-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="workerTerms" styleClass="mt-1"></p-checkbox>
               <label for="workerTerms" class="text-sm text-slate-600 leading-relaxed cursor-pointer">
-                  I agree to the <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I understand that I am applying to be a temporary employee of the Business, and I assume responsibility for maintaining valid CCQ competency cards.
+                {{ 'REGISTER.TERMS_WORKER.PART1' | translate }} <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">{{ 'REGISTER.TERMS_WORKER.LINK' | translate }}</a>{{ 'REGISTER.TERMS_WORKER.PART2' | translate }}
               </label>
             </div>
 
-            <p-button label="Register as Worker" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-800 border-none hover:from-red-700 hover:to-red-900 shadow-lg shadow-red-600/20 transition-all"></p-button>          
+            <p-button [label]="'REGISTER.BTN_REGISTER_WORKER' | translate" type="submit" [disabled]="workerForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-800 border-none hover:from-red-700 hover:to-red-900 shadow-lg shadow-red-600/20 transition-all"></p-button>          
           </form>
         </p-tabPanel>
 
-        <p-tabPanel header="I am an Employer">
+        <p-tabPanel [header]="'REGISTER.TABS.EMPLOYER' | translate">
           <form *ngIf="businessForm" [formGroup]="businessForm" (ngSubmit)="onBusinessSubmit()" class="flex flex-col gap-5 mt-6">
             
             <div class="flex flex-col gap-2 mb-2">
-              <label class="font-bold text-slate-700">Account Intention</label>
+              <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_INTENTION' | translate }}</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label class="p-4 border rounded-xl flex items-start gap-3 cursor-pointer transition-all shadow-sm"
                        [ngClass]="businessForm.get('businessType')?.value === 'PRIVATE' ? 'border-red-600 bg-red-50/40 ring-1 ring-red-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
                   <input type="radio" formControlName="businessType" value="PRIVATE" class="mt-1 text-red-600 focus:ring-red-500" />
                   <div>
-                    <div class="font-bold text-slate-800">Private Individual</div>
-                    <div class="text-xs text-slate-500 mt-0.5">I want to hire tradespeople directly for my personal residence.</div>
+                    <div class="font-bold text-slate-800">{{ 'REGISTER.RADIO_PRIVATE_TITLE' | translate }}</div>
+                    <div class="text-xs text-slate-500 mt-0.5">{{ 'REGISTER.RADIO_PRIVATE_DESC' | translate }}</div>
                   </div>
                 </label>
 
@@ -98,8 +98,8 @@
                        [ngClass]="businessForm.get('businessType')?.value === 'COMPANY' ? 'border-red-600 bg-red-50/40 ring-1 ring-red-600' : 'border-slate-200 bg-white hover:bg-slate-50'">
                   <input type="radio" formControlName="businessType" value="COMPANY" class="mt-1 text-red-600 focus:ring-red-500" />
                   <div>
-                    <div class="font-bold text-slate-800">Construction Business</div>
-                    <div class="text-xs text-slate-500 mt-0.5">We are a registered commercial entity hiring trade crews.</div>
+                    <div class="font-bold text-slate-800">{{ 'REGISTER.RADIO_COMPANY_TITLE' | translate }}</div>
+                    <div class="text-xs text-slate-500 mt-0.5">{{ 'REGISTER.RADIO_COMPANY_DESC' | translate }}</div>
                   </div>
                 </label>
               </div>
@@ -107,52 +107,52 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Name / Company Name</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_COMPANY_NAME' | translate }}</label>
                 <input pInputText formControlName="companyName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Contact Person</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_CONTACT_PERSON' | translate }}</label>
                 <input pInputText formControlName="contactName" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="font-bold text-slate-700">Email Address</label>
+              <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_EMAIL' | translate }}</label>
               <input pInputText formControlName="email" type="email" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Password</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_PASSWORD' | translate }}</label>
                 <p-password formControlName="password" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500"></p-password>
               </div>
               <div class="flex flex-col gap-2">
-                <label class="font-bold text-slate-700">Phone Number</label>
+                <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_PHONE' | translate }}</label>
                 <input pInputText formControlName="phoneNumber" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
               </div>
             </div>
 
             <div class="flex flex-col gap-2 mt-2">
-              <label class="font-bold text-slate-700">Billing Address</label>
-              <input pInputText formControlName="billingAddress" placeholder="123 Constructor Blvd, Montreal, QC" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
+              <label class="font-bold text-slate-700">{{ 'REGISTER.LAB_BILLING_ADDRESS' | translate }}</label>
+              <input pInputText formControlName="billingAddress" [placeholder]="'REGISTER.PLACEHOLDER_BILLING' | translate" class="w-full p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-red-500" />
             </div>
 
             @if (businessForm.get('businessType')?.value === 'COMPANY') {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-amber-50/50 border border-amber-200 rounded-2xl mt-2 shadow-sm animate-fade-in">
                 <div class="flex flex-col gap-2">
                   <label class="font-bold text-slate-800 flex items-center gap-1.5">
-                    Licence RBQ <span class="text-red-500">*</span>
+                    {{ 'REGISTER.LAB_RBQ' | translate }} <span class="text-red-500">*</span>
                   </label>
-                  <input pInputText formControlName="rbqNumber" placeholder="e.g., 1234-5678-90" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
-                  <small class="text-slate-500 text-xs">Mandatory under Régie du bâtiment rules.</small>
+                  <input pInputText formControlName="rbqNumber" [placeholder]="'REGISTER.PLACEHOLDER_RBQ' | translate" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
+                  <small class="text-slate-500 text-xs">{{ 'REGISTER.HINT_RBQ' | translate }}</small>
                 </div>
 
                 <div class="flex flex-col gap-2">
                   <label class="font-bold text-slate-800 flex items-center gap-1.5">
-                    Employer NEQ ID <span class="text-red-500">*</span>
+                    {{ 'REGISTER.LAB_NEQ' | translate }} <span class="text-red-500">*</span>
                   </label>
-                  <input pInputText formControlName="neqNumber" placeholder="e.g., 987654321" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
-                  <small class="text-slate-500 text-xs">Required for statutory workforce registration.</small>
+                  <input pInputText formControlName="neqNumber" [placeholder]="'REGISTER.PLACEHOLDER_NEQ' | translate" class="w-full font-mono bg-white rounded-xl focus:ring-red-500" />
+                  <small class="text-slate-500 text-xs">{{ 'REGISTER.HINT_NEQ' | translate }}</small>
                 </div>
               </div>
             }
@@ -160,45 +160,45 @@
             <div class="flex items-start gap-3 mt-4 mb-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p-checkbox formControlName="termsAccepted" [binary]="true" inputId="businessTerms" styleClass="mt-1"></p-checkbox>
               <label for="businessTerms" class="text-sm text-slate-600 leading-relaxed cursor-pointer">
-                  I agree to the <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">Terms of Service</a>. I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20.
+                {{ 'REGISTER.TERMS_BUSINESS.PART1' | translate }} <a href="#" class="text-red-600 hover:underline font-bold" (click)="$event.preventDefault(); showTermsDialog = true">{{ 'REGISTER.TERMS_BUSINESS.LINK' | translate }}</a>{{ 'REGISTER.TERMS_BUSINESS.PART2' | translate }}
               </label>
             </div>
 
-            <p-button label="Register Account" type="submit" [disabled]="businessForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-slate-800 to-slate-900 border-none hover:from-slate-900 hover:to-black shadow-lg shadow-slate-900/20 transition-all"></p-button>          
+            <p-button [label]="'REGISTER.BTN_REGISTER_BUSINESS' | translate" type="submit" [disabled]="businessForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-slate-800 to-slate-900 border-none hover:from-slate-900 hover:to-black shadow-lg shadow-slate-900/20 transition-all"></p-button>          
           </form>
         </p-tabPanel>
 
       </p-tabView>
 
       <div class="text-center mt-8 text-sm text-slate-500 font-medium border-t border-slate-100 pt-6">
-        Already have an account? 
-        <a routerLink="/login" class="text-red-600 font-bold hover:text-red-700 hover:underline transition-colors ml-1">Log in here</a>
+        {{ 'REGISTER.ALREADY_HAVE_ACCOUNT' | translate }} 
+        <a routerLink="/login" class="text-red-600 font-bold hover:text-red-700 hover:underline transition-colors ml-1">{{ 'REGISTER.LINK_LOGIN' | translate }}</a>
       </div>
       
     </div>
   </div>
 </div>
 
-<p-dialog header="BuildIt - Terms of Service" [(visible)]="showTermsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '75vw', '640px': '95vw' }">
+<p-dialog [header]="'REGISTER.DIALOG_TERMS_TITLE' | translate" [(visible)]="showTermsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '50vw' }" [breakpoints]="{ '960px': '75vw', '640px': '95vw' }">
   <div class="flex flex-col gap-4 text-slate-700 leading-relaxed">
-    <p><strong>Last Updated: June 2026</strong></p>
+    <p><strong>{{ 'REGISTER.TERMS.LAST_UPDATED' | translate }}</strong></p>
     
-    <h3 class="font-bold text-lg text-slate-800">1. Nature of the Service</h3>
-    <p>BuildIt provides a software-as-a-service (SaaS) matching platform. BuildIt is <strong>not</strong> an employer, a joint employer, a contractor, a subcontractor, or a personnel placement agency. The use of the Platform does not create an employment relationship between BuildIt and any Business or Worker.</p>
+    <h3 class="font-bold text-lg text-slate-800">{{ 'REGISTER.TERMS.SEC1_TITLE' | translate }}</h3>
+    <p>{{ 'REGISTER.TERMS.SEC1_DESC' | translate }}</p>
 
-    <h3 class="font-bold text-lg text-slate-800">2. Responsibilities of the Business (Employer)</h3>
-    <p>When a Business selects a Worker through the Platform, the Business assumes the role of the <strong>sole legal employer</strong> of that Worker. The Business is exclusively responsible for complying with the <em>Act respecting labour relations, vocational training and workforce management in the construction industry</em> (Act R-20) and the CCQ. The Business is exclusively responsible for the payment of wages, union dues, and CNESST premiums (if applicable).</p>
+    <h3 class="font-bold text-lg text-slate-800">{{ 'REGISTER.TERMS.SEC2_TITLE' | translate }}</h3>
+    <p>{{ 'REGISTER.TERMS.SEC2_DESC' | translate }}</p>
 
-    <h3 class="font-bold text-lg text-slate-800">3. Responsibilities of the Worker (Employee)</h3>
-    <p>You understand that by accepting a job requirement, you are entering into a temporary employment relationship directly with the Business, not with BuildIt. You represent and warrant that you hold valid CCQ competency cards for the trades you select.</p>
+    <h3 class="font-bold text-lg text-slate-800">{{ 'REGISTER.TERMS.SEC3_TITLE' | translate }}</h3>
+    <p>{{ 'REGISTER.TERMS.SEC3_DESC' | translate }}</p>
 
-    <h3 class="font-bold text-lg text-slate-800">4. Fees and Payments</h3>
-    <p>BuildIt charges a non-refundable matchmaking fee for the use of the software. BuildIt does not process worker wages or facilitate the transfer of payroll funds.</p>
+    <h3 class="font-bold text-lg text-slate-800">{{ 'REGISTER.TERMS.SEC4_TITLE' | translate }}</h3>
+    <p>{{ 'REGISTER.TERMS.SEC4_DESC' | translate }}</p>
 
-    <h3 class="font-bold text-lg text-slate-800">5. Indemnification</h3>
-    <p>You agree to indemnify and hold harmless BuildIt from any claims, CCQ fines, union grievances, or damages arising out of your use of the Platform.</p>
+    <h3 class="font-bold text-lg text-slate-800">{{ 'REGISTER.TERMS.SEC5_TITLE' | translate }}</h3>
+    <p>{{ 'REGISTER.TERMS.SEC5_DESC' | translate }}</p>
   </div>
   <ng-template pTemplate="footer">
-      <p-button icon="pi pi-check" (click)="showTermsDialog = false" label="I Understand" styleClass="p-button-text p-button-danger font-bold"></p-button>
+      <p-button icon="pi pi-check" (click)="showTermsDialog = false" [label]="'REGISTER.TERMS.BTN_UNDERSTAND' | translate" styleClass="p-button-text p-button-danger font-bold"></p-button>
   </ng-template>
 </p-dialog>

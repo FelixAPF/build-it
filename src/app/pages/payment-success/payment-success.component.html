@@ -3,26 +3,26 @@
 
     <div *ngIf="isLoading" class="animate-pulse">
         <i class="pi pi-spin pi-spinner text-5xl text-blue-600 mb-6"></i>
-        <h2 class="text-2xl font-bold text-slate-800">Confirming Payment...</h2>
-        <p class="text-slate-500 mt-2">Please do not close this window.</p>
+        <h2 class="text-2xl font-bold text-slate-800">{{ 'PAYMENT_STATUS.LOADING.TITLE' | translate }}</h2>
+        <p class="text-slate-500 mt-2">{{ 'PAYMENT_STATUS.LOADING.DESC' | translate }}</p>
     </div>
 
     <div *ngIf="!isLoading && isSuccess">
         <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="pi pi-check text-5xl text-emerald-500"></i>
         </div>
-        <h2 class="text-3xl font-extrabold text-slate-800 mb-4">Payment Successful!</h2>
-        <p class="text-slate-500 mb-8 text-lg">Your job posting is now live and broadcasted to matching workers in your area.</p>
-        <a routerLink="/business-dashboard" class="inline-block w-full bg-slate-900 text-white font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg hover:-translate-y-1">Return to Dashboard</a>
+        <h2 class="text-3xl font-extrabold text-slate-800 mb-4">{{ 'PAYMENT_STATUS.SUCCESS.TITLE' | translate }}</h2>
+        <p class="text-slate-500 mb-8 text-lg">{{ 'PAYMENT_STATUS.SUCCESS.DESC' | translate }}</p>
+        <a routerLink="/business-dashboard" class="inline-block w-full bg-slate-900 text-white font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg hover:-translate-y-1">{{ 'PAYMENT_STATUS.BTN_RETURN' | translate }}</a>
     </div>
 
     <div *ngIf="!isLoading && !isSuccess">
         <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="pi pi-times text-5xl text-red-500"></i>
         </div>
-        <h2 class="text-3xl font-extrabold text-slate-800 mb-4">Verification Failed</h2>
-        <p class="text-slate-500 mb-8 text-lg">We couldn't confirm your payment. Please check your dashboard.</p>
-        <a routerLink="/business-dashboard" class="inline-block w-full bg-slate-100 text-slate-700 font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-200 transition-colors">Return to Dashboard</a>
+        <h2 class="text-3xl font-extrabold text-slate-800 mb-4">{{ 'PAYMENT_STATUS.ERROR.TITLE' | translate }}</h2>
+        <p class="text-slate-500 mb-8 text-lg">{{ 'PAYMENT_STATUS.ERROR.DESC' | translate }}</p>
+        <a routerLink="/business-dashboard" class="inline-block w-full bg-slate-100 text-slate-700 font-bold text-lg px-6 py-4 rounded-xl hover:bg-slate-200 transition-colors">{{ 'PAYMENT_STATUS.BTN_RETURN' | translate }}</a>
     </div>
 
     </div>

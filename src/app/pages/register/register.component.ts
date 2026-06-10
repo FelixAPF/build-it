@@ -16,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message'; // <-- CHANGED TO MessageModule
 import { DialogModule } from 'primeng/dialog';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +24,7 @@ import { DialogModule } from 'primeng/dialog';
   imports: [
     CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, InputTextModule,
     PasswordModule, DropdownModule, InputNumberModule, CheckboxModule,
-    MultiSelectModule, TabViewModule, ToastModule, MessageModule, DialogModule // <-- CHANGED TO MessageModule
+    MultiSelectModule, TabViewModule, ToastModule, MessageModule, DialogModule, TranslatePipe // <-- CHANGED TO MessageModule
   ],
   providers: [MessageService],
   templateUrl: './register.component.html'

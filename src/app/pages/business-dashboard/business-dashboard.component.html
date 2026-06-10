@@ -1,65 +1,65 @@
 <div *ngIf="isAdminImpersonating" class="bg-red-600 text-white p-3 text-center font-bold flex flex-col md:flex-row justify-center items-center gap-4 shadow-lg sticky top-0 z-50">
-  <span><i class="pi pi-eye mr-2"></i> You are currently viewing this dashboard as a user.</span>
-  <p-button label="Return to Admin Control" icon="pi pi-arrow-left" size="small" styleClass="p-button-outlined p-button-contrast text-white border-white hover:bg-red-700" (onClick)="returnToAdmin()"></p-button>
+  <span><i class="pi pi-eye mr-2"></i> {{ 'BUSINESS_DASHBOARD.IMPERSONATION_WARNING' | translate }}</span>
+  <p-button [label]="'BUSINESS_DASHBOARD.RETURN_TO_ADMIN' | translate" icon="pi pi-arrow-left" size="small" styleClass="p-button-outlined p-button-contrast text-white border-white hover:bg-red-700" (onClick)="returnToAdmin()"></p-button>
 </div>
 
 <p-toast></p-toast>
 <div class="min-h-screen bg-slate-50 pb-12">
   
-<div class="bg-red-900 text-white pt-12 pb-24 px-6 md:px-12 rounded-b-[3rem] shadow-md">
+  <div class="bg-red-900 text-white pt-12 pb-24 px-6 md:px-12 rounded-b-[3rem] shadow-md">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-3">
           <div class="bg-red-800 text-red-100 text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase border border-red-700">
-            Employer Portal
+            {{ 'BUSINESS_DASHBOARD.PORTAL_SUBTITLE' | translate }}
           </div>
           
           @if (businessType === 'COMPANY') {
             <div class="bg-red-900/80 text-red-300 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-red-800 animate-fade-in">
-              <i class="pi pi-shield text-[10px]"></i> Active Licensing Status
+              <i class="pi pi-shield text-[10px]"></i> {{ 'BUSINESS_DASHBOARD.ACTIVE_LICENSING' | translate }}
             </div>
           }
         </div>
         
-        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">My Job Sites</h1>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">{{ 'BUSINESS_DASHBOARD.TITLE' | translate }}</h1>
         
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-red-200 font-medium">
           
           @if (businessType === 'PRIVATE') {
-            <span class="flex items-center gap-1.5"><i class="pi pi-user text-red-400"></i> Private Individual Account</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-user text-red-400"></i> {{ 'BUSINESS_DASHBOARD.PRIVATE_ACCOUNT' | translate }}</span>
             <span class="text-red-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-home text-red-400"></i> Residential Postings</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-home text-red-400"></i> {{ 'BUSINESS_DASHBOARD.RESIDENTIAL_POSTINGS' | translate }}</span>
           } 
           @else {
-            <span class="flex items-center gap-1.5"><i class="pi pi-briefcase text-red-400"></i> Corporate Host Profile</span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-briefcase text-red-400"></i> {{ 'BUSINESS_DASHBOARD.CORPORATE_PROFILE' | translate }}</span>
             <span class="text-red-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-verified text-red-400"></i> RBQ Verification Registry: <strong class="font-mono text-white">Valid</strong></span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-verified text-red-400"></i> {{ 'BUSINESS_DASHBOARD.RBQ_REGISTRY' | translate }} <strong class="font-mono text-white">{{ 'BUSINESS_DASHBOARD.STATUS_VALID' | translate }}</strong></span>
             <span class="text-red-700 hidden sm:inline">|</span>
-            <span class="flex items-center gap-1.5"><i class="pi pi-file text-red-400"></i> CCQ Payroll Ledger: <strong class="font-mono text-white">Linked</strong></span>
+            <span class="flex items-center gap-1.5"><i class="pi pi-file text-red-400"></i> {{ 'BUSINESS_DASHBOARD.CCQ_LEDGER' | translate }} <strong class="font-mono text-white">{{ 'BUSINESS_DASHBOARD.STATUS_LINKED' | translate }}</strong></span>
           }
           
         </div>
       </div>
       
       <div class="flex flex-wrap gap-3 w-full md:w-auto">
-        <p-button label="Post New Job" icon="pi pi-plus" styleClass="p-button-danger w-full md:w-auto font-bold shadow-lg shadow-red-900/30" (onClick)="showDialog = true"></p-button>
-        <p-button label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-red-900/50" (onClick)="logout()"></p-button>
+        <p-button [label]="'BUSINESS_DASHBOARD.BTN_POST_JOB' | translate" icon="pi pi-plus" styleClass="p-button-danger w-full md:w-auto font-bold shadow-lg shadow-red-900/30" (onClick)="showDialog = true"></p-button>
+        <p-button [label]="'BUSINESS_DASHBOARD.BTN_LOGOUT' | translate" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-red-900/50" (onClick)="logout()"></p-button>
       </div>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-4 md:px-8 -mt-12">
     
-    <div *ngIf="!isLoading && jobs.length === 0" class="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-100">
+    <div class="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-100" *ngIf="!isLoading && jobs.length === 0">
       <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
         <i class="pi pi-folder-open text-3xl text-red-500"></i>
       </div>
-      <h3 class="text-2xl font-bold text-slate-800 mb-2">No active job sites</h3>
-      <p class="text-slate-500 mb-6">You haven't posted any jobs yet. Click the button above to get started.</p>
+      <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ 'BUSINESS_DASHBOARD.NO_JOBS_TITLE' | translate }}</h3>
+      <p class="text-slate-500 mb-6">{{ 'BUSINESS_DASHBOARD.NO_JOBS_DESC' | translate }}</p>
     </div>
 
-    <div *ngIf="!isLoading && jobs.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div *ngFor="let job of jobs" class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-xl transition-all duration-200">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" *ngIf="!isLoading && jobs.length > 0">
+      <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-xl transition-all duration-200" *ngFor="let job of jobs">
         
         <div class="p-6 border-b border-slate-100 flex justify-between items-start gap-4 bg-slate-50/50">
           <div>
@@ -78,22 +78,22 @@
             </div>
           </div>
 
-          <div *ngIf="job.providesSupplyChain || (job.specificTools && job.specificTools.length > 0) || (job.supplyChainItems && job.supplyChainItems.length > 0)" class="mt-1 bg-red-50/50 p-3 rounded-lg border border-red-100 flex flex-col gap-2">
-            <div *ngIf="job.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> Supply Chain Provided</div>
+          <div class="mt-1 bg-red-50/50 p-3 rounded-lg border border-red-100 flex flex-col gap-2" *ngIf="job.providesSupplyChain || (job.specificTools && job.specificTools.length > 0) || (job.supplyChainItems && job.supplyChainItems.length > 0)">
+            <div class="text-xs font-bold text-red-700" *ngIf="job.providesSupplyChain"><i class="pi pi-truck mr-1"></i> {{ 'BUSINESS_DASHBOARD.SUPPLY_CHAIN_PROVIDED' | translate }}</div>
             
-            <div *ngIf="job.supplyChainItems && job.supplyChainItems.length > 0" class="text-xs font-semibold text-slate-600">
-              <span class="font-bold text-slate-700"><i class="pi pi-box mr-1 text-red-500"></i> Bring Materials:</span> {{ job.supplyChainItems.join(', ') }}
+            <div class="text-xs font-semibold text-slate-600" *ngIf="job.supplyChainItems && job.supplyChainItems.length > 0">
+              <span class="font-bold text-slate-700"><i class="pi pi-box mr-1 text-red-500"></i> {{ 'BUSINESS_DASHBOARD.BRING_MATERIALS' | translate }}</span> {{ job.supplyChainItems.join(', ') }}
             </div>
 
-            <div *ngIf="job.specificTools && job.specificTools.length > 0" class="text-xs font-semibold text-slate-600">
-              <span class="font-bold text-slate-700"><i class="pi pi-wrench mr-1 text-red-500"></i> Bring Tools:</span> {{ job.specificTools.join(', ') }}
+            <div class="text-xs font-semibold text-slate-600" *ngIf="job.specificTools && job.specificTools.length > 0">
+              <span class="font-bold text-slate-700"><i class="pi pi-wrench mr-1 text-red-500"></i> {{ 'BUSINESS_DASHBOARD.BRING_TOOLS' | translate }}</span> {{ job.specificTools.join(', ') }}
             </div>
           </div>
           
           <div class="mt-2">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Roles Required</p>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ 'BUSINESS_DASHBOARD.ROLES_REQUIRED' | translate }}</p>
             <div class="flex flex-wrap gap-2">
-              <span *ngFor="let req of job.requirements" class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200 shadow-sm">
+              <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200 shadow-sm" *ngFor="let req of job.requirements">
                 {{req.qtyFilled}}/{{req.qtyRequested}} {{formatStatus(req.jobType)}}
               </span>
             </div>
@@ -102,9 +102,9 @@
 
         <div class="p-4 border-t border-slate-100 bg-white flex flex-col gap-2">
           @if (job.status === 'PENDING_PAYMENT') {
-            <p-button label="Complete Payment" icon="pi pi-credit-card" styleClass="w-full p-button-warning shadow-md" [loading]="isPaying[job.jobPostingId]" (onClick)="resumePayment(job.jobPostingId)"></p-button>
+            <p-button [label]="'BUSINESS_DASHBOARD.BTN_COMPLETE_PAYMENT' | translate" icon="pi pi-credit-card" styleClass="w-full p-button-warning shadow-md" [loading]="isPaying[job.jobPostingId]" (onClick)="resumePayment(job.jobPostingId)"></p-button>
           } @else {
-            <p-button label="Manage Site & Roles" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary hover:bg-slate-50" (onClick)="viewJobDetails(job)"></p-button>
+            <p-button [label]="'BUSINESS_DASHBOARD.BTN_MANAGE_SITE' | translate" icon="pi pi-users" styleClass="w-full p-button-outlined p-button-secondary hover:bg-slate-50" (onClick)="viewJobDetails(job)"></p-button>
           }
         </div>
       </div>
@@ -112,32 +112,31 @@
   </div>
 </div>
 
-<p-dialog header="Post a New Job" [(visible)]="showDialog" [modal]="true" [dismissableMask]="true" (onShow)="initAutocomplete()" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog [header]="'BUSINESS_DASHBOARD.DIALOG_POST_TITLE' | translate" [(visible)]="showDialog" [modal]="true" [dismissableMask]="true" (onShow)="initAutocomplete()" [style]="{ width: '100%', maxWidth: '45rem' }" [breakpoints]="{ '640px': '95vw' }">
   
-  <form *ngIf="jobForm" [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-2">
+  <form class="flex flex-col gap-6 mt-2" *ngIf="jobForm" [formGroup]="jobForm" (ngSubmit)="onSubmit()">
     
     <div class="flex flex-col gap-2">
-      <label class="font-semibold text-slate-700">Search Address</label>
-        <div #autocompleteContainer class="w-full bg-red-50/50 border border-red-200 rounded-xl overflow-hidden min-h-[50px] flex items-center px-1">
-        </div>
+      <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_SEARCH_ADDRESS' | translate }}</label>
+      <div #autocompleteContainer class="w-full bg-red-50/50 border border-red-200 rounded-xl overflow-hidden min-h-[50px] flex items-center px-1"></div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
       <div class="flex flex-col gap-2 md:col-span-2">
-        <label class="text-sm font-semibold text-slate-700">Street Address</label>
+        <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_STREET_ADDRESS' | translate }}</label>
         <input pInputText formControlName="address" class="w-full" />
       </div>
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-semibold text-slate-700">City</label>
+        <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_CITY' | translate }}</label>
         <input pInputText formControlName="city" class="w-full" />
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-slate-700">Province</label>
+          <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_PROVINCE' | translate }}</label>
           <input pInputText formControlName="province" class="w-full" />
         </div>
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-slate-700">Postal Code</label>
+          <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_POSTAL_CODE' | translate }}</label>
           <input pInputText formControlName="postalCode" class="w-full" />
         </div>
       </div>
@@ -145,90 +144,96 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">Start Date</label>
+        <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_START_DATE' | translate }}</label>
         <p-calendar formControlName="startDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
       </div>
       <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">End Date</label>
+        <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_END_DATE' | translate }}</label>
         <p-calendar formControlName="endDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
       </div>
     </div>
 
     <div class="flex items-center gap-2 -mt-2">
       <p-checkbox [(ngModel)]="useSpecificTime" [ngModelOptions]="{standalone: true}" [binary]="true" inputId="timeCheck"></p-checkbox>
-      <label for="timeCheck" class="text-sm font-semibold text-slate-600 cursor-pointer">Add a specific time (Defaults to Flexible / TBD)</label>
+      <label for="timeCheck" class="text-sm font-semibold text-slate-600 cursor-pointer">{{ 'BUSINESS_DASHBOARD.LAB_SPECIFIC_TIME' | translate }}</label>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 border-t border-slate-100 pt-6">
-      
       <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
-        <label class="font-semibold text-slate-700 text-sm">Provides Supply Chain?</label>
+        <label class="font-semibold text-slate-700 text-sm">{{ 'BUSINESS_DASHBOARD.LAB_PROVIDES_SUPPLY' | translate }}</label>
         <p-inputSwitch formControlName="providesSupplyChain"></p-inputSwitch>
       </div>
 
       <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
-        <label class="font-semibold text-slate-700 text-sm">Need Materials Brought?</label>
+        <label class="font-semibold text-slate-700 text-sm">{{ 'BUSINESS_DASHBOARD.LAB_NEED_MATERIALS' | translate }}</label>
         <p-inputSwitch formControlName="needSupplyChainItems" (onChange)="updateSupplyItems($event.checked)"></p-inputSwitch>
       </div>
 
       <div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm hover:border-red-300 transition-colors">
-        <label class="font-semibold text-slate-700 text-sm">Need Specific Tools?</label>
+        <label class="font-semibold text-slate-700 text-sm">{{ 'BUSINESS_DASHBOARD.LAB_NEED_TOOLS' | translate }}</label>
         <p-inputSwitch formControlName="needSpecificTools" (onChange)="updateTools($event.checked)"></p-inputSwitch>
       </div>
     </div>
 
-    <div *ngIf="jobForm.get('needSupplyChainItems')?.value" class="p-5 bg-orange-50 border border-orange-200 rounded-xl mt-2 shadow-sm animate-fade-in">
-      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-box mr-2 text-orange-600"></i> Materials Required</h3>
+    <div class="p-5 bg-orange-50 border border-orange-200 rounded-xl mt-2 shadow-sm animate-fade-in" *ngIf="jobForm.get('needSupplyChainItems')?.value">
+      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-box mr-2 text-orange-600"></i> {{ 'BUSINESS_DASHBOARD.MATERIALS_REQUIRED_TITLE' | translate }}</h3>
       
-      <div formArrayName="supplyChainItems" class="flex flex-col gap-3">
-        <div *ngFor="let matCtrl of supplyChainItemsFormArray.controls; let i=index" class="flex gap-2">
-          <input pInputText [formControlName]="i" placeholder="e.g., 2 boxes of 3/4 screws, 1 roll poly" class="w-full bg-white" />
+      <div class="flex flex-col gap-3" formArrayName="supplyChainItems">
+        <div class="flex gap-2" *ngFor="let matCtrl of supplyChainItemsFormArray.controls; let i=index">
+          <input pInputText [formControlName]="i" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_MATERIAL' | translate" class="w-full bg-white" />
           <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeSupplyItem(i)"></p-button>
         </div>
       </div>
       
-      <p-button label="Add Another Material" icon="pi pi-plus" size="small" styleClass="p-button-warning p-button-text mt-3 font-bold" (onClick)="addSupplyItem()"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_ADD_MATERIAL' | translate" icon="pi pi-plus" size="small" styleClass="p-button-warning p-button-text mt-3 font-bold" (onClick)="addSupplyItem()"></p-button>
     </div>
 
-    <div *ngIf="jobForm.get('needSpecificTools')?.value" class="p-5 bg-red-50/50 border border-red-200 rounded-xl mt-2 shadow-sm animate-fade-in">
-      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-wrench mr-2 text-red-600"></i> Required Tools to Bring</h3>
+    <div class="p-5 bg-red-50/50 border border-red-200 rounded-xl mt-2 shadow-sm animate-fade-in" *ngIf="jobForm.get('needSpecificTools')?.value">
+      <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="pi pi-wrench mr-2 text-red-600"></i> {{ 'BUSINESS_DASHBOARD.TOOLS_REQUIRED_TITLE' | translate }}</h3>
       
-      <div formArrayName="specificTools" class="flex flex-col gap-3">
-        <div *ngFor="let toolCtrl of specificToolsFormArray.controls; let i=index" class="flex gap-2">
-          <input pInputText [formControlName]="i" placeholder="e.g., Hammer Drill, Wet Tile Saw" class="w-full bg-white" />
+      <div class="flex flex-col gap-3" formArrayName="specificTools">
+        <div class="flex gap-2" *ngFor="let toolCtrl of specificToolsFormArray.controls; let i=index">
+          <input pInputText [formControlName]="i" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_TOOL' | translate" class="w-full bg-white" />
           <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeTool(i)"></p-button>
         </div>
       </div>
       
-      <p-button label="Add Another Tool" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-text mt-3 font-bold" (onClick)="addTool()"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_ADD_TOOL' | translate" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-text mt-3 font-bold" (onClick)="addTool()"></p-button>
     </div>
 
     <div class="border-t pt-4">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="font-bold text-lg text-slate-800">Worker Requirements</h3>
-        <p-button label="Add Trade" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-outlined p-button-sm" (onClick)="addRequirement()"></p-button>
+        <h3 class="font-bold text-lg text-slate-800">{{ 'BUSINESS_DASHBOARD.WORKER_REQUIREMENTS_TITLE' | translate }}</h3>
+        <p-button [label]="'BUSINESS_DASHBOARD.BTN_ADD_TRADE' | translate" icon="pi pi-plus" size="small" styleClass="p-button-danger p-button-outlined p-button-sm" (onClick)="addRequirement()"></p-button>
       </div>
 
-      <div formArrayName="requirements" class="flex flex-col gap-4">
-        <div *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i" class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative flex flex-col sm:flex-row gap-4 flex-wrap">
+      <div class="flex flex-col gap-4" formArrayName="requirements">
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative flex flex-col sm:flex-row gap-4 flex-wrap" *ngFor="let req of requirementsFormArray.controls; let i=index" [formGroupName]="i">
           
           <div class="flex-1 min-w-[150px] flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-700">Trade</label>
-            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" placeholder="Select" appendTo="body" styleClass="w-full" (onChange)="onTradeChange($event, i)"></p-dropdown>
+            <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_TRADE' | translate }}</label>
+            <p-dropdown [options]="jobTypes" formControlName="jobType" optionLabel="label" optionValue="value" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_SELECT' | translate" appendTo="body" styleClass="w-full" (onChange)="onTradeChange($event, i)"></p-dropdown>
           </div>
           
-          <div class="w-full sm:w-40 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-700">Pay Type</label>
-            <p-dropdown [options]="paymentTypes" formControlName="paymentType" optionLabel="label" optionValue="value" appendTo="body" styleClass="w-full"></p-dropdown>
+            <div class="w-full sm:w-40 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_PAY_TYPE' | translate }}</label>
+            <p-dropdown [options]="paymentTypes" formControlName="paymentType" optionValue="value" appendTo="body" styleClass="w-full">
+              <ng-template pTemplate="selectedItem" let-item>
+                {{ item.label | translate }}
+              </ng-template>
+              <ng-template pTemplate="item" let-item>
+                {{ item.label | translate }}
+              </ng-template>
+            </p-dropdown>
           </div>
           
           <div class="w-full sm:w-28 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-700">Amount</label>
+            <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_AMOUNT' | translate }}</label>
             <p-inputNumber formControlName="payRate" mode="currency" currency="CAD" styleClass="w-full" inputStyleClass="w-full"></p-inputNumber>
           </div>
           
           <div class="w-full sm:w-20 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-700">Qty</label>
+            <label class="text-sm font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_QTY' | translate }}</label>
             <p-inputNumber formControlName="qtyRequested" [showButtons]="true" [min]="1" styleClass="w-full" inputStyleClass="w-full text-center"></p-inputNumber>
           </div>
           
@@ -236,20 +241,20 @@
             <p-button *ngIf="requirementsFormArray.length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-text p-button-rounded" (onClick)="removeRequirement(i)"></p-button>
           </div>
 
-          <div formArrayName="tradeQuestions" *ngIf="getTradeQuestionsArray(i).length > 0" class="w-full flex flex-col gap-4 mt-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-red-600 mb-1">Required Details for this Trade</h4>
+          <div class="w-full flex flex-col gap-4 mt-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm" formArrayName="tradeQuestions" *ngIf="getTradeQuestionsArray(i).length > 0">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-red-600 mb-1">{{ 'BUSINESS_DASHBOARD.TRADE_DETAILS_TITLE' | translate }}</h4>
             
-            <div *ngFor="let tq of getTradeQuestionsArray(i).controls; let qIndex=index" [formGroupName]="qIndex" class="flex flex-col gap-2 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+            <div class="flex flex-col gap-2 border-b border-slate-100 pb-4 last:border-0 last:pb-0" *ngFor="let tq of getTradeQuestionsArray(i).controls; let qIndex=index" [formGroupName]="qIndex">
               <label class="text-sm font-bold text-slate-700">{{ tq.get('question')?.value }} <span class="text-red-500">*</span></label>
               
-              <div formArrayName="answers" class="flex flex-col gap-2">
-                <div *ngFor="let ansCtrl of getAnswersForQuestion(i, qIndex).controls; let aIndex=index" class="flex gap-2">
-                  <input pInputText [formControlName]="aIndex" placeholder="Enter detail line..." class="w-full bg-slate-50" />
+              <div class="flex flex-col gap-2" formArrayName="answers">
+                <div class="flex gap-2" *ngFor="let ansCtrl of getAnswersForQuestion(i, qIndex).controls; let aIndex=index">
+                  <input pInputText [formControlName]="aIndex" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_DETAIL' | translate" class="w-full bg-slate-50" />
                   <p-button *ngIf="getAnswersForQuestion(i, qIndex).length > 1" icon="pi pi-trash" styleClass="p-button-danger p-button-outlined" (onClick)="removeAnswerFromQuestion(i, qIndex, aIndex)"></p-button>
                 </div>
               </div>
 
-              <p-button label="Add Another Item" icon="pi pi-plus" size="small" styleClass="p-button-text p-button-danger w-fit mt-1" (onClick)="addAnswerToQuestion(i, qIndex)"></p-button>
+              <p-button [label]="'BUSINESS_DASHBOARD.BTN_ADD_ITEM' | translate" icon="pi pi-plus" size="small" styleClass="p-button-text p-button-danger w-fit mt-1" (onClick)="addAnswerToQuestion(i, qIndex)"></p-button>
             </div>
           </div>
 
@@ -258,64 +263,63 @@
     </div>
 
     <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-4 pt-4 border-t">
-      <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showDialog = false"></p-button>
-      <p-button label="Post Job & Pay Fee" icon="pi pi-check" type="submit" [disabled]="jobForm.invalid" [loading]="isSubmitting" styleClass="w-full sm:w-auto p-button-danger shadow-md shadow-red-500/20"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_CANCEL' | translate" icon="pi pi-times" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showDialog = false"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_POST_PAY' | translate" icon="pi pi-check" type="submit" [disabled]="jobForm.invalid" [loading]="isSubmitting" styleClass="w-full sm:w-auto p-button-danger shadow-md shadow-red-500/20"></p-button>
     </div>
   </form>
 </p-dialog>
 
-<p-dialog header="Manage Job Roles" [(visible)]="showJobDetailsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '50rem' }" [breakpoints]="{ '640px': '95vw' }">
+<p-dialog [header]="'BUSINESS_DASHBOARD.DIALOG_MANAGE_TITLE' | translate" [(visible)]="showJobDetailsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '50rem' }" [breakpoints]="{ '640px': '95vw' }">
   <div *ngIf="selectedJob">
     <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
       <p class="font-semibold text-slate-800 mb-1"><i class="pi pi-map-marker text-red-500 mr-2"></i> {{selectedJob.address}}</p>
       <p class="text-sm text-slate-600"><i class="pi pi-calendar text-red-500 mr-2"></i> {{selectedJob.startDatetime | date:'mediumDate'}} &bull; {{ formatDateRange(selectedJob.startDatetime, selectedJob.endDatetime, selectedJob.isTimeFlexible) }}</p>
     </div>
     <div class="flex flex-col gap-4">
-      <div *ngFor="let req of selectedJob.requirements" class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm" *ngFor="let req of selectedJob.requirements">
         
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            
             <p-tag [value]="formatStatus(req.jobType)" severity="info"></p-tag>
-            <div *ngIf="req.answers?.length > 0" class="mt-3 flex flex-col gap-1 bg-slate-50 p-3 rounded-lg border border-slate-200">
-              <div *ngFor="let ans of req.answers" class="text-sm">
+            <div class="mt-3 flex flex-col gap-1 bg-slate-50 p-3 rounded-lg border border-slate-200" *ngIf="req.answers?.length > 0">
+              <div class="text-sm" *ngFor="let ans of req.answers">
                 <span class="font-bold text-slate-700">{{ans.question}}:</span> <span class="text-slate-600">{{ans.answer}}</span>
               </div>
             </div>
             <div class="mt-2 text-lg text-slate-800 font-bold">{{ formatPay(req.payRate, req.paymentType) }}</div>
             <div class="text-sm font-medium" [ngClass]="req.qtyFilled >= req.qtyRequested ? 'text-green-600' : 'text-amber-600'">
-              Filled: {{req.qtyFilled}} / {{req.qtyRequested}}
+              {{ 'BUSINESS_DASHBOARD.FILLED_COUNT' | translate }}: {{req.qtyFilled}} / {{req.qtyRequested}}
             </div>
           </div>
           <div class="w-full sm:w-auto">
             <button (click)="viewApplicants(req.requirementId)" class="relative p-2 text-red-600 hover:text-red-800 font-semibold flex items-center gap-1.5">
-            <i class="pi pi-users"></i> 
-            <span>View Applicants</span>
-            
-            @if (req.pendingApplicantsCount > 0) {
+              <i class="pi pi-users"></i> 
+              <span>{{ 'BUSINESS_DASHBOARD.BTN_VIEW_APPLICANTS' | translate }}</span>
+              
+              @if (req.pendingApplicantsCount > 0) {
                 <span class="absolute -top-1 -right-2 bg-slate-900 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md animate-bounce">
-                {{ req.pendingApplicantsCount }}
+                  {{ req.pendingApplicantsCount }}
                 </span>
-            }
+              }
             </button>
-            <p-tag *ngIf="req.qtyFilled >= req.qtyRequested" value="Fully Staffed" severity="success" icon="pi pi-check" styleClass="w-full sm:w-auto px-4 py-2 text-sm"></p-tag>
+            <p-tag *ngIf="req.qtyFilled >= req.qtyRequested" [value]="'BUSINESS_DASHBOARD.TAG_FULLY_STAFFED' | translate" severity="success" icon="pi pi-check" styleClass="w-full sm:w-auto px-4 py-2 text-sm"></p-tag>
           </div>
         </div>
         
-        <div *ngIf="req.assignedWorkers.length > 0" class="mt-5 border-t border-slate-100 pt-4">
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Hired Crew</p>
-          <div *ngFor="let worker of req.assignedWorkers" class="flex flex-col sm:flex-row justify-between sm:items-center bg-slate-50 p-3 rounded-lg border border-slate-200 mb-2 gap-3">
+        <div class="mt-5 border-t border-slate-100 pt-4" *ngIf="req.assignedWorkers.length > 0">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">{{ 'BUSINESS_DASHBOARD.HIRED_CREW_TITLE' | translate }}</p>
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-slate-50 p-3 rounded-lg border border-slate-200 mb-2 gap-3" *ngFor="let worker of req.assignedWorkers">
             <div>
               <div class="font-bold text-slate-800 flex items-center gap-2">
                 {{worker.fullName}}
                 <span class="text-xs font-semibold text-slate-600 bg-white px-2 py-1 border border-slate-200 rounded-full flex items-center shadow-sm">
                   <i class="pi pi-star-fill text-amber-400 text-[10px] mr-1"></i> 
-                  {{ worker.averageRating > 0 ? worker.averageRating : 'New' }}
+                  {{ worker.averageRating > 0 ? worker.averageRating : ('BUSINESS_DASHBOARD.NEW_WORKER' | translate) }}
                 </span>
               </div>
               <a [href]="'tel:' + worker.phoneNumber" class="text-sm font-semibold text-red-600 hover:underline mt-1 block w-fit"><i class="pi pi-phone mr-1"></i> {{worker.phoneNumber}}</a>
             </div>
-            <p-button *ngIf="isJobComplete(selectedJob.endDatetime) && !worker.reviewedWorker" label="Rate Worker" icon="pi pi-star-fill" size="small" styleClass="p-button-warning w-full sm:w-auto" (onClick)="openReview(worker.applicationId)"></p-button>
+            <p-button *ngIf="isJobComplete(selectedJob.endDatetime) && !worker.reviewedWorker" [label]="'BUSINESS_DASHBOARD.BTN_RATE_WORKER' | translate" icon="pi pi-star-fill" size="small" styleClass="p-button-warning w-full sm:w-auto" (onClick)="openReview(worker.applicationId)"></p-button>
           </div>
         </div>
 
@@ -324,42 +328,44 @@
   </div>
 </p-dialog>
 
-<p-dialog header="Pending Applicants" [(visible)]="showApplicantsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '40rem' }" [breakpoints]="{ '640px': '95vw' }">
-  <div *ngIf="!isLoadingApplicants && applicants.length === 0" class="text-center p-8 text-slate-500 bg-slate-50 rounded-lg border border-slate-200">
+<p-dialog [header]="'BUSINESS_DASHBOARD.DIALOG_APPLICANTS_TITLE' | translate" [(visible)]="showApplicantsDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '40rem' }" [breakpoints]="{ '640px': '95vw' }">
+  <div class="text-center p-8 text-slate-500 bg-slate-50 rounded-lg border border-slate-200" *ngIf="!isLoadingApplicants && applicants.length === 0">
     <i class="pi pi-inbox text-3xl mb-3 text-slate-400"></i>
-    <p>No applications for this role yet.</p>
+    <p>{{ 'BUSINESS_DASHBOARD.NO_APPLICANTS' | translate }}</p>
   </div>
 
   <div class="flex flex-col gap-3 mt-2">
-    <div *ngFor="let app of applicants" class="flex flex-col sm:flex-row justify-between sm:items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm gap-4">
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm gap-4" *ngFor="let app of applicants">
       <div>
         <div class="font-bold text-slate-800 text-lg">{{app.workerName}}</div>
-        <div class="text-sm text-slate-500 mt-1">{{app.yearsExperience}} Years Exp. • Applied {{app.appliedAt | date:'shortDate'}}</div>
+        <div class="text-sm text-slate-500 mt-1">
+          {{ app.yearsExperience }} {{ 'BUSINESS_DASHBOARD.YEARS_EXP' | translate }} • {{ 'BUSINESS_DASHBOARD.APPLIED_ON' | translate }} {{ app.appliedAt | date:'shortDate' }}
+        </div>
         <div class="mt-2 text-sm font-semibold bg-amber-50 text-amber-700 px-2 py-1 rounded inline-flex items-center border border-amber-200">
-          <i class="pi pi-star-fill mr-1"></i> {{ app.averageRating > 0 ? app.averageRating : 'New on platform' }}
+          <i class="pi pi-star-fill mr-1"></i> {{ app.averageRating > 0 ? app.averageRating : ('BUSINESS_DASHBOARD.NEW_ON_PLATFORM' | translate) }}
         </div>
       </div>
       <div class="flex gap-2 w-full sm:w-auto">
-        <p-button icon="pi pi-times" label="Reject" styleClass="p-button-secondary p-button-outlined flex-1 sm:flex-none hover:bg-slate-100" (onClick)="rejectWorker(app.applicationId)"></p-button>
-        <p-button icon="pi pi-check" label="Hire" styleClass="p-button-danger flex-1 sm:flex-none shadow-md" (onClick)="confirmApprove(app)"></p-button>
+        <p-button icon="pi pi-times" [label]="'BUSINESS_DASHBOARD.BTN_REJECT' | translate" styleClass="p-button-secondary p-button-outlined flex-1 sm:flex-none hover:bg-slate-100" (onClick)="rejectWorker(app.applicationId)"></p-button>
+        <p-button icon="pi pi-check" [label]="'BUSINESS_DASHBOARD.BTN_HIRE' | translate" styleClass="p-button-danger flex-1 sm:flex-none shadow-md" (onClick)="confirmApprove(app)"></p-button>
       </div>
     </div>
   </div>
 </p-dialog>
 
-<p-dialog header="Rate Worker" [(visible)]="showReviewDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '30rem' }" [breakpoints]="{ '640px': '95vw' }">
-  <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="flex flex-col gap-6 mt-2">
+<p-dialog [header]="'BUSINESS_DASHBOARD.DIALOG_RATE_TITLE' | translate" [(visible)]="showReviewDialog" [modal]="true" [dismissableMask]="true" [style]="{ width: '100%', maxWidth: '30rem' }" [breakpoints]="{ '640px': '95vw' }">
+  <form class="flex flex-col gap-6 mt-2" [formGroup]="reviewForm" (ngSubmit)="submitReview()">
     <div class="flex flex-col items-center gap-3 bg-slate-50 p-6 rounded-xl border border-slate-200">
-      <label class="font-bold text-slate-800 text-center">How was their performance?</label>
+      <label class="font-bold text-slate-800 text-center">{{ 'BUSINESS_DASHBOARD.LAB_PERFORMANCE' | translate }}</label>
       <p-rating formControlName="starRating" [cancel]="false" [stars]="5"></p-rating>
     </div>
     <div class="flex flex-col gap-2">
-      <label class="font-semibold text-slate-700">Comments</label>
-      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" placeholder="Feedback on their punctuality and skills..."></textarea>
+      <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_COMMENTS' | translate }}</label>
+      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full p-3 border border-slate-300 rounded-lg" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_FEEDBACK' | translate"></textarea>
     </div>
     <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
-      <p-button label="Cancel" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
-      <p-button label="Submit Rating" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-danger w-full sm:w-auto shadow-md"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_CANCEL' | translate" styleClass="p-button-text p-button-secondary w-full sm:w-auto" (onClick)="showReviewDialog = false"></p-button>
+      <p-button [label]="'BUSINESS_DASHBOARD.BTN_SUBMIT_RATING' | translate" (onClick)="submitReview()" [loading]="isSubmittingReview" styleClass="p-button-danger w-full sm:w-auto shadow-md"></p-button>
     </div>
   </form>
 </p-dialog>

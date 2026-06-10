@@ -9,8 +9,8 @@
       <a routerLink="/" class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center shadow-xl shadow-red-500/30 mb-5 hover:scale-105 transition-transform">
         <i class="pi pi-building text-white text-3xl font-bold"></i>
       </a>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">Welcome back</h1>
-      <p class="text-slate-500 mt-2 text-lg">Log in to your BuildIt account</p>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">{{ 'LOGIN.TITLE' | translate }}</h1>
+      <p class="text-slate-500 mt-2 text-lg">{{ 'LOGIN.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="bg-white/80 backdrop-blur-xl border border-white shadow-2xl shadow-slate-200/50 rounded-[2rem] p-6 sm:p-10">
@@ -22,24 +22,24 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-slate-700">Email Address</label>
-          <input pInputText formControlName="email" type="email" placeholder="name@company.com" class="w-full p-4 rounded-xl border-slate-200 focus:ring-red-500 bg-white/50 focus:bg-white transition-colors" />
+          <label class="font-bold text-slate-700">{{ 'LOGIN.LAB_EMAIL' | translate }}</label>
+          <input pInputText formControlName="email" type="email" [placeholder]="'LOGIN.PLACEHOLDER_EMAIL' | translate" class="w-full p-4 rounded-xl border-slate-200 focus:ring-red-500 bg-white/50 focus:bg-white transition-colors" />
           <div class="text-right -mt-4">
-            <a href="#" (click)="$event.preventDefault(); showForgotDialog = true" class="text-sm text-red-600 font-semibold hover:underline">Forgot password?</a>
+            <a href="#" (click)="$event.preventDefault(); showForgotDialog = true" class="text-sm text-red-600 font-semibold hover:underline">{{ 'LOGIN.LINK_FORGOT_PASSWORD' | translate }}</a>
           </div>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="font-bold text-slate-700">Password</label>
-          <p-password formControlName="password" [toggleMask]="true" placeholder="••••••••" styleClass="w-full" inputStyleClass="w-full p-4 rounded-xl border-slate-200 focus:ring-red-500 bg-white/50 focus:bg-white transition-colors" [feedback]="false"></p-password>
+          <label class="font-bold text-slate-700">{{ 'LOGIN.LAB_PASSWORD' | translate }}</label>
+          <p-password formControlName="password" [toggleMask]="true" [placeholder]="'LOGIN.PLACEHOLDER_PASSWORD' | translate" styleClass="w-full" inputStyleClass="w-full p-4 rounded-xl border-slate-200 focus:ring-red-500 bg-white/50 focus:bg-white transition-colors" [feedback]="false"></p-password>
         </div>
 
-        <p-button label="Sign In" type="submit" [disabled]="loginForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-800 border-none hover:from-red-700 hover:to-red-900 shadow-lg shadow-red-600/20 transition-all"></p-button>
+        <p-button [label]="'LOGIN.BTN_SIGN_IN' | translate" type="submit" [disabled]="loginForm.invalid" [loading]="isLoading" styleClass="w-full mt-2 p-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-800 border-none hover:from-red-700 hover:to-red-900 shadow-lg shadow-red-600/20 transition-all"></p-button>
       </form>
 
       <div class="text-center mt-8 text-sm text-slate-500 font-medium border-t border-slate-100 pt-6">
-        Don't have an account yet?
-        <a routerLink="/register" class="text-red-600 font-bold hover:text-red-700 hover:underline transition-colors ml-1">Create one now</a>
+        {{ 'LOGIN.TEXT_NO_ACCOUNT' | translate }}
+        <a routerLink="/register" class="text-red-600 font-bold hover:text-red-700 hover:underline transition-colors ml-1">{{ 'LOGIN.LINK_CREATE_ACCOUNT' | translate }}</a>
       </div>
     </div>
     
@@ -47,13 +47,13 @@
 </div>
 
 <p-toast></p-toast>
-<p-dialog header="Reset Password" [(visible)]="showForgotDialog" [modal]="true" [dismissableMask]="true" [style]="{width: '100%', maxWidth: '28rem'}" [breakpoints]="{'640px': '90vw'}">
-  <p class="text-slate-500 mb-4">Enter the email associated with your account, and we'll send you a magic link to reset your password.</p>
+<p-dialog [header]="'LOGIN.DIALOG_FORGOT_TITLE' | translate" [(visible)]="showForgotDialog" [modal]="true" [dismissableMask]="true" [style]="{width: '100%', maxWidth: '28rem'}" [breakpoints]="{'640px': '90vw'}">
+  <p class="text-slate-500 mb-4">{{ 'LOGIN.DIALOG_FORGOT_DESC' | translate }}</p>
   <div class="flex flex-col gap-2">
-    <input pInputText [(ngModel)]="forgotEmail" placeholder="name@company.com" class="w-full p-3 rounded-xl border-slate-300" />
+    <input pInputText [(ngModel)]="forgotEmail" [placeholder]="'LOGIN.PLACEHOLDER_EMAIL' | translate" class="w-full p-3 rounded-xl border-slate-300" />
   </div>
   <div class="flex justify-end gap-2 mt-6">
-    <p-button label="Cancel" styleClass="p-button-text p-button-secondary" (onClick)="showForgotDialog = false"></p-button>
-    <p-button label="Send Link" [loading]="isSendingReset" styleClass="p-button-danger" (onClick)="submitForgotPassword()"></p-button>
+    <p-button [label]="'LOGIN.BTN_CANCEL' | translate" styleClass="p-button-text p-button-secondary" (onClick)="showForgotDialog = false"></p-button>
+    <p-button [label]="'LOGIN.BTN_SEND_LINK' | translate" [loading]="isSendingReset" styleClass="p-button-danger" (onClick)="submitForgotPassword()"></p-button>
   </div>
 </p-dialog>

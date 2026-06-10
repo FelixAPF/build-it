@@ -13,13 +13,14 @@ import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
 imports: [
     ReactiveFormsModule, CardModule, InputTextModule, ButtonModule, 
-    MessageModule, RouterLink, PasswordModule, DialogModule, ToastModule, CommonModule, FormsModule // <-- ADDED
+    MessageModule, RouterLink, PasswordModule, DialogModule, ToastModule, CommonModule, FormsModule, TranslatePipe // <-- ADDED
   ],  providers: [MessageService],
   templateUrl: './login.component.html'
 })

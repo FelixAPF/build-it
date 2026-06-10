@@ -22,6 +22,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CheckboxModule } from 'primeng/checkbox'; 
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect'; 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 declare var google: any;
 
@@ -31,7 +32,7 @@ declare var google: any;
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule, DatePipe, TableModule, ButtonModule, 
     TagModule, DialogModule, InputTextModule, CalendarModule, DropdownModule, 
-    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule, MultiSelectModule
+    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule, MultiSelectModule, TranslatePipe
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './business-dashboard.component.html'
@@ -45,6 +46,7 @@ export class BusinessDashboardComponent implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private ngZone = inject(NgZone);
+  private translate = inject(TranslateService);
   private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('autocompleteContainer') autocompleteContainerRef!: ElementRef;
@@ -73,10 +75,10 @@ export class BusinessDashboardComponent implements OnInit {
   // FIX: Start empty so we can fetch the dynamic trades from the database!
   jobTypes: any[] = [];
 
-  paymentTypes = [
-    { label: 'Hourly /hr', value: 'HOURLY' },
-    { label: 'Fixed Salary', value: 'FIXED' },
-    { label: 'Per Sq. Ft.', value: 'PER_SQFT' }
+paymentTypes = [
+    { label: 'PAYMENT_TYPES.HOURLY', value: 'HOURLY' },
+    { label: 'PAYMENT_TYPES.FIXED', value: 'FIXED' },
+    { label: 'PAYMENT_TYPES.PER_SQFT', value: 'PER_SQFT' }
   ];
 
   ngOnInit() {
@@ -440,10 +442,10 @@ export class BusinessDashboardComponent implements OnInit {
     });
   }
 
-  confirmApprove(app: any) {
+confirmApprove(app: any) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to hire ${app.workerName}? This will lock them into the schedule and notify them immediately.`,
-      header: 'Confirm Hire',
+      header: this.translate.instant('DIALOGS.CONFIRM_HIRE_TITLE'),
+      message: this.translate.instant('DIALOGS.CONFIRM_HIRE_MSG', { workerName: app.workerName }),
       icon: 'pi pi-check-circle',
       acceptIcon: "none",
       rejectIcon: "none",

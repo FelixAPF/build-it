@@ -15,11 +15,13 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule, InputTextModule],
+  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, ConfirmDialogModule, TranslatePipe, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule, InputTextModule],
   providers: [MessageService],
   templateUrl: './admin-dashboard.component.html'
 })

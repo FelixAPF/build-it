@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PasswordModule, ButtonModule, MessageModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, PasswordModule, ButtonModule, MessageModule, RouterLink, TranslatePipe],
   templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent implements OnInit {
