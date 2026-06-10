@@ -1,8 +1,13 @@
 <div class="min-h-screen relative flex items-center justify-center bg-slate-50 overflow-hidden p-4 sm:p-8">
   
+  <div class="absolute top-6 right-6 z-50 animate-fade-in">
+    <button (click)="switchLanguage()" class="bg-white/60 hover:bg-white backdrop-blur-md border border-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl shadow-sm transition-all hover:-translate-y-0.5">
+      {{ currentLang === 'en' ? 'FR' : 'EN' }}
+    </button>
+  </div>
+
   <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
   <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-orange-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
-
   <div class="w-full max-w-md z-10 animate-fade-in">
     
     <div class="text-center mb-8 flex flex-col items-center">

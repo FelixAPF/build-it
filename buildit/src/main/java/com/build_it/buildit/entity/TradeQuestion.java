@@ -15,8 +15,11 @@ public class TradeQuestion {
   @Column(name = "job_type", nullable = false, length = 50)
   private String jobType;
 
-  @Column(nullable = false)
-  private String questionText;
+  @Column(name = "question_en", nullable = false)
+  private String questionEn;
+
+  @Column(name = "question_fr", nullable = false)
+  private String questionFr;
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "trade_question_options", joinColumns = @JoinColumn(name = "trade_question_id"))

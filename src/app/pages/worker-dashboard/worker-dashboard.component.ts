@@ -57,7 +57,14 @@ export class WorkerDashboardComponent implements OnInit {
   isDeletingAccount: boolean = false;
   workerProfile: any = null;
   selectedSpecialties: string[] = [];
+  public currentLang = localStorage.getItem('buildit_lang') || 'en';
 
+  // 2. Add this method anywhere in your class
+  switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'fr' : 'en';
+    this.translate.use(this.currentLang);
+    localStorage.setItem('buildit_lang', this.currentLang);
+  }
   jobTypes = [
     { label: 'Electrician', value: 'ELECTRICIEN' },
     { label: 'Plumber', value: 'PLOMBIER' },

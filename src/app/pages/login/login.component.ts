@@ -13,7 +13,7 @@ import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -30,10 +30,14 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private route = inject(ActivatedRoute);
+  private translate = inject(TranslateService); 
 
   showForgotDialog: boolean = false;
   forgotEmail: string = '';
   isSendingReset: boolean = false;
+
+  // Track current language
+  public currentLang = localStorage.getItem('buildit_lang') || 'en'; 
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -98,6 +102,11 @@ onSubmit() {
         }
       });
     }
+  }
+  switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'fr' : 'en';
+    this.translate.use(this.currentLang);
+    localStorage.setItem('buildit_lang', this.currentLang);
   }
 
   submitForgotPassword() {

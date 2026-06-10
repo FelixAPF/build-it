@@ -16,7 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message'; // <-- CHANGED TO MessageModule
 import { DialogModule } from 'primeng/dialog';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
@@ -35,6 +35,7 @@ export class RegisterComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private messageService = inject(MessageService);
+  private translate = inject(TranslateService); 
 
   activeTabIndex: number = 0;
   workerForm!: FormGroup;
@@ -42,8 +43,16 @@ export class RegisterComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
   showTermsDialog: boolean = false;
+  public currentLang = localStorage.getItem('buildit_lang') || 'en'; 
+
 
   tradeOptions: any[] = [];
+
+    switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'fr' : 'en';
+    this.translate.use(this.currentLang);
+    localStorage.setItem('buildit_lang', this.currentLang);
+  }
 
   ngOnInit() {
     this.authService.getTrades().subscribe({

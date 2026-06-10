@@ -23,6 +23,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect'; 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AutoFocus } from "primeng/autofocus";
 
 declare var google: any;
 
@@ -30,10 +31,11 @@ declare var google: any;
   selector: 'app-business-dashboard',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule, DatePipe, TableModule, ButtonModule, 
-    TagModule, DialogModule, InputTextModule, CalendarModule, DropdownModule, 
-    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule, MultiSelectModule, TranslatePipe
-  ],
+    CommonModule, ReactiveFormsModule, FormsModule, DatePipe, TableModule, ButtonModule,
+    TagModule, DialogModule, InputTextModule, CalendarModule, DropdownModule,
+    InputNumberModule, ToastModule, RatingModule, ConfirmDialogModule, CheckboxModule, InputSwitchModule, MultiSelectModule, TranslatePipe,
+    AutoFocus
+],
   providers: [MessageService, ConfirmationService],
   templateUrl: './business-dashboard.component.html'
 })
@@ -121,6 +123,15 @@ paymentTypes = [
     }
   }
   
+  public currentLang = localStorage.getItem('buildit_lang') || 'en';
+
+  // 2. Add this method anywhere in your class
+  switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'fr' : 'en';
+    this.translate.use(this.currentLang);
+    localStorage.setItem('buildit_lang', this.currentLang);
+  }
+  
   onTradeChange(event: any, reqIndex: number) {
     const reqGroup = this.requirementsFormArray.at(reqIndex) as FormGroup;
     const selectedTrade = event.value; // Now this will perfectly match "FLOOR_LAYER"
@@ -128,8 +139,9 @@ paymentTypes = [
 
     const questionsArray = this.fb.array(
       questions.map(q => this.fb.group({
-        question: [q.questionText],
-        answers: this.fb.array([this.fb.control('', Validators.required)]) 
+      questionEn: [q.questionEn],
+        questionFr: [q.questionFr],
+        answers: this.fb.array([this.fb.control('', Validators.required)])
       }))
     );
     
@@ -252,8 +264,10 @@ paymentTypes = [
           dropdown.style.display = 'none';
         }
       });
+      input.focus();
 
     }, 500);
+
   }
 
   async fetchSuggestions(query: string, dropdown: HTMLElement, input: HTMLInputElement, sessionToken: any, onPicked: () => void) {
