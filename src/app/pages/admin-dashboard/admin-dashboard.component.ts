@@ -39,6 +39,7 @@ export class AdminDashboardComponent implements OnInit {
   newTradeLabelEn: string = '';
   newTradeLabelFr: string = '';
   newTradeValue: string = '';
+  systemMetrics: { key: string, value: number, icon: string, colorClass: string, bgClass: string }[] = [];
 
   userLogs: any[] = [];
   showLogsDialog: boolean = false;
@@ -70,6 +71,20 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers();
     this.loadTrades();
     this.loadTradeQuestions();
+    this.loadMetrics();
+  }
+
+  loadMetrics() {
+    this.adminService.getMetrics().subscribe(data => {
+      // By mapping it into an array, the HTML can just loop through it blindly!
+      this.systemMetrics = [
+        { key: 'TOTAL_BUSINESSES', value: data.totalBusinesses, icon: 'pi pi-briefcase', colorClass: 'text-blue-600', bgClass: 'bg-blue-100' },
+        { key: 'TOTAL_WORKERS', value: data.totalWorkers, icon: 'pi pi-users', colorClass: 'text-emerald-600', bgClass: 'bg-emerald-100' },
+        { key: 'TOTAL_JOBS', value: data.totalJobs, icon: 'pi pi-folder-open', colorClass: 'text-purple-600', bgClass: 'bg-purple-100' },
+        { key: 'TOTAL_MATCHES', value: data.totalMatches, icon: 'pi pi-handshake', colorClass: 'text-amber-500', bgClass: 'bg-amber-100' },
+        { key: 'TOTAL_CANCELLED', value: data.totalCancelled, icon: 'pi pi-times-circle', colorClass: 'text-red-500', bgClass: 'bg-red-100' }
+      ];
+    });
   }
 
     switchLanguage() {

@@ -38,17 +38,17 @@
     },
     "CTA": {
       "TITLE": "Ready to streamline your job sites?",
-      "SUBTITLE": "Join hundreds of contractors and workers already using BuildIt.",
+      "SUBTITLE": "Join hundreds of contractors and workers already using CrewUp.",
       "BTN": "Create your free account today"
     },
     "FOOTER": {
-      "COMPANY_NAME": "BuildIt Technologies Inc.",
-      "COPYRIGHT": "© 2026 BuildIt Montreal, QC. All rights reserved."
+      "COMPANY_NAME": "CrewUp Technologies Inc.",
+      "COPYRIGHT": "© 2026 CrewUp Montreal, QC. All rights reserved."
     }
   },
   "LOGIN": {
     "TITLE": "Welcome back",
-    "SUBTITLE": "Log in to your BuildIt account",
+    "SUBTITLE": "Log in to your CrewUp account",
     "LAB_EMAIL": "Email Address",
     "PLACEHOLDER_EMAIL": "name@company.com",
     "LINK_FORGOT_PASSWORD": "Forgot password?",
@@ -110,24 +110,24 @@
     "TERMS_BUSINESS": {
       "PART1": "I agree to the",
       "LINK": "Terms of Service",
-      "PART2": ". I acknowledge that I am the sole legal employer of any worker hired through BuildIt, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20."
+      "PART2": ". I acknowledge that I am the sole legal employer of any worker hired through CrewUp, and I assume 100% responsibility for all CCQ payroll, union dues, and CNESST compliance under Act R-20."
     },
     "BTN_REGISTER_BUSINESS": "Register Account",
     "ALREADY_HAVE_ACCOUNT": "Already have an account?",
     "LINK_LOGIN": "Log in here",
-    "DIALOG_TERMS_TITLE": "BuildIt - Terms of Service",
+    "DIALOG_TERMS_TITLE": "CrewUp - Terms of Service",
     "TERMS": {
       "LAST_UPDATED": "Last Updated: June 2026",
       "SEC1_TITLE": "1. Nature of the Service",
-      "SEC1_DESC": "BuildIt provides a software-as-a-service (SaaS) matching platform. BuildIt is not an employer, a joint employer, a contractor, a subcontractor, or a personnel placement agency. The use of the Platform does not create an employment relationship between BuildIt and any Business or Worker.",
+      "SEC1_DESC": "CrewUp provides a software-as-a-service (SaaS) matching platform. CrewUp is not an employer, a joint employer, a contractor, a subcontractor, or a personnel placement agency. The use of the Platform does not create an employment relationship between CrewUp and any Business or Worker.",
       "SEC2_TITLE": "2. Responsibilities of the Business (Employer)",
       "SEC2_DESC": "When a Business selects a Worker through the Platform, the Business assumes the role of the sole legal employer of that Worker. The Business is exclusively responsible for complying with the Act respecting labour relations, vocational training and workforce management in the construction industry (Act R-20) and the CCQ. The Business is exclusively responsible for the payment of wages, union dues, and CNESST premiums (if applicable).",
       "SEC3_TITLE": "3. Responsibilities of the Worker (Employee)",
-      "SEC3_DESC": "You understand that by accepting a job requirement, you are entering into a temporary employment relationship directly with the Business, not with BuildIt. You represent and warrant that you hold valid CCQ competency cards for the trades you select.",
+      "SEC3_DESC": "You understand that by accepting a job requirement, you are entering into a temporary employment relationship directly with the Business, not with CrewUp. You represent and warrant that you hold valid CCQ competency cards for the trades you select.",
       "SEC4_TITLE": "4. Fees and Payments",
-      "SEC4_DESC": "BuildIt charges a non-refundable matchmaking fee for the use of the software. BuildIt does not process worker wages or facilitate the transfer of payroll funds.",
+      "SEC4_DESC": "CrewUp charges a non-refundable matchmaking fee for the use of the software. CrewUp does not process worker wages or facilitate the transfer of payroll funds.",
       "SEC5_TITLE": "5. Indemnification",
-      "SEC5_DESC": "You agree to indemnify and hold harmless BuildIt from any claims, CCQ fines, union grievances, or damages arising out of your use of the Platform.",
+      "SEC5_DESC": "You agree to indemnify and hold harmless CrewUp from any claims, CCQ fines, union grievances, or damages arising out of your use of the Platform.",
       "BTN_UNDERSTAND": "I Understand"
     }
   },
@@ -213,7 +213,8 @@
       "PENDING_APPROVALS": "Pending Approvals",
       "TRADE_QUESTIONS": "Trade Questions",
       "MANAGE_TRADES": "Manage Trades",
-      "USER_DIRECTORY": "User Directory"
+      "USER_DIRECTORY": "User Directory",
+      "SYSTEM_METRICS": "Platform Metrics"
     },
     "PENDING": {
       "INBOX_ZERO_TITLE": "Inbox Zero!",
@@ -254,7 +255,9 @@
       "USER_ID": "ID",
       "BTN_VIEW_FILE": "View File",
       "BTN_AUDIT_LOGS": "Audit Logs",
-      "BTN_VIEW_AS_USER": "View As User"
+      "BTN_VIEW_AS_USER": "View As User",
+      "EMPTY_TITLE": "No Users Found",
+      "EMPTY_DESC": "The user directory is currently empty."
     },
     "LOGS": {
       "DIALOG_HEADER": "Activity Audit: ",
@@ -270,6 +273,13 @@
       "ALT_DOC": "Credential Document",
       "BTN_CLOSE": "Close Viewer",
       "BTN_APPROVE": "Approve & Activate Account"
+    },
+  "METRICS": {
+      "TOTAL_BUSINESSES": "Businesses",
+      "TOTAL_WORKERS": "Workers",
+      "TOTAL_JOBS": "Total Job Postings",
+      "TOTAL_MATCHES": "Total Workers Matched",
+      "TOTAL_CANCELLED": "Cancelled Job Postings"
     }
   },
   "BUSINESS_DASHBOARD": {

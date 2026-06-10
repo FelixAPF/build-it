@@ -2,18 +2,17 @@ package com.build_it.buildit.service;
 
 import com.build_it.buildit.dto.AuthResponse;
 import com.build_it.buildit.dto.UserAdminResponse;
-import com.build_it.buildit.entity.AccountStatus;
-import com.build_it.buildit.entity.Role;
-import com.build_it.buildit.entity.User;
-import com.build_it.buildit.repository.BusinessProfileRepository;
-import com.build_it.buildit.repository.UserRepository;
-import com.build_it.buildit.repository.WorkerProfileRepository;
+import com.build_it.buildit.entity.*;
+import com.build_it.buildit.repository.*;
 import com.build_it.buildit.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +24,8 @@ public class AdminService {
   private final BusinessProfileRepository businessProfileRepository;
   private final JwtUtils jwtUtils;
   private final AuditLogService auditLogService; // <-- Inject Service
+  private final JobPostingRepository jobPostingRepository;
+  private final JobApplicationRepository applicationRepository;
 
   @Transactional(readOnly = true)
   public List<UserAdminResponse> getPendingUsers() {
@@ -51,6 +52,16 @@ public class AdminService {
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
+  }
+  @Transactional(readOnly = true)
+  public Map<String, Long> getSystemMetrics() {
+    Map<String, Long> metrics = new HashMap<>();
+    metrics.put("totalBusinesses", userRepository.countByRole(Role.BUSINESS));
+    metrics.put("totalWorkers", userRepository.countByRole(Role.WORKER));
+    metrics.put("totalJobs", jobPostingRepository.count());
+    metrics.put("totalMatches", applicationRepository.countByStatus(ApplicationStatus.SELECTED));
+    metrics.put("totalCancelled", jobPostingRepository.countByStatus(JobStatus.CANCELLED));
+    return metrics;
   }
 
   @Transactional(readOnly = true)

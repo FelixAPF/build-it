@@ -58,4 +58,7 @@ export class AdminService {
   deleteTrade(id: number): Observable<any> {
     return this.http.delete<any>(`${this.adminUrl}/trades/${id}`);
   }
+  getMetrics(): Observable<any> {
+    return this.http.get<any>(`${this.adminUrl}/metrics`);
+  }
 }

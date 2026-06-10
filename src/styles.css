@@ -23,17 +23,29 @@
     outline: none !important;
 }
 
-/* 2. Force TabView to render as Buttons/Underlines */
+/* 2. Force TabView to render as Buttons/Underlines & SCROLL ON MOBILE */
 .p-tabview .p-tabview-nav {
     border-bottom: 2px solid #e2e8f0 !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style-type: none !important;
     display: flex !important;
+    
+    /* Mobile Scroll Fixes */
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important; /* Smooth iOS scrolling */
+    scrollbar-width: none !important; /* Hide scrollbar Firefox */
+}
+
+/* Hide the scrollbar for Chrome/Safari/Edge */
+.p-tabview .p-tabview-nav::-webkit-scrollbar {
+    display: none !important;
 }
 
 .p-tabview .p-tabview-nav li {
     margin-right: 1rem !important;
+    flex-shrink: 0 !important; /* Prevent tabs from squishing on small screens */
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
@@ -45,6 +57,7 @@
     padding: 1rem !important;
     background: transparent !important;
     text-decoration: none !important;
+    white-space: nowrap !important; /* Prevent text from wrapping to two lines */
 }
 
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {

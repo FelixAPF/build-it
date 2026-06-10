@@ -11,8 +11,8 @@
   <div class="w-full max-w-md z-10 animate-fade-in">
     
     <div class="text-center mb-8 flex flex-col items-center">
-      <a routerLink="/" class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center shadow-xl shadow-red-500/30 mb-5 hover:scale-105 transition-transform">
-        <i class="pi pi-building text-white text-3xl font-bold"></i>
+      <a routerLink="/" class="mb-5 hover:scale-105 transition-transform">
+        <img src="/logo/transparent/logo_only.png" alt="CrewUp" class="w-24 h-24 rounded-[1.25rem] object-cover shadow-xl shadow-red-500/20 border-2 border-white" />
       </a>
       <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">{{ 'LOGIN.TITLE' | translate }}</h1>
       <p class="text-slate-500 mt-2 text-lg">{{ 'LOGIN.SUBTITLE' | translate }}</p>
@@ -49,6 +49,12 @@
     </div>
     
   </div>
+
+  <div class="absolute bottom-4 left-0 w-full text-center z-0">
+    <p class="text-sm font-medium text-slate-400">
+      &copy; 2026 CrewUp Technologies Inc.
+    </p>
+  </div>
 </div>
 
 <p-toast></p-toast>
@@ -62,3 +68,4 @@
     <p-button [label]="'LOGIN.BTN_SEND_LINK' | translate" [loading]="isSendingReset" styleClass="p-button-danger" (onClick)="submitForgotPassword()"></p-button>
   </div>
 </p-dialog>
+

@@ -58,6 +58,12 @@ public class AdminController {
   }
 
   @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/metrics")
+  public ResponseEntity<java.util.Map<String, Long>> getMetrics() {
+    return ResponseEntity.ok(adminService.getSystemMetrics());
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/logs")
   public ResponseEntity<List<AuditLog>> getAuditLogs() {
     return ResponseEntity.ok(auditLogService.getAllLogs());
@@ -81,6 +87,7 @@ public class AdminController {
       .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
       .body(resource);
   }
+
 
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/trade-questions")

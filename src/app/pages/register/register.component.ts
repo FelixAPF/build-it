@@ -277,7 +277,10 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = err.error || 'Registration failed. Please try again.';
+          let msg = 'Registration failed. Please try again.';
+          if (typeof err.error === 'string') msg = err.error;
+          else if (err.error && typeof err.error.message === 'string') msg = err.error.message;
+          this.errorMessage = msg;
         }
       });
     }
@@ -297,7 +300,10 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = err.error || 'Registration failed. Please try again.';
+          let msg = 'Registration failed. Please try again.';
+          if (typeof err.error === 'string') msg = err.error;
+          else if (err.error && typeof err.error.message === 'string') msg = err.error.message;
+          this.errorMessage = msg;
         }
       });
     }

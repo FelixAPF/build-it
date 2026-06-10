@@ -14,4 +14,5 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
   // For the general job board (only showing open or partially filled jobs)
   List<JobPosting> findByStatusIn(List<JobStatus> statuses);
+  long countByStatus(JobStatus status);
 }
