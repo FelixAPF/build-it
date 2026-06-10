@@ -112,15 +112,49 @@ export class WorkerDashboardComponent implements OnInit {
     });
   }
 
-  confirmDeleteAccount() {
+confirmApply(job: any) {
+    const translatedJobType = this.formatStatus(job.jobType);
     this.confirmationService.confirm({
-      message: 'Are you absolutely sure you want to permanently delete your account? You will lose all your shift history and this action cannot be undone.',
-      header: 'Delete Account',
-      icon: 'pi pi-exclamation-triangle',
+      message: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_MSG', { 
+        jobType: translatedJobType, 
+        companyName: job.companyName 
+      }),
+      header: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_TITLE'),
+      icon: 'pi pi-exclamation-triangle text-amber-500 text-2xl', // Colored Icon
       acceptIcon: "none",
       rejectIcon: "none",
-      acceptButtonStyleClass: "p-button-danger",
-      rejectButtonStyleClass: "p-button-text p-button-secondary",
+      
+      // Premium Spaced-out Buttons
+      rejectButtonStyleClass: "p-button-text text-slate-600 hover:bg-slate-100 font-bold px-5 py-3 rounded-xl mr-3 transition-colors",
+      acceptButtonStyleClass: "p-button-danger bg-gradient-to-r from-red-600 to-red-800 border-none text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all hover:-translate-y-0.5",
+      
+      // Translated Labels
+      acceptLabel: this.currentLang === 'fr' ? 'Oui' : 'Yes',
+      rejectLabel: this.currentLang === 'fr' ? 'Non' : 'No',
+      
+      accept: () => {
+        this.apply(job.requirementId);
+      }
+    });
+  }
+
+  confirmDeleteAccount() {
+    this.confirmationService.confirm({
+      message: this.currentLang === 'fr' 
+        ? 'Êtes-vous absolument sûr de vouloir supprimer définitivement votre compte ? Vous perdrez tout votre historique et cette action est irréversible.' 
+        : 'Are you absolutely sure you want to permanently delete your account? You will lose all your shift history and this action cannot be undone.',
+      header: this.currentLang === 'fr' ? 'Supprimer le compte' : 'Delete Account',
+      icon: 'pi pi-exclamation-circle text-red-600 text-2xl',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      
+      // Premium Spaced-out Buttons
+      rejectButtonStyleClass: "p-button-text text-slate-600 hover:bg-slate-100 font-bold px-5 py-3 rounded-xl mr-3 transition-colors",
+      acceptButtonStyleClass: "bg-red-600 hover:bg-red-700 border-none text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all hover:-translate-y-0.5",
+      
+      acceptLabel: this.currentLang === 'fr' ? 'Supprimer' : 'Delete',
+      rejectLabel: this.currentLang === 'fr' ? 'Annuler' : 'Cancel',
+      
       accept: () => {
         this.isDeletingAccount = true;
         this.workerService.deleteAccount().subscribe({
@@ -136,7 +170,6 @@ export class WorkerDashboardComponent implements OnInit {
       }
     });
   }
-
   returnToAdmin() {
     const adminToken = localStorage.getItem('admin_token');
     if (adminToken) {
@@ -169,23 +202,7 @@ export class WorkerDashboardComponent implements OnInit {
     });
   }
 
-  confirmApply(job: any) {
-    const translatedJobType = this.formatStatus(job.jobType);
-    this.confirmationService.confirm({
-    message: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_MSG', { 
-        jobType: translatedJobType, 
-        companyName: job.companyName 
-      }),
-      header: this.translate.instant('DIALOGS.CONFIRM_APPLICATION_TITLE'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
-      rejectButtonStyleClass: "p-button-text",
-      accept: () => {
-        this.apply(job.requirementId);
-      }
-    });
-  }
+  
 
   apply(requirementId: number) {
     this.workerService.applyForJob(requirementId).subscribe({

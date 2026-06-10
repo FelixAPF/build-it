@@ -15,7 +15,7 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
@@ -31,6 +31,7 @@ export class AdminDashboardComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
+  private translate = inject(TranslateService);
 
   pendingUsers: any[] = [];
   allUsers: any[] = [];
@@ -54,6 +55,9 @@ export class AdminDashboardComponent implements OnInit {
   newQuestionText: string = '';
   selectedJobTypeForQuestion: string = '';
 
+  public currentLang = localStorage.getItem('buildit_lang') || 'en';
+
+
   // NEW DYNAMIC TRADES
   jobTypes: any[] = [];
   trades: any[] = [];
@@ -66,6 +70,12 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers();
     this.loadTrades();
     this.loadTradeQuestions();
+  }
+
+    switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'fr' : 'en';
+    this.translate.use(this.currentLang);
+    localStorage.setItem('buildit_lang', this.currentLang);
   }
 
   loadTrades() {

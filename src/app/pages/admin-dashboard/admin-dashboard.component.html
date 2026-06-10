@@ -10,7 +10,12 @@
         <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">{{ 'ADMIN_DASHBOARD.TITLE' | translate }}</h1>
         <p class="text-slate-400 mt-2 text-lg">{{ 'ADMIN_DASHBOARD.DESCRIPTION' | translate }}</p>
       </div>
-      <p-button [label]="'ADMIN_DASHBOARD.BTN_LOGOUT' | translate" icon="pi pi-sign-out" styleClass="p-button-danger w-full md:w-auto" (onClick)="logout()"></p-button>
+      
+      <div class="flex flex-wrap gap-3 w-full md:w-auto items-center">
+        <p-button [label]="currentLang === 'en' ? 'FR' : 'EN'" styleClass="p-button-outlined p-button-danger bg-red-900/50 text-white border-red-800 hover:bg-red-800 font-bold p-3 rounded-xl" (onClick)="switchLanguage()"></p-button>
+        <p-button [label]="'ADMIN_DASHBOARD.BTN_LOGOUT' | translate" icon="pi pi-sign-out" styleClass="p-button-danger p-button-outlined w-full md:w-auto bg-red-900/50 font-medium text-sm p-3 rounded-xl" (onClick)="logout()"></p-button>
+      </div>
+
     </div>
   </div>
 
@@ -42,7 +47,7 @@
                   </div>
                 </div>
                 <div class="w-full md:w-auto">
-                  <p-button [label]="'ADMIN_DASHBOARD.PENDING.BTN_REVIEW_FILE' | translate" icon="pi pi-file-search" styleClass="w-full md:w-auto p-button-info p-4 shadow-lg shadow-blue-900/20" (onClick)="openReviewDialog(user, true)"></p-button>
+                  <p-button [label]="'ADMIN_DASHBOARD.PENDING.BTN_REVIEW_FILE' | translate" icon="pi pi-file-search" styleClass="w-full md:w-auto p-3 font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-white border-none rounded-xl shadow-lg shadow-blue-900/20 hover:from-blue-700 hover:to-blue-900 transition-all" (onClick)="openReviewDialog(user, true)"></p-button>
                 </div>
               </div>
             </div>
@@ -54,10 +59,10 @@
             <h3 class="text-xl font-bold text-slate-800 mb-4">{{ 'ADMIN_DASHBOARD.QUESTIONS.TITLE' | translate }}</h3>
                         
             <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
-              <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="label" optionValue="value" styleClass="w-full sm:w-48"></p-dropdown>
+              <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="labelEn" optionValue="value" styleClass="w-full sm:w-48"></p-dropdown>
               <input pInputText [(ngModel)]="newQuestionTextEn" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_EN' | translate" class="flex-1 w-full" />
               <input pInputText [(ngModel)]="newQuestionTextFr" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_FR' | translate" class="flex-1 w-full" />
-              <p-button [label]="'ADMIN_DASHBOARD.QUESTIONS.BTN_ADD' | translate" icon="pi pi-plus" styleClass="p-button-danger" (onClick)="addTradeQuestion()"></p-button>
+              <p-button [label]="'ADMIN_DASHBOARD.QUESTIONS.BTN_ADD' | translate" icon="pi pi-plus" styleClass="p-3 font-bold bg-gradient-to-r from-red-600 to-red-800 text-white border-none rounded-xl shadow-md hover:from-red-700 hover:to-red-900 transition-all" (onClick)="addTradeQuestion()"></p-button>
             </div>
 
             <p-table [value]="tradeQuestions" [paginator]="true" [rows]="10" styleClass="p-datatable-sm" responsiveLayout="scroll">
@@ -104,7 +109,7 @@
                 </div>
               </div>
               <div class="flex justify-end">
-                <p-button [label]="'ADMIN_DASHBOARD.TRADES.BTN_ADD' | translate" icon="pi pi-plus" styleClass="p-button-danger" (onClick)="addTrade()"></p-button>
+                <p-button [label]="'ADMIN_DASHBOARD.TRADES.BTN_ADD' | translate" icon="pi pi-plus" styleClass="p-3 font-bold bg-gradient-to-r from-red-600 to-red-800 text-white border-none rounded-xl shadow-md hover:from-red-700 hover:to-red-900 transition-all" (onClick)="addTrade()"></p-button>
               </div>
             </div>
 
@@ -146,9 +151,9 @@
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto border-t border-slate-800 md:border-t-0 pt-4 md:pt-0">
-                  <p-button *ngIf="user.documentUrl" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_FILE' | translate" icon="pi pi-file" styleClass="w-full sm:w-auto p-button-secondary p-button-outlined text-slate-300 border-slate-600 hover:bg-slate-800" (onClick)="openReviewDialog(user, false)"></p-button>
-                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_AUDIT_LOGS' | translate" icon="pi pi-list" styleClass="w-full sm:w-auto p-button-secondary p-button-outlined text-slate-300 border-slate-600 hover:bg-slate-800" (onClick)="viewLogs(user)"></p-button>
-                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_AS_USER' | translate" icon="pi pi-eye" styleClass="w-full sm:w-auto p-button-info p-button-outlined" (onClick)="impersonate(user.userId)"></p-button>
+                  <p-button *ngIf="user.documentUrl" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_FILE' | translate" icon="pi pi-file" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 transition-all" (onClick)="openReviewDialog(user, false)"></p-button>
+                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_AUDIT_LOGS' | translate" icon="pi pi-list" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 transition-all" (onClick)="viewLogs(user)"></p-button>
+                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_AS_USER' | translate" icon="pi pi-eye" styleClass="w-full sm:w-auto p-3 font-bold rounded-xl bg-blue-600 hover:bg-blue-500 border-none text-white shadow-md shadow-blue-900/20 transition-all" (onClick)="impersonate(user.userId)"></p-button>
                 </div>
 
               </div>
@@ -210,9 +215,9 @@
   </div>
 
     <ng-template pTemplate="footer">
-      <div class="flex justify-between w-full mt-4 border-t border-slate-100 pt-4">
-        <p-button [label]="'ADMIN_DASHBOARD.REVIEW.BTN_CLOSE' | translate" icon="pi pi-times" styleClass="p-button-text p-button-secondary font-bold" (onClick)="showReviewDialog = false"></p-button>
-        <p-button *ngIf="isReviewMode" [label]="'ADMIN_DASHBOARD.REVIEW.BTN_APPROVE' | translate" icon="pi pi-check-circle" styleClass="p-button-success px-6 font-bold shadow-lg shadow-emerald-500/30" (onClick)="verifyUser(selectedUserForReview.userId)"></p-button>
+      <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 w-full mt-4 border-t border-slate-100 pt-4">
+        <p-button [label]="'ADMIN_DASHBOARD.REVIEW.BTN_CLOSE' | translate" icon="pi pi-times" styleClass="w-full sm:w-auto p-3 font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 border-none rounded-xl transition-colors cursor-pointer" (onClick)="showReviewDialog = false"></p-button>
+        <p-button *ngIf="isReviewMode" [label]="'ADMIN_DASHBOARD.REVIEW.BTN_APPROVE' | translate" icon="pi pi-check-circle" styleClass="w-full sm:w-auto p-3 font-bold bg-gradient-to-r from-emerald-500 to-emerald-700 text-white border-none rounded-xl shadow-lg shadow-emerald-500/30 hover:from-emerald-600 hover:to-emerald-800 transition-all cursor-pointer" (onClick)="verifyUser(selectedUserForReview.userId)"></p-button>
       </div>
   </ng-template>
 </p-dialog>

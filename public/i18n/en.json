@@ -66,8 +66,8 @@
     "TITLE": "Create your account",
     "SUBTITLE": "Join the premier construction marketplace.",
     "TABS": {
-      "WORKER": "I am a Worker",
-      "EMPLOYER": "I am an Employer"
+      "WORKER": "Worker",
+      "EMPLOYER": "Employer"
     },
     "LAB_FIRST_NAME": "First Name",
     "LAB_LAST_NAME": "Last Name",

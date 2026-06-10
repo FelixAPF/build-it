@@ -66,8 +66,8 @@
     "TITLE": "Créez votre compte",
     "SUBTITLE": "Rejoignez le premier marché de la construction.",
     "TABS": {
-      "WORKER": "Je suis un Travailleur",
-      "EMPLOYER": "Je suis un Employeur"
+      "WORKER": "Travailleur",
+      "EMPLOYER": "Employeur"
     },
     "LAB_FIRST_NAME": "Prénom",
     "LAB_LAST_NAME": "Nom de famille",
