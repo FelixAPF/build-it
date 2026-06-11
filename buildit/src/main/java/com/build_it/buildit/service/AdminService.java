@@ -115,6 +115,23 @@ public class AdminService {
       .identificationNumber(idNumber)
       .createdAt(user.getCreatedAt())
       .documentUrl(docUrl)
+      .status(user.getStatus().name())
       .build();
+  }
+
+  @Transactional
+  public String suspendUserAccount(Long userId) {
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+    if (user.getStatus() == AccountStatus.SUSPENDED) return "User is already suspended.";
+
+    user.setStatus(AccountStatus.SUSPENDED);
+    userRepository.save(user);
+
+    auditLogService.log("ADMINISTRATOR", "USER_SUSPENDED",
+      "Banned user account: " + user.getEmail() + " for policy violations.");
+
+    return "User account for " + user.getEmail() + " has been successfully suspended.";
   }
 }

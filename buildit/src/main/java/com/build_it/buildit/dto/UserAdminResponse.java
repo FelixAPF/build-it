@@ -14,4 +14,5 @@ public class UserAdminResponse {
   private String identificationNumber; // RBQ or CCQ
   private LocalDateTime createdAt;
   private String documentUrl;
+  private String status;
 }

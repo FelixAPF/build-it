@@ -68,6 +68,12 @@ public class AdminController {
   public ResponseEntity<List<AuditLog>> getAuditLogs() {
     return ResponseEntity.ok(auditLogService.getAllLogs());
   }
+  @PreAuthorize("hasRole('ADMIN')")
+  @PutMapping("/users/{userId}/suspend")
+  public ResponseEntity<?> suspendUser(@PathVariable Long userId) {
+    String responseMessage = adminService.suspendUserAccount(userId);
+    return ResponseEntity.ok(java.util.Map.of("message", responseMessage));
+  }
 
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/users/{userId}/logs")

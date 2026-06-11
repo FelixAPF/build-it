@@ -257,7 +257,9 @@
       "BTN_AUDIT_LOGS": "Audit Logs",
       "BTN_VIEW_AS_USER": "View As User",
       "EMPTY_TITLE": "No Users Found",
-      "EMPTY_DESC": "The user directory is currently empty."
+      "EMPTY_DESC": "The user directory is currently empty.",
+      "BTN_BAN_USER": "Ban User",
+      "TAG_BANNED": "BANNED"
     },
     "LOGS": {
       "DIALOG_HEADER": "Activity Audit: ",
@@ -422,6 +424,8 @@
     "CONFIRM_APPLICATION_TITLE": "Confirm Application",
     "CONFIRM_APPLICATION_MSG": "Are you sure you want to apply for the {{jobType}} position at {{companyName}}?",
     "CONFIRM_HIRE_TITLE": "Confirm Hire",
-    "CONFIRM_HIRE_MSG": "Are you sure you want to hire {{workerName}}? This will lock them into the schedule and notify them immediately."
+    "CONFIRM_HIRE_MSG": "Are you sure you want to hire {{workerName}}? This will lock them into the schedule and notify them immediately.",
+    "CONFIRM_BAN_TITLE": "Ban User",
+    "CONFIRM_BAN_MSG": "Are you sure you want to permanently ban {{userName}}? They will no longer be able to log in."
   }
 }

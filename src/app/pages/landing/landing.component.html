@@ -1,28 +1,29 @@
 <nav class="fixed w-full z-50 top-0 bg-white/80 backdrop-blur-lg border-b border-slate-200 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
     
-    <div class="flex items-center gap-3 cursor-pointer" routerLink="/">
-      <div class="flex items-center gap-3 cursor-pointer" routerLink="/">
-        <img src="/logo/transparent/logo_only.png" alt="CrewUp Logo" class="h-20 w-20 object-contain drop-shadow-md" />
-        <span class="text-2xl font-extrabold tracking-tight text-slate-800">
-          Crew<span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Up</span>
-        </span>
-      </div>
-      
-    </div>
+    <a routerLink="/" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+      <img src="/logo/transparent/logo_only.png" alt="CrewUp Logo" class="h-10 w-10 md:h-12 md:w-12 object-contain drop-shadow-md" />
+      <span class="text-2xl font-extrabold tracking-tight text-slate-800">
+        Crew<span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Up</span>
+      </span>
+    </a>
     
     <div class="flex items-center gap-3 md:gap-4">
       <button (click)="switchLanguage()" class="text-slate-500 font-bold hover:text-red-600 transition-colors px-2 md:px-3 text-sm tracking-widest border-r border-slate-200">
         {{ currentLang === 'en' ? 'FR' : 'EN' }}
       </button>
+      
       @if (authService.getToken()) {
-        <p-button [label]="'LANDING.NAV.GO_TO_DASHBOARD' | translate" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger font-bold hidden md:inline-flex"></p-button>
-        <p-button icon="pi pi-arrow-right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger md:hidden"></p-button>
+        <p-button [label]="'LANDING.NAV.GO_TO_DASHBOARD' | translate" icon="pi pi-arrow-right" iconPos="right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger font-bold hidden md:inline-flex rounded-xl"></p-button>
+        <p-button icon="pi pi-arrow-right" [routerLink]="getDashboardLink()" styleClass="p-button-outlined p-button-danger md:hidden rounded-xl"></p-button>
       } @else {
         <a routerLink="/login" class="text-slate-600 font-bold hover:text-red-600 transition-colors px-2 md:px-4 hidden md:block">{{ 'LANDING.NAV.LOG_IN' | translate }}</a>
-        <p-button [label]="'LANDING.NAV.JOIN_NETWORK' | translate" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none font-bold shadow-md hidden md:inline-flex"></p-button>
+        
+        <p-button [label]="'LANDING.NAV.JOIN_NETWORK' | translate" routerLink="/register" styleClass="bg-slate-900 text-white hover:bg-slate-800 border-none font-bold shadow-md hidden md:inline-flex px-5 py-2.5 rounded-xl transition-transform hover:-translate-y-0.5"></p-button>
+        
         <a routerLink="/login" class="text-slate-600 font-bold hover:text-red-600 transition-colors px-2 md:hidden">{{ 'LANDING.NAV.LOG_IN_SHORT' | translate }}</a>
-        <p-button icon="pi pi-user-plus" routerLink="/register" styleClass="bg-slate-900 hover:bg-slate-800 border-none md:hidden"></p-button>
+        
+        <p-button icon="pi pi-user-plus" routerLink="/register" styleClass="bg-slate-900 text-white hover:bg-slate-800 border-none md:hidden p-2 rounded-xl"></p-button>
       }
     </div>
   </div>
@@ -123,7 +124,7 @@
 <footer class="bg-slate-950 text-slate-500 py-12 px-6 border-t border-slate-800">
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
     <div class="flex items-center gap-3">
-      <img src="/logo/logo_only.png" class="h-6 w-6 grayscale opacity-70" alt="CrewUp">
+      <img src="/logo/transparent/logo_only.png" class="h-8 w-8 grayscale opacity-70" alt="CrewUp">
       <span class="font-bold text-slate-300 tracking-wide">CrewUp Technologies Inc.</span>
     </div>
     <div class="text-sm">

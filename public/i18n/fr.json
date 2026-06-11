@@ -257,7 +257,9 @@
       "BTN_AUDIT_LOGS": "Journaux d'audit",
       "BTN_VIEW_AS_USER": "Voir en tant qu'utilisateur",
       "EMPTY_TITLE": "Aucun utilisateur trouvé",
-      "EMPTY_DESC": "Le répertoire des utilisateurs est actuellement vide."
+      "EMPTY_DESC": "Le répertoire des utilisateurs est actuellement vide.",
+      "BTN_BAN_USER": "Bannir",
+      "TAG_BANNED": "BANNI"
     },
     "LOGS": {
       "DIALOG_HEADER": "Audit d'activité : ",
@@ -422,6 +424,8 @@
     "CONFIRM_APPLICATION_TITLE": "Confirmer la candidature",
     "CONFIRM_APPLICATION_MSG": "Êtes-vous certain de vouloir postuler pour le poste de {{jobType}} chez {{companyName}} ?",
     "CONFIRM_HIRE_TITLE": "Confirmer l'embauche",
-    "CONFIRM_HIRE_MSG": "Êtes-vous certain de vouloir embaucher {{workerName}} ? Cela bloquera son horaire et lui enverra une notification immédiatement."
+    "CONFIRM_HIRE_MSG": "Êtes-vous certain de vouloir embaucher {{workerName}} ? Cela bloquera son horaire et lui enverra une notification immédiatement.",
+    "CONFIRM_BAN_TITLE": "Bannir l'utilisateur",
+    "CONFIRM_BAN_MSG": "Êtes-vous certain de vouloir bannir {{userName}} ? Cet utilisateur ne pourra plus se connecter."
   }
 }

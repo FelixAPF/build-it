@@ -11,18 +11,20 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { TabViewModule } from 'primeng/tabview'; 
 import { DialogModule } from 'primeng/dialog'; 
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { AccordionModule } from 'primeng/accordion'
+import { BadgeModule } from 'primeng/badge'
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe, TableModule, ButtonModule, TagModule, ToastModule, ConfirmDialogModule, TranslatePipe, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule, InputTextModule],
-  providers: [MessageService],
+  imports: [CommonModule, DatePipe, TableModule, AccordionModule, BadgeModule, ButtonModule, TagModule, ToastModule, ConfirmDialogModule, TranslatePipe, TabViewModule, DialogModule, DropdownModule, ReactiveFormsModule, FormsModule, InputTextModule],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './admin-dashboard.component.html'
 })
 export class AdminDashboardComponent implements OnInit {
@@ -32,6 +34,7 @@ export class AdminDashboardComponent implements OnInit {
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
   private translate = inject(TranslateService);
+  private confirmationService = inject(ConfirmationService);
 
   pendingUsers: any[] = [];
   allUsers: any[] = [];
@@ -79,9 +82,9 @@ export class AdminDashboardComponent implements OnInit {
       // By mapping it into an array, the HTML can just loop through it blindly!
       this.systemMetrics = [
         { key: 'TOTAL_BUSINESSES', value: data.totalBusinesses, icon: 'pi pi-briefcase', colorClass: 'text-blue-600', bgClass: 'bg-blue-100' },
-        { key: 'TOTAL_WORKERS', value: data.totalWorkers, icon: 'pi pi-users', colorClass: 'text-emerald-600', bgClass: 'bg-emerald-100' },
+        { key: 'TOTAL_WORKERS', value: data.totalWorkers, icon: 'pi pi-user', colorClass: 'text-emerald-600', bgClass: 'bg-emerald-100' },
         { key: 'TOTAL_JOBS', value: data.totalJobs, icon: 'pi pi-folder-open', colorClass: 'text-purple-600', bgClass: 'bg-purple-100' },
-        { key: 'TOTAL_MATCHES', value: data.totalMatches, icon: 'pi pi-handshake', colorClass: 'text-amber-500', bgClass: 'bg-amber-100' },
+        { key: 'TOTAL_MATCHES', value: data.totalMatches, icon: 'pi pi-users', colorClass: 'text-amber-500', bgClass: 'bg-amber-100' },
         { key: 'TOTAL_CANCELLED', value: data.totalCancelled, icon: 'pi pi-times-circle', colorClass: 'text-red-500', bgClass: 'bg-red-100' }
       ];
     });
@@ -99,6 +102,30 @@ export class AdminDashboardComponent implements OnInit {
       this.jobTypes = res;
       if (res.length > 0 && !this.selectedJobTypeForQuestion) {
         this.selectedJobTypeForQuestion = res[0].value;
+      }
+    });
+  }
+  confirmBanUser(user: any) {
+    this.confirmationService.confirm({
+      header: this.translate.instant('DIALOGS.CONFIRM_BAN_TITLE'),
+      message: this.translate.instant('DIALOGS.CONFIRM_BAN_MSG', { userName: user.name }),
+      icon: 'pi pi-exclamation-circle text-red-500 text-2xl',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text text-slate-500 hover:bg-slate-100 font-bold px-5 py-3 rounded-xl mr-3 transition-colors",
+      acceptButtonStyleClass: "bg-red-600 hover:bg-red-700 border-none text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all hover:-translate-y-0.5",
+      acceptLabel: this.currentLang === 'fr' ? 'Bannir' : 'Ban',
+      rejectLabel: this.currentLang === 'fr' ? 'Annuler' : 'Cancel',
+      accept: () => {
+        this.adminService.suspendUser(user.userId).subscribe({
+          next: (res) => {
+            this.messageService.add({ severity: 'success', summary: 'Banned', detail: res.message });
+            this.loadUsers(); // Refresh the list so the BANNED tag appears instantly
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to ban user.' });
+          }
+        });
       }
     });
   }

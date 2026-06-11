@@ -61,4 +61,7 @@ export class AdminService {
   getMetrics(): Observable<any> {
     return this.http.get<any>(`${this.adminUrl}/metrics`);
   }
+  suspendUser(userId: number): Observable<any> {
+    return this.http.put<any>(`${this.adminUrl}/users/${userId}/suspend`, {});
+  }
 }

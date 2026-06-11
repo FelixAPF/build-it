@@ -33,192 +33,301 @@
   </div>
 
   <div class="max-w-7xl mx-auto px-4 md:px-8 -mt-12 relative z-20">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-      
-      <p-tabView styleClass="w-full" [scrollable]="true">
+    
+    <ng-template #pendingApprovalsTemplate>
+      <div class="p-4 md:p-6 bg-slate-50 md:min-h-[50vh]">
+        <div *ngIf="!isLoading && pendingUsers.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
+          <i class="pi pi-check-circle text-5xl text-emerald-400 mb-4 drop-shadow-sm"></i>
+          <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ 'ADMIN_DASHBOARD.PENDING.INBOX_ZERO_TITLE' | translate }}</h3>
+          <p class="text-slate-500">{{ 'ADMIN_DASHBOARD.PENDING.INBOX_ZERO_DESC' | translate }}</p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div *ngFor="let user of pendingUsers" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between lg:items-center gap-6 hover:border-blue-300 transition-colors">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-2">
+                <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'" styleClass="text-xs font-bold px-2 py-1"></p-tag>
+                <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded border border-slate-200">{{ 'ADMIN_DASHBOARD.PENDING.APPLIED_ON' | translate }} {{user.createdAt | date:'short'}}</span>
+              </div>
+              <h3 class="font-bold text-xl md:text-2xl text-slate-800 break-words">{{user.name}}</h3>
+              <p class="text-slate-500 text-sm mt-1 mb-3 break-all"><i class="pi pi-envelope mr-2 text-slate-400"></i>{{user.email}}</p>
+              
+              <div class="inline-flex items-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 flex-wrap gap-2">
+                <span class="text-xs text-blue-600 uppercase font-bold">{{user.role === 'WORKER' ? 'CCQ' : 'RBQ'}}</span>
+                <span class="font-mono text-blue-800 font-bold tracking-wider break-all">{{user.identificationNumber}}</span>
+              </div>
+            </div>
+            <div class="w-full lg:w-auto mt-2 lg:mt-0 shrink-0">
+              <p-button [label]="'ADMIN_DASHBOARD.PENDING.BTN_REVIEW_FILE' | translate" icon="pi pi-file-search" styleClass="w-full lg:w-auto p-3 text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-white border-none rounded-xl shadow-lg shadow-blue-600/20 hover:from-blue-700 hover:to-blue-900 transition-all cursor-pointer" (onClick)="openReviewDialog(user, true)"></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #tradeQuestionsTemplate>
+      <div class="p-4 md:p-6">
+        <h3 class="text-xl font-bold text-slate-800 mb-4 hidden md:block">{{ 'ADMIN_DASHBOARD.QUESTIONS.TITLE' | translate }}</h3>
+                    
+        <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
+          <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="labelEn" optionValue="value" styleClass="w-full sm:w-48 bg-white"></p-dropdown>
+          <input pInputText [(ngModel)]="newQuestionTextEn" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_EN' | translate" class="flex-1 w-full bg-white" />
+          <input pInputText [(ngModel)]="newQuestionTextFr" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_FR' | translate" class="flex-1 w-full bg-white" />
+          <p-button [label]="'ADMIN_DASHBOARD.QUESTIONS.BTN_ADD' | translate" icon="pi pi-plus" styleClass="w-full sm:w-auto p-3 font-bold bg-gradient-to-r from-slate-800 to-slate-900 text-white border-none rounded-xl shadow-md hover:from-slate-900 hover:to-black transition-all" (onClick)="addTradeQuestion()"></p-button>
+        </div>
+
+        <div class="border border-slate-200 rounded-xl overflow-x-auto">
+          <p-table [value]="tradeQuestions" [paginator]="true" [rows]="10" styleClass="p-datatable-sm min-w-[500px]" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.QUESTIONS.TABLE.HEADER_TRADE' | translate }}</th>
+                <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.QUESTIONS.TABLE.HEADER_QUESTION' | translate }}</th>
+                <th class="bg-slate-50 text-right">...</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-q>
+              <tr>
+                <td class="font-bold text-slate-700">{{ q.jobType }}</td>
+                  <td>
+                    <div class="font-bold text-sm text-slate-800">EN: {{ q.questionEn }}</div>
+                    <div class="font-bold text-sm text-slate-500 mt-1">FR: {{ q.questionFr }}</div>
+                  </td>
+                  <td class="text-right">
+                  <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTradeQuestion(q.id)"></p-button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #manageTradesTemplate>
+      <div class="p-4 md:p-6">
+        <h3 class="text-xl font-bold text-slate-800 mb-4 hidden md:block">{{ 'ADMIN_DASHBOARD.TRADES.TITLE' | translate }}</h3>
         
-        <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.PENDING_APPROVALS' | translate">
-          <div class="p-4 md:p-6 bg-slate-50 min-h-[50vh]">
-            <div *ngIf="!isLoading && pendingUsers.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
-              <i class="pi pi-check-circle text-5xl text-emerald-400 mb-4 drop-shadow-sm"></i>
-              <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ 'ADMIN_DASHBOARD.PENDING.INBOX_ZERO_TITLE' | translate }}</h3>
-              <p class="text-slate-500">{{ 'ADMIN_DASHBOARD.PENDING.INBOX_ZERO_DESC' | translate }}</p>
+        <div class="flex flex-col gap-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_UI_NAME_EN' | translate }}</label>
+              <input pInputText [(ngModel)]="newTradeLabelEn" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_UI_NAME_EN' | translate" class="w-full bg-white" />
             </div>
-
-            <div class="flex flex-col gap-4">
-              <div *ngFor="let user of pendingUsers" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between lg:items-center gap-6 hover:border-blue-300 transition-colors">
-                
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'" styleClass="text-xs font-bold px-2 py-1"></p-tag>
-                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded border border-slate-200">{{ 'ADMIN_DASHBOARD.PENDING.APPLIED_ON' | translate }} {{user.createdAt | date:'short'}}</span>
-                  </div>
-                  <h3 class="font-bold text-xl md:text-2xl text-slate-800 break-words">{{user.name}}</h3>
-                  <p class="text-slate-500 text-sm mt-1 mb-3 break-all"><i class="pi pi-envelope mr-2 text-slate-400"></i>{{user.email}}</p>
-                  
-                  <div class="inline-flex items-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 flex-wrap">
-                    <span class="text-xs text-blue-600 uppercase font-bold mr-3">{{user.role === 'WORKER' ? 'CCQ' : 'RBQ'}}</span>
-                    <span class="font-mono text-blue-800 font-bold tracking-wider break-all">{{user.identificationNumber}}</span>
-                  </div>
-                </div>
-
-                <div class="w-full lg:w-auto mt-2 lg:mt-0 shrink-0">
-                  <p-button [label]="'ADMIN_DASHBOARD.PENDING.BTN_REVIEW_FILE' | translate" icon="pi pi-file-search" styleClass="w-full lg:w-auto p-3 text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-white border-none rounded-xl shadow-lg shadow-blue-600/20 hover:from-blue-700 hover:to-blue-900 transition-all cursor-pointer" (onClick)="openReviewDialog(user, true)"></p-button>
-                </div>
-              </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_UI_NAME_FR' | translate }}</label>
+              <input pInputText [(ngModel)]="newTradeLabelFr" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_UI_NAME_FR' | translate" class="w-full bg-white" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_DB_CODE' | translate }}</label>
+              <input pInputText [(ngModel)]="newTradeValue" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_DB_CODE' | translate" class="w-full uppercase bg-white font-mono text-sm" />
             </div>
           </div>
-        </p-tabPanel>
+          <div class="flex justify-end pt-2 border-t border-slate-200">
+            <p-button [label]="'ADMIN_DASHBOARD.TRADES.BTN_ADD' | translate" icon="pi pi-plus" styleClass="w-full sm:w-auto p-3 font-bold bg-gradient-to-r from-slate-800 to-slate-900 text-white border-none rounded-xl shadow-md hover:from-slate-900 hover:to-black transition-all" (onClick)="addTrade()"></p-button>
+          </div>
+        </div>
 
+        <div class="border border-slate-200 rounded-xl overflow-x-auto">
+          <p-table [value]="trades" [paginator]="true" [rows]="10" styleClass="p-datatable-sm min-w-[500px]" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.TRADES.TABLE.HEADER_DB_CODE' | translate }}</th>
+                <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.TRADES.TABLE.HEADER_DISPLAY_NAME' | translate }}</th>
+                <th class="bg-slate-50 text-right">...</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-trade>
+              <tr>
+                <td class="font-mono text-xs font-bold text-slate-500">{{ trade.value }}</td>
+                <td>
+                  <div class="text-sm font-bold text-slate-800">EN: {{ trade.labelEn }}</div>
+                  <div class="text-sm font-semibold text-slate-500 mt-0.5">FR: {{ trade.labelFr }}</div>
+                </td>
+                <td class="text-right">
+                  <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTrade(trade.id)"></p-button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #userDirectoryTemplate>
+      <div class="p-4 md:p-6 bg-slate-50 md:min-h-[50vh]">
+        
+        <div *ngIf="!isLoading && allUsers.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
+          <i class="pi pi-users text-5xl text-slate-300 mb-4 drop-shadow-sm"></i>
+          <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ 'ADMIN_DASHBOARD.DIRECTORY.EMPTY_TITLE' | translate }}</h3>
+          <p class="text-slate-500">{{ 'ADMIN_DASHBOARD.DIRECTORY.EMPTY_DESC' | translate }}</p>
+        </div>
+
+        <div class="flex flex-col gap-4" *ngIf="allUsers.length > 0">
+          <div *ngFor="let user of allUsers" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-6 hover:border-slate-300 transition-colors">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-2">
+                <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'" styleClass="text-xs font-bold px-2 py-1"></p-tag>
+                <p-tag *ngIf="user.status === 'SUSPENDED'" [value]="'ADMIN_DASHBOARD.DIRECTORY.TAG_BANNED' | translate" severity="danger" styleClass="text-xs font-bold px-2 py-1"></p-tag>
+                <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded border border-slate-200">{{ 'ADMIN_DASHBOARD.DIRECTORY.USER_ID' | translate }}: {{user.userId}}</span>
+              </div>
+              <h3 class="font-bold text-xl md:text-2xl text-slate-800 break-words" [ngClass]="{'line-through text-slate-400': user.status === 'SUSPENDED'}">{{user.name}}</h3>
+              <p class="text-slate-500 text-sm mt-1 break-all"><i class="pi pi-envelope mr-1 text-slate-400"></i> {{user.email}}</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto mt-2 md:mt-0 border-t border-slate-100 md:border-t-0 pt-4 md:pt-0 shrink-0">
+              <p-button *ngIf="user.documentUrl" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_FILE' | translate" icon="pi pi-file" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl p-button-outlined p-button-secondary text-slate-600 bg-slate-100 border-none hover:bg-slate-200 transition-all" (onClick)="openReviewDialog(user, false)"></p-button>
+              <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_AUDIT_LOGS' | translate" icon="pi pi-list" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl p-button-outlined p-button-secondary text-slate-600 bg-slate-100 border-none hover:bg-slate-200 transition-all" (onClick)="viewLogs(user)"></p-button>
+              
+              <p-button *ngIf="user.status !== 'SUSPENDED'" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_AS_USER' | translate" icon="pi pi-eye" styleClass="w-full sm:w-auto p-3 font-bold rounded-xl bg-slate-800 hover:bg-slate-900 border-none text-white shadow-md shadow-slate-900/20 transition-all" (onClick)="impersonate(user.userId)"></p-button>
+              <p-button *ngIf="user.status !== 'SUSPENDED'" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_BAN_USER' | translate" icon="pi pi-ban" styleClass="w-full sm:w-auto p-3 font-bold rounded-xl bg-red-50 text-red-600 hover:bg-red-100 border-none transition-all" (onClick)="confirmBanUser(user)"></p-button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #systemMetricsTemplate>
+      <div class="p-4 md:p-6 bg-slate-50 md:min-h-[50vh]">
+        
+        <div *ngIf="systemMetrics.length === 0" class="flex justify-center p-12">
+          <i class="pi pi-spin pi-spinner text-3xl text-slate-400"></i>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" *ngIf="systemMetrics.length > 0">
+          <div *ngFor="let metric of systemMetrics" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+            
+            <div [class]="'w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ' + metric.bgClass">
+              <i [class]="metric.icon + ' text-3xl ' + metric.colorClass"></i>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 truncate">
+                {{ 'ADMIN_DASHBOARD.METRICS.' + metric.key | translate }}
+              </h4>
+              <span class="text-3xl font-extrabold text-slate-800">{{ metric.value | number }}</span>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="hidden md:block bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+      <p-tabView styleClass="w-full" [scrollable]="true">
+          <p-tabPanel>
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-2">
+              <span>{{ 'ADMIN_DASHBOARD.TABS.PENDING_APPROVALS' | translate }}</span>
+              <span *ngIf="pendingUsers.length > 0" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">
+                {{ pendingUsers.length }}
+              </span>
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="pendingApprovalsTemplate"></ng-container>
+        </p-tabPanel>
         <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.TRADE_QUESTIONS' | translate">
-          <div class="p-4 md:p-6">
-            <h3 class="text-xl font-bold text-slate-800 mb-4">{{ 'ADMIN_DASHBOARD.QUESTIONS.TITLE' | translate }}</h3>
-                        
-            <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
-              <p-dropdown [options]="jobTypes" [(ngModel)]="selectedJobTypeForQuestion" optionLabel="labelEn" optionValue="value" styleClass="w-full sm:w-48 bg-white"></p-dropdown>
-              <input pInputText [(ngModel)]="newQuestionTextEn" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_EN' | translate" class="flex-1 w-full bg-white" />
-              <input pInputText [(ngModel)]="newQuestionTextFr" [placeholder]="'ADMIN_DASHBOARD.QUESTIONS.PLACEHOLDER_FR' | translate" class="flex-1 w-full bg-white" />
-              <p-button [label]="'ADMIN_DASHBOARD.QUESTIONS.BTN_ADD' | translate" icon="pi pi-plus" styleClass="w-full sm:w-auto p-3 font-bold bg-gradient-to-r from-slate-800 to-slate-900 text-white border-none rounded-xl shadow-md hover:from-slate-900 hover:to-black transition-all" (onClick)="addTradeQuestion()"></p-button>
-            </div>
-
-            <div class="border border-slate-200 rounded-xl overflow-x-auto">
-              <p-table [value]="tradeQuestions" [paginator]="true" [rows]="10" styleClass="p-datatable-sm min-w-[500px]" responsiveLayout="scroll">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.QUESTIONS.TABLE.HEADER_TRADE' | translate }}</th>
-                    <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.QUESTIONS.TABLE.HEADER_QUESTION' | translate }}</th>
-                    <th class="bg-slate-50 text-right">...</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-q>
-                  <tr>
-                    <td class="font-bold text-slate-700">{{ q.jobType }}</td>
-                      <td>
-                        <div class="font-bold text-sm text-slate-800">EN: {{ q.questionEn }}</div>
-                        <div class="font-bold text-sm text-slate-500 mt-1">FR: {{ q.questionFr }}</div>
-                      </td>
-                      <td class="text-right">
-                      <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTradeQuestion(q.id)"></p-button>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-          </div>
+          <ng-container *ngTemplateOutlet="tradeQuestionsTemplate"></ng-container>
         </p-tabPanel>
-
         <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.MANAGE_TRADES' | translate">
-          <div class="p-4 md:p-6">
-            <h3 class="text-xl font-bold text-slate-800 mb-4">{{ 'ADMIN_DASHBOARD.TRADES.TITLE' | translate }}</h3>
-            
-            <div class="flex flex-col gap-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_UI_NAME_EN' | translate }}</label>
-                  <input pInputText [(ngModel)]="newTradeLabelEn" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_UI_NAME_EN' | translate" class="w-full bg-white" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_UI_NAME_FR' | translate }}</label>
-                  <input pInputText [(ngModel)]="newTradeLabelFr" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_UI_NAME_FR' | translate" class="w-full bg-white" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-slate-500 uppercase">{{ 'ADMIN_DASHBOARD.TRADES.LABEL_DB_CODE' | translate }}</label>
-                  <input pInputText [(ngModel)]="newTradeValue" [placeholder]="'ADMIN_DASHBOARD.TRADES.PLACEHOLDER_DB_CODE' | translate" class="w-full uppercase bg-white font-mono text-sm" />
-                </div>
-              </div>
-              <div class="flex justify-end pt-2 border-t border-slate-200">
-                <p-button [label]="'ADMIN_DASHBOARD.TRADES.BTN_ADD' | translate" icon="pi pi-plus" styleClass="w-full sm:w-auto p-3 font-bold bg-gradient-to-r from-slate-800 to-slate-900 text-white border-none rounded-xl shadow-md hover:from-slate-900 hover:to-black transition-all" (onClick)="addTrade()"></p-button>
-              </div>
-            </div>
-
-            <div class="border border-slate-200 rounded-xl overflow-x-auto">
-              <p-table [value]="trades" [paginator]="true" [rows]="10" styleClass="p-datatable-sm min-w-[500px]" responsiveLayout="scroll">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.TRADES.TABLE.HEADER_DB_CODE' | translate }}</th>
-                    <th class="bg-slate-50">{{ 'ADMIN_DASHBOARD.TRADES.TABLE.HEADER_DISPLAY_NAME' | translate }}</th>
-                    <th class="bg-slate-50 text-right">...</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-trade>
-                  <tr>
-                    <td class="font-mono text-xs font-bold text-slate-500">{{ trade.value }}</td>
-                    <td>
-                      <div class="text-sm font-bold text-slate-800">EN: {{ trade.labelEn }}</div>
-                      <div class="text-sm font-semibold text-slate-500 mt-0.5">FR: {{ trade.labelFr }}</div>
-                    </td>
-                    <td class="text-right">
-                      <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="deleteTrade(trade.id)"></p-button>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-          </div>
+          <ng-container *ngTemplateOutlet="manageTradesTemplate"></ng-container>
         </p-tabPanel>
-
         <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.USER_DIRECTORY' | translate">
-          <div class="p-4 md:p-6 bg-slate-50 min-h-[50vh]">
-            
-            <div *ngIf="!isLoading && allUsers.length === 0" class="text-center p-12 bg-white rounded-2xl border border-slate-200">
-              <i class="pi pi-users text-5xl text-slate-300 mb-4 drop-shadow-sm"></i>
-              <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ 'ADMIN_DASHBOARD.DIRECTORY.EMPTY_TITLE' | translate }}</h3>
-              <p class="text-slate-500">{{ 'ADMIN_DASHBOARD.DIRECTORY.EMPTY_DESC' | translate }}</p>
-            </div>
-
-            <div class="flex flex-col gap-4" *ngIf="allUsers.length > 0">
-              <div *ngFor="let user of allUsers" class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-6 hover:border-slate-300 transition-colors">
-                
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <p-tag [value]="user.role" [severity]="user.role === 'WORKER' ? 'info' : 'warning'" styleClass="text-xs font-bold px-2 py-1"></p-tag>
-                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded border border-slate-200">{{ 'ADMIN_DASHBOARD.DIRECTORY.USER_ID' | translate }}: {{user.userId}}</span>
-                  </div>
-                  <h3 class="font-bold text-xl md:text-2xl text-slate-800 break-words">{{user.name}}</h3>
-                  <p class="text-slate-500 text-sm mt-1 break-all"><i class="pi pi-envelope mr-1 text-slate-400"></i> {{user.email}}</p>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto mt-2 md:mt-0 border-t border-slate-100 md:border-t-0 pt-4 md:pt-0 shrink-0">
-                  <p-button *ngIf="user.documentUrl" [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_FILE' | translate" icon="pi pi-file" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl p-button-outlined p-button-secondary text-slate-600 bg-slate-100 border-none hover:bg-slate-200 transition-all" (onClick)="openReviewDialog(user, false)"></p-button>
-                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_AUDIT_LOGS' | translate" icon="pi pi-list" styleClass="w-full sm:w-auto p-3 font-semibold rounded-xl p-button-outlined p-button-secondary text-slate-600 bg-slate-100 border-none hover:bg-slate-200 transition-all" (onClick)="viewLogs(user)"></p-button>
-                  <p-button [label]="'ADMIN_DASHBOARD.DIRECTORY.BTN_VIEW_AS_USER' | translate" icon="pi pi-eye" styleClass="w-full sm:w-auto p-3 font-bold rounded-xl bg-slate-800 hover:bg-slate-900 border-none text-white shadow-md shadow-slate-900/20 transition-all" (onClick)="impersonate(user.userId)"></p-button>
-                </div>
-
-              </div>
-            </div>
-          </div>
+          <ng-container *ngTemplateOutlet="userDirectoryTemplate"></ng-container>
         </p-tabPanel>
-
         <p-tabPanel [header]="'ADMIN_DASHBOARD.TABS.SYSTEM_METRICS' | translate">
-          <div class="p-4 md:p-6 bg-slate-50 min-h-[50vh]">
-            
-            <div *ngIf="systemMetrics.length === 0" class="flex justify-center p-12">
-              <i class="pi pi-spin pi-spinner text-3xl text-slate-400"></i>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" *ngIf="systemMetrics.length > 0">
-              
-              <div *ngFor="let metric of systemMetrics" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-                
-                <div [class]="'w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ' + metric.bgClass">
-                  <i [class]="metric.icon + ' text-3xl ' + metric.colorClass"></i>
-                </div>
-                
-                <div class="flex-1 min-w-0">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 truncate">
-                    {{ 'ADMIN_DASHBOARD.METRICS.' + metric.key | translate }}
-                  </h4>
-                  <span class="text-3xl font-extrabold text-slate-800">{{ metric.value | number }}</span>
-                </div>
-                
-              </div>
-              
-            </div>
-          </div>
+          <ng-container *ngTemplateOutlet="systemMetricsTemplate"></ng-container>
         </p-tabPanel>
-
       </p-tabView>
     </div>
+
+    <div class="block md:hidden bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+      <p-accordion styleClass="w-full">
+        
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex items-center justify-between w-full pr-2">
+              <div class="flex items-center gap-4 py-1">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0 shadow-sm border border-emerald-100">
+                  <i class="pi pi-check-circle text-emerald-600 text-lg"></i>
+                </div>
+                <div class="flex flex-col text-left">
+                  <span class="font-bold text-slate-800 text-sm">{{ 'ADMIN_DASHBOARD.TABS.PENDING_APPROVALS' | translate }}</span>
+                  <span class="text-[10px] text-slate-500 font-medium mt-0.5 leading-tight">{{ currentLang === 'fr' ? 'Examiner et activer les comptes' : 'Review & activate new accounts' }}</span>
+                </div>
+              </div>
+              
+              <div *ngIf="pendingUsers.length > 0" class="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm animate-pulse shrink-0">
+                {{ pendingUsers.length }}
+              </div>
+
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="pendingApprovalsTemplate"></ng-container>
+        </p-accordionTab>
+
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-4 w-full py-1">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0 shadow-sm border border-purple-100">
+                <i class="pi pi-list text-purple-600 text-lg"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="font-bold text-slate-800 text-sm">{{ 'ADMIN_DASHBOARD.TABS.TRADE_QUESTIONS' | translate }}</span>
+                <span class="text-[10px] text-slate-500 font-medium mt-0.5 leading-tight">{{ currentLang === 'fr' ? 'Gérer les questions de métier' : 'Manage trade-specific questions' }}</span>
+              </div>
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="tradeQuestionsTemplate"></ng-container>
+        </p-accordionTab>
+
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-4 w-full py-1">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 shadow-sm border border-blue-100">
+                <i class="pi pi-briefcase text-blue-600 text-lg"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="font-bold text-slate-800 text-sm">{{ 'ADMIN_DASHBOARD.TABS.MANAGE_TRADES' | translate }}</span>
+                <span class="text-[10px] text-slate-500 font-medium mt-0.5 leading-tight">{{ currentLang === 'fr' ? 'Ajouter ou retirer des métiers' : 'Add or remove available trades' }}</span>
+              </div>
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="manageTradesTemplate"></ng-container>
+        </p-accordionTab>
+
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-4 w-full py-1">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 shadow-sm border border-slate-200">
+                <i class="pi pi-users text-slate-600 text-lg"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="font-bold text-slate-800 text-sm">{{ 'ADMIN_DASHBOARD.TABS.USER_DIRECTORY' | translate }}</span>
+                <span class="text-[10px] text-slate-500 font-medium mt-0.5 leading-tight">{{ currentLang === 'fr' ? 'Rechercher et auditer les utilisateurs' : 'Search and audit active users' }}</span>
+              </div>
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="userDirectoryTemplate"></ng-container>
+        </p-accordionTab>
+
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-4 w-full py-1">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 shadow-sm border border-amber-100">
+                <i class="pi pi-chart-bar text-amber-600 text-lg"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="font-bold text-slate-800 text-sm">{{ 'ADMIN_DASHBOARD.TABS.SYSTEM_METRICS' | translate }}</span>
+                <span class="text-[10px] text-slate-500 font-medium mt-0.5 leading-tight">{{ currentLang === 'fr' ? 'Statistiques de la plateforme' : 'Platform health and statistics' }}</span>
+              </div>
+            </div>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="systemMetricsTemplate"></ng-container>
+        </p-accordionTab>
+
+      </p-accordion>
+    </div>
+
   </div>
 </div>
 
