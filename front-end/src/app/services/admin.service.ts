@@ -1,16 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environment/environment';
 
-const API_URL = 'http://localhost:8080/api/admin';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private http = inject(HttpClient);
 
-  baseUrl: string = 'http://localhost:8080/api';
-  adminUrl: string = `${this.baseUrl}/admin`;
-  tradeQuestionUrl: string = `${this.baseUrl}/trade-questions`
+  adminUrl: string = `${environment.apiUrl}/admin`;
+  tradeQuestionUrl: string = `${environment.apiUrl}/trade-questions`
 
   getPendingUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.adminUrl}/users/pending`);

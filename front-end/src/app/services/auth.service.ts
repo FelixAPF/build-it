@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environment/environment';
 
 // Update this if you host your backend somewhere else later
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = `${environment.apiUrl}/auth`;
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ uploadDocuments(file: File): Observable<string> {
     formData.append('file', file);
     
     // FIX: Bypassed the local API_URL constant to point exactly to the UserController
-    return this.http.post('http://localhost:8080/api/users/upload-documents', formData, { responseType: 'text' });
+    return this.http.post(`${environment.apiUrl}/users/upload-documents`, formData, { responseType: 'text' });
   }
 
   registerBusiness(data: any): Observable<any> {
@@ -79,6 +80,6 @@ private saveToken(response: any) {
 
   // Fetches dynamic trades from the database for global use (Register, Dashboards)
 getTrades(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:8080/api/trades');
+    return this.http.get<any[]>(`${environment.apiUrl}/trades`);
   }
 }
