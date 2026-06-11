@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Database Service
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: crewup-db
+    restart: always
+    environment:
+      POSTGRES_DB: crewup
+      POSTGRES_USER: production_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend Service
+  backend:
+    build: ./backend
+    container_name: crewup-backend
+    restart: always
+    depends_on:
+      - postgres-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/crewup
+      - SPRING_DATASOURCE_USERNAME=production_user
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8080:8080"
+
+  # Frontend Service
+  frontend:
+    build: ./frontend
+    container_name: crewup-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
