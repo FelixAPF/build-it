@@ -36,8 +36,7 @@ export class AdminService {
   }
 
   getDocumentAsBlob(documentUrl: string): Observable<Blob> {
-    // We fetch it as a blob so we can inject the JWT securely
-    return this.http.get(`http://localhost:8080${documentUrl}`, { responseType: 'blob' });
+    return this.http.get(`${environment.apiUrl}/admin${documentUrl}`, { responseType: 'blob' });
   }
 
   getTradeQuestions(): Observable<any[]> {
