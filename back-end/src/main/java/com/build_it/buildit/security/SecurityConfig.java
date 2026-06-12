@@ -1,6 +1,7 @@
 package com.build_it.buildit.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,6 +27,9 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthFilter;
 
+  @Value("${app.cors.allowed-origins}")
+  private List<String> allowedOrigins;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -45,7 +49,8 @@ public class SecurityConfig {
           "/api/auth/reset-password",
           "/api/auth/verify-email",
           "/api/trades",
-          "/api/webhooks/stripe" // <-- NEW: Whitelisted the Webhook for Stripe!
+          "/api/webhooks/stripe",
+          "/ws/**"
         ).permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/error").permitAll()
 
@@ -61,7 +66,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost", "ionic://localhost"));
+    configuration.setAllowedOriginPatterns(allowedOrigins);
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control", "Stripe-Signature")); // Allowed Stripe-Signature header
     configuration.setExposedHeaders(List.of("Authorization"));

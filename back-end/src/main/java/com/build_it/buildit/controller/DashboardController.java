@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,5 +33,10 @@ public class DashboardController {
   @GetMapping("/business")
   public ResponseEntity<List<BusinessDashboardResponse>> getBusinessDashboard(Principal principal) {
     return ResponseEntity.ok(dashboardService.getBusinessDashboard(principal.getName()));
+  }
+  @PreAuthorize("hasRole('BUSINESS')")
+  @GetMapping("/business/{jobId}")
+  public ResponseEntity<BusinessDashboardResponse> getBusinessDashboard(@PathVariable("jobId") Long jobId, Principal principal) {
+    return ResponseEntity.ok(dashboardService.getSingleJobPosting(jobId));
   }
 }

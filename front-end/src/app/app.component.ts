@@ -1,6 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, NgZone, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { App } from '@capacitor/app';
+import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
+
+
 
 @Component({
   selector: 'app-root',
@@ -10,6 +16,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AppComponent implements OnInit {
   private translate = inject(TranslateService);
+  private router = inject(Router);
+  private location = inject(Location);
+  private zone = inject(NgZone);
+
+
   title = 'build-it';
 
   // State flag to block rendering until JSON translations are ready
@@ -23,5 +34,52 @@ export class AppComponent implements OnInit {
       next: () => this.isTranslationsLoaded.set(true),
       error: () => this.isTranslationsLoaded.set(true) // Fallback safety guard
     });
-  }
+    App.addListener('appUrlOpen', data => {
+      // FIX: Check for the custom mobile scheme instead of localhost
+      if (data.url.startsWith('crewup://app')) {
+        
+        // 1. Force the Capacitor in-app browser overlay to close
+        Browser.close();
+
+        // 2. Strip the scheme to get the actual Angular route (e.g., /payment-success?jobId=123)
+        const routePath = data.url.replace('crewup://app', '');
+
+        // 3. Use NgZone to ensure Angular detects the route change and updates the UI
+        this.zone.run(() => {
+          this.router.navigateByUrl(routePath);
+        });
+      }
+    });
+
+    App.addListener('backButton', ({ canGoBack }) => {
+      // 1. Check if any PrimeNG Dialogs or Overlays are currently active in the DOM
+      const activeDialog = document.querySelector('.p-dialog-mask, .p-component-overlay');
+      
+      if (activeDialog) {
+        // Find the close button inside the active PrimeNG dialog and trigger a click
+        const closeButton = activeDialog.querySelector('.p-dialog-header-close') as HTMLElement;
+        if (closeButton) {
+          closeButton.click();
+          return; // Stop execution here so we don't navigate backwards!
+        }
+      }
+
+      // 2. If no dialogs are open, proceed with your standard history stack navigation
+      const currentUrl = this.router.url.split('?')[0];
+      const exitRoutes = ['/landing', '/login', '/worker-dashboard', '/business-dashboard', '/admin-dashboard'];
+
+      if (canGoBack) {
+        this.location.back();
+        return;
+      }
+
+      if (exitRoutes.includes(currentUrl)) {
+        App.exitApp();
+        return;
+      }
+
+      this.location.back();
+      });
+    }
+    
 }

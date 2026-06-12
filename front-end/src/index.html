@@ -6,6 +6,11 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="/logo/ic_launcher.png">
+  <script>
+    if (typeof global === 'undefined') {
+      var global = window;
+    }
+  </script>
   
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCurvuGr0lKeOYMUetwry0UoArcLvmcmSc&libraries=places&loading=async"></script>
 </head>

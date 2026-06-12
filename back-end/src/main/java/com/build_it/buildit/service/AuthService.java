@@ -154,6 +154,7 @@ public class AuthService {
     java.util.Map<String, String> context = new java.util.HashMap<>();
     context.put("businessType", profile.getBusinessType());
     context.put("companyName", profile.getCompanyName());
+    context.put("id", String.valueOf(profile.getId()));
     return context;
   }
 

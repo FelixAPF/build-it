@@ -5,7 +5,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { BusinessService } from '../../services/business.service';
 import { ReviewService } from '../../services/review.service';
-
+import { Capacitor } from '@capacitor/core'; // <-- 1. IMPORT CAPACITOR
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -23,7 +23,10 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect'; 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Browser } from '@capacitor/browser';
 import { AutoFocus } from "primeng/autofocus";
+import { Subscription } from 'rxjs';
+import { RealtimeService } from '../../services/realtime.service';
 
 declare var google: any;
 
@@ -50,6 +53,7 @@ export class BusinessDashboardComponent implements OnInit {
   private ngZone = inject(NgZone);
   public translate = inject(TranslateService);
   private cdr = inject(ChangeDetectorRef);
+  private realtimeService = inject(RealtimeService);
 
   @ViewChild('autocompleteContainer') autocompleteContainerRef!: ElementRef;
   jobs: any[] = [];
@@ -61,12 +65,14 @@ export class BusinessDashboardComponent implements OnInit {
   businessType: 'COMPANY' | 'PRIVATE' = 'COMPANY';
   isAdminImpersonating: boolean = false;
   isPaying: { [key: number]: boolean } = {};
+  currentBusinessId!: number;
+  private realtimeSub!: Subscription;
   
   showDialog: boolean = false;
   isSubmitting: boolean = false;
   jobForm!: FormGroup;
   useSpecificTime: boolean = false;
-
+  public today: Date = new Date();
   selectedJob: any = null;
   showJobDetailsDialog: boolean = false;
   showApplicantsDialog: boolean = false;
@@ -104,7 +110,10 @@ paymentTypes = [
 
   resumePayment(jobId: number) {
   this.isPaying[jobId] = true;
-  this.businessService.payForExistingJob(jobId).subscribe({
+  
+  const isNative = Capacitor.isNativePlatform();
+  const frontendUrl = isNative ? 'crewup://app' : 'http://localhost:4200';
+  this.businessService.payForExistingJob(jobId,frontendUrl).subscribe({
     next: (res) => {
       if (res && res.checkoutUrl) {
         window.location.href = res.checkoutUrl; // Teleport to Stripe
@@ -140,6 +149,7 @@ paymentTypes = [
     const questionsArray = this.fb.array(
       questions.map(q => this.fb.group({
       questionEn: [q.questionEn],
+        id: [q.id],
         questionFr: [q.questionFr],
         answers: this.fb.array([this.fb.control('', Validators.required)])
       }))
@@ -184,6 +194,13 @@ paymentTypes = [
       starRating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
       comment: ['']
     });
+
+    this.jobForm.get('startDatetime')?.valueChanges.subscribe(startDate => {
+    const endDate = this.jobForm.get('endDatetime')?.value;
+    if (startDate && endDate && startDate > endDate) {
+      this.jobForm.get('endDatetime')?.setValue(null);
+    }
+  });
     this.addRequirement();
   }
 
@@ -343,6 +360,18 @@ paymentTypes = [
     this.jobForm.patchValue({ address: `${streetNumber} ${route}`.trim(), city, province, postalCode });
     this.cdr.detectChanges();
   }
+
+  syncSingleJobCard(jobPostingId: number) {
+    
+    this.businessService.getSingleJob(jobPostingId).subscribe((updatedJob) => {
+      const index = this.jobs.findIndex(j => j.jobPostingId === jobPostingId);
+      if (index !== -1) {
+        // Overwrites job elements reactively. 
+        // Angular's change detection updates the requirements & counts immediately!
+        this.jobs[index] = updatedJob; 
+      }
+    });
+  }
   
   returnToAdmin() {
     const adminToken = localStorage.getItem('admin_token');
@@ -355,11 +384,19 @@ paymentTypes = [
     }
   }
   
-  loadDashboard() {
+loadDashboard() {
     this.isLoading = true;
     this.authService.getBusinessProfile().subscribe({
       next: (profile) => {
         this.businessType = profile.businessType || 'COMPANY';
+        this.currentBusinessId = profile.id;
+        
+        // 🚀 THE FIX: Initialize the WebSocket listener now that we have the Business ID
+        // The if-check prevents multiple identical subscriptions if loadDashboard() is called again
+        if (!this.realtimeSub) {
+          this.initRealtimeListener();
+        }
+
         this.businessService.getDashboard().subscribe({
           next: (data) => {
             this.jobs = data;
@@ -378,62 +415,106 @@ paymentTypes = [
     });
   }
 
-  onSubmit() {
-    if (this.jobForm.valid) {
-      this.isSubmitting = true;
-      
-      const payload = JSON.parse(JSON.stringify(this.jobForm.value));
+  initRealtimeListener() {
+    const topic = `/topic/business/${this.currentBusinessId}`;
+    
+    this.realtimeSub = this.realtimeService.watchTopic(topic).subscribe({
+      next: (event) => {
+        if (event.type === 'NEW_APPLICATION') {
+        const message = this.translate.instant(`NOTIFICATION.${event.message_key}`, { 
+            address: event.address 
+        });          // 1. Fire the global PrimeNG top popup toast immediately
+          this.messageService.add({
+            severity: 'info',
+            summary: `${this.translate.instant(`NOTIFICATION.${event.type}`)}`,
+            detail: message,
+            life: 6000
+          });
 
-      payload.isTimeFlexible = !this.useSpecificTime;
-
-      if (!payload.needSpecificTools) payload.specificTools = [];
-      if (!payload.needSupplyChainItems) payload.supplyChainItems = [];
-
-      if (!this.useSpecificTime) {
-        if (payload.startDatetime) {
-          const startDate = new Date(payload.startDatetime);
-          startDate.setHours(0, 0, 0, 0); 
-          payload.startDatetime = startDate;
-        }
-        if (payload.endDatetime) {
-          const endDate = new Date(payload.endDatetime);
-          endDate.setHours(0, 0, 0, 0); 
-          payload.endDatetime = endDate;
+          // 2. Perform a silent live state sync for this specific job card
+          this.syncSingleJobCard(event.jobPostingId);
         }
       }
+    });
+  }
+onSubmit() {
+  if (this.jobForm.valid) {
+    this.isSubmitting = true;
+    
+    const payload = JSON.parse(JSON.stringify(this.jobForm.value));
 
-      if (payload.requirements) {
-        payload.requirements = payload.requirements.map((req: any) => {
-          if (req.tradeQuestions) {
-            req.answers = req.tradeQuestions.map((tq: any) => {
-              return {
-                question: tq.question,
-                answer: tq.answers.filter((a: string) => a.trim().length > 0).join(', ')
-              };
-            });
-            delete req.tradeQuestions;
-          }
-          return req;
-        });
+    payload.isTimeFlexible = !this.useSpecificTime;
+
+    if (!payload.needSpecificTools) payload.specificTools = [];
+    if (!payload.needSupplyChainItems) payload.supplyChainItems = [];
+
+    if (!this.useSpecificTime) {
+      if (payload.startDatetime) {
+        const startDate = new Date(payload.startDatetime);
+        startDate.setHours(0, 0, 0, 0); 
+        payload.startDatetime = startDate;
       }
+      if (payload.endDatetime) {
+        const endDate = new Date(payload.endDatetime);
+        endDate.setHours(0, 0, 0, 0); 
+        payload.endDatetime = endDate;
+      }
+    }
 
-      this.businessService.createJobPosting(payload).subscribe({
-        next: (res) => {
-          this.isSubmitting = false;
-          // FIX: Redirect the user's browser to the Stripe Checkout window!
-          if (res && res.checkoutUrl) {
-            window.location.href = res.checkoutUrl;
-          }
-          
-          this.initForm();      
-        },
-        error: (err) => {
-          this.isSubmitting = false;
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to post job.' });
+    if (payload.requirements) {
+      payload.requirements = payload.requirements.map((req: any) => {
+        if (req.tradeQuestions) {
+          req.answers = req.tradeQuestions.map((tq: any) => {
+            console.log("TQ IS ", tq)
+            return {
+              question: tq.id,
+              answer: tq.answers.filter((a: string) => a.trim().length > 0).join(', ')
+            };
+          });
+          delete req.tradeQuestions;
         }
+        return req;
       });
     }
+    
+    // 2. DETECT PLATFORM RUNTIME DYNAMICALLY
+    const isNative = Capacitor.isNativePlatform();
+    const frontendUrl = isNative ? 'crewup://app' : 'http://localhost:4200';
+
+    // 3. PASS THE URL INTO THE SERVICE METHOD
+    this.businessService.createJobPosting(payload, frontendUrl).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        
+        // FIX: Look for stripeSessionUrl to match what Spring Boot is actually sending!
+        if (res && res.stripeSessionUrl) {
+          this.startStripeCheckout(res.stripeSessionUrl);
+        } else if (res && res.checkoutUrl) {
+          // Just in case you already changed the backend to "checkoutUrl", handle both:
+          this.startStripeCheckout(res.checkoutUrl);
+        }
+        
+        this.initForm();      
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to post job.' });
+      }
+    });
   }
+}
+
+async startStripeCheckout(stripeUrl: string) {
+  const isNative = Capacitor.isNativePlatform();
+  
+  if (isNative) {
+    // Mobile App: Use Capacitor's in-app browser wrapper
+    await Browser.open({ url: stripeUrl });
+  } else {
+    // Web Browser: Teleport the current tab directly to Stripe
+    window.location.href = stripeUrl;
+  }
+} 
 
   viewJobDetails(job: any) {
     this.selectedJob = job;
@@ -597,4 +678,8 @@ getSeverity(status: string): "success" | "secondary" | "info" | "warning" | "dan
       default: return `$${rate}`;
     }
   }
+
+  getTotalPendingApplicants(job: any): number {
+  return job.requirements?.reduce((sum: number, req: any) => sum + (req.pendingApplicantsCount || 0), 0) || 0;
+}
 }

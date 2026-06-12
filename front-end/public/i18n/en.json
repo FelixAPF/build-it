@@ -1,8 +1,12 @@
 {
   "COMMON": {
-    "BRAND_FIRST": "Build",
-    "BRAND_LAST": "It"
+    "BRAND_FIRST": "Crew",
+    "BRAND_LAST": "Up"
   },
+"NOTIFICATION": {
+  "NEW_APPLICATION": "New Applicant",
+  "NEW_SHIFT_APPLIED": "A new worker has applied to the shift at {{address}}"
+},
   "LANDING": {
     "NAV": {
       "GO_TO_DASHBOARD": "Go to Dashboard",

@@ -14,6 +14,9 @@ export class BusinessService {
   getDashboard(): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}/dashboard/business`);
   }
+  getSingleJob(jobPostingId: number){
+    return this.http.get<any>(`${API_URL}/dashboard/business/${jobPostingId}`);
+  }
 
   getTradeQuestions(): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}/trade-questions`);
@@ -31,16 +34,18 @@ export class BusinessService {
   rejectWorker(applicationId: number): Observable<string> {
     return this.http.post(`${API_URL}/applications/business/${applicationId}/reject`, {}, { responseType: 'text' });
   }
-  createJobPosting(jobData: any): Observable<any> {
-    return this.http.post(`${API_URL}/jobs`, jobData);
-  }
-
+createJobPosting(jobData: any, frontendUrl: string): Observable<any> {
+  const encodedUrl = encodeURIComponent(frontendUrl);
+  return this.http.post(`${API_URL}/jobs?frontendUrl=${encodedUrl}`, jobData);
+}
   // New endpoint to confirm payment
   confirmPayment(jobId: number): Observable<any> {
     return this.http.post(`${API_URL}/payments/success/${jobId}`, {});
   }
 
-  payForExistingJob(jobId: number): Observable<any> {
-    return this.http.post(`${API_URL}/jobs/${jobId}/pay`, {});
+  payForExistingJob(jobId: number, frontendUrl: string): Observable<any> {
+      const encodedUrl = encodeURIComponent(frontendUrl);
+
+    return this.http.post(`${API_URL}/jobs/${jobId}/pay?frontendUrl=${encodedUrl}`, {});
   }
 }

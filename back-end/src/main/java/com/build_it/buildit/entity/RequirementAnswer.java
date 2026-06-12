@@ -1,5 +1,6 @@
 package com.build_it.buildit.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequirementAnswer {
-  private String question;
+  @Column(name = "question_id")
+  private Long questionId;
+
   private String answer;
 }

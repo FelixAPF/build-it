@@ -3,10 +3,7 @@ package com.build_it.buildit.service;
 import com.build_it.buildit.dto.AvailableJobResponse;
 import com.build_it.buildit.dto.RequirementAnswerDto;
 import com.build_it.buildit.entity.*;
-import com.build_it.buildit.repository.JobApplicationRepository;
-import com.build_it.buildit.repository.JobPostingRepository;
-import com.build_it.buildit.repository.UserRepository;
-import com.build_it.buildit.repository.WorkerProfileRepository;
+import com.build_it.buildit.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +21,7 @@ public class WorkerFeedService {
   private final WorkerProfileRepository workerProfileRepository;
   private final JobApplicationRepository jobApplicationRepository;
   private final UserRepository userRepository;
-
+  private final TradeQuestionRepository questionRepository;
   @Transactional
   public List<AvailableJobResponse> getFeedForWorker(String email) {
     User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
@@ -62,8 +59,21 @@ public class WorkerFeedService {
             .payRate(req.getPayRate())
             .remainingSpots(req.getQtyRequested() - req.getQtyFilled())
             .isNewShift(isNew)
-            .answers(req.getAnswers().stream().map(a -> new RequirementAnswerDto(a.getQuestion(), a.getAnswer())).toList())
-            .build();
+                  .answers(req.getAnswers().stream().map(a -> {
+                    // Look up the master question details using the ID stored in the collection
+                    return questionRepository.findById(a.getQuestionId())
+                            .map(q -> RequirementAnswerDto.builder()
+                                    .questionFr(q.getQuestionFr())
+                                    .questionEn(q.getQuestionEn())
+                                    .answer(a.getAnswer())
+                                    .build())
+                            .orElseGet(() -> RequirementAnswerDto.builder()
+                                    .questionFr("Question inconnue")
+                                    .questionEn("Unknown Question")
+                                    .answer(a.getAnswer())
+                                    .build());
+                  }).toList())
+                  .build();
         })
       ).collect(Collectors.toList());
 

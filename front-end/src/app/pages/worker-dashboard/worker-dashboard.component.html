@@ -72,16 +72,16 @@
                   <h3 class="font-bold text-xl text-slate-800">{{job.companyName}}</h3>
                   <p class="text-slate-500 text-sm mt-1"><i class="pi pi-map-marker text-slate-400 mr-1"></i> {{job.address}}</p>
                   
-                  <div *ngIf="job.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{{ 'WORKER_DASHBOARD.FEED.JOB_DETAILS' | translate }}</div>
-                    <div *ngFor="let ans of job.answers" class="text-sm">
-                      <span class="font-bold text-slate-700">
-                          <i class="pi pi-info-circle mr-1 text-slate-400"></i>
-                          {{ currentLang === 'fr' ? ans.questionFr : ans.questionEn }}:
-                        </span> 
-                        <span class="text-slate-600 ml-1">{{ ans.answer }}</span> 
-                      </div>
-                    </div>
+                <div *ngIf="job.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                  <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{{ 'WORKER_DASHBOARD.FEED.JOB_DETAILS' | translate }}</div>
+                  <div *ngFor="let ans of job.answers" class="text-sm">
+                    <span class="font-bold text-slate-700">
+                      <i class="pi pi-info-circle mr-1 text-slate-400"></i>
+                      {{ currentLang === 'fr' ? (ans.questionFr || ans.question) : (ans.questionEn || ans.question) }}:
+                    </span> 
+                    <span class="text-slate-600 ml-1">{{ ans.answer }}</span> 
+                  </div>
+                </div>
 
                   <div *ngIf="job.providesSupplyChain || (job.specificTools && job.specificTools.length > 0) || (job.supplyChainItems && job.supplyChainItems.length > 0)" class="mt-3 bg-red-50/50 p-4 rounded-xl border border-red-100 flex flex-col gap-2">
                     <div *ngIf="job.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> {{ 'WORKER_DASHBOARD.FEED.SUPPLY_CHAIN_PROVIDED' | translate }}</div>
@@ -146,12 +146,16 @@
                     <span class="font-bold text-red-600">{{ formatPay(app.payRate, app.paymentType) }}</span>
                   </div>
 
-                  <div *ngIf="app.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{{ 'WORKER_DASHBOARD.FEED.JOB_DETAILS' | translate }}</div>
-                    <div *ngFor="let ans of app.answers" class="text-sm">
-                      <span class="font-bold text-slate-700"><i class="pi pi-info-circle mr-1 text-slate-400"></i>{{ans.question}}:</span> <span class="text-slate-600 ml-1">{{ans.answer}}</span>
-                    </div>
+                <div *ngIf="app.answers?.length > 0" class="mt-4 flex flex-col gap-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                  <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{{ 'WORKER_DASHBOARD.FEED.JOB_DETAILS' | translate }}</div>
+                  <div *ngFor="let ans of app.answers" class="text-sm">
+                    <span class="font-bold text-slate-700">
+                      <i class="pi pi-info-circle mr-1 text-slate-400"></i>
+                      {{ currentLang === 'fr' ? (ans.questionFr || ans.question) : (ans.questionEn || ans.question) }}:
+                    </span> 
+                    <span class="text-slate-600 ml-1">{{ans.answer}}</span>
                   </div>
+                </div>
 
                   <div *ngIf="app.providesSupplyChain || (app.specificTools && app.specificTools.length > 0) || (app.supplyChainItems && app.supplyChainItems.length > 0)" class="mt-3 bg-red-50/50 p-4 rounded-xl border border-red-100 flex flex-col gap-2">
                     <div *ngIf="app.providesSupplyChain" class="text-xs font-bold text-red-700"><i class="pi pi-truck mr-1"></i> {{ 'WORKER_DASHBOARD.FEED.SUPPLY_CHAIN_PROVIDED' | translate }}</div>

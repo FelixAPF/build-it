@@ -77,7 +77,16 @@
         
         <div class="p-6 border-b border-slate-100 flex justify-between items-start gap-4 bg-slate-50/50">
           <div>
-            <p-tag [value]="formatStatus(job.status)" [severity]="getSeverity(job.status)" styleClass="text-xs"></p-tag>
+            <div class="flex flex-wrap items-center gap-2">
+              <p-tag [value]="formatStatus(job.status)" [severity]="getSeverity(job.status)" styleClass="text-xs"></p-tag>
+              
+              @if (getTotalPendingApplicants(job) > 0) {
+                <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1 animate-pulse">
+                  <i class="pi pi-bell text-[9px]"></i>
+                  {{ getTotalPendingApplicants(job) }} NEW
+                </span>
+              }
+            </div>
             <h3 class="font-bold text-lg text-slate-800 mt-3 leading-tight">{{job.address}}</h3>
           </div>
           <div class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">#{{job.jobPostingId}}</div>
@@ -168,16 +177,31 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_START_DATE' | translate }}</label>
-        <p-calendar formControlName="startDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_END_DATE' | translate }}</label>
-        <p-calendar formControlName="endDatetime" [showTime]="useSpecificTime" [showSeconds]="false" appendTo="body" styleClass="w-full"></p-calendar>
-      </div>
-    </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="flex flex-col gap-2">
+    <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_START_DATE' | translate }}</label>
+    <p-calendar 
+      formControlName="startDatetime" 
+      [minDate]="today"
+      [showTime]="useSpecificTime" 
+      [showSeconds]="false" 
+      appendTo="body" 
+      styleClass="w-full">
+    </p-calendar>
+  </div>
+  <div class="flex flex-col gap-2">
+    <label class="font-semibold text-slate-700">{{ 'BUSINESS_DASHBOARD.LAB_END_DATE' | translate }}</label>
+    <p-calendar 
+      formControlName="endDatetime" 
+      [minDate]="jobForm.get('startDatetime')?.value || today"
+      [showTime]="useSpecificTime" 
+      [defaultDate]="jobForm.get('startDatetime')?.value || today"
+      [showSeconds]="false" 
+      appendTo="body" 
+      styleClass="w-full">
+    </p-calendar>
+  </div>
+</div>
 
     <div class="flex items-center gap-2 -mt-2">
       <p-checkbox [(ngModel)]="useSpecificTime" [ngModelOptions]="{standalone: true}" [binary]="true" inputId="timeCheck"></p-checkbox>
@@ -271,9 +295,9 @@
             <h4 class="text-xs font-bold uppercase tracking-wider text-red-600 mb-1">{{ 'BUSINESS_DASHBOARD.TRADE_DETAILS_TITLE' | translate }}</h4>
             
             <div class="flex flex-col gap-2 border-b border-slate-100 pb-4 last:border-0 last:pb-0" *ngFor="let tq of getTradeQuestionsArray(i).controls; let qIndex=index" [formGroupName]="qIndex">
-              <label class="text-sm font-bold text-slate-700">
-                {{ currentLang === 'fr' ? tq.get('questionFr')?.value : tq.get('questionEn')?.value }} <span class="text-red-500">*</span>
-              </label>              
+            <label class="text-sm font-bold text-slate-700">
+              {{ currentLang === 'fr' ? (tq.value.questionFr || tq.value.question) : (tq.value.questionEn || tq.value.question) }} <span class="text-red-500">*</span>
+            </label>            
               <div class="flex flex-col gap-2" formArrayName="answers">
                 <div class="flex gap-2" *ngFor="let ansCtrl of getAnswersForQuestion(i, qIndex).controls; let aIndex=index">
                   <input pInputText [formControlName]="aIndex" [placeholder]="'BUSINESS_DASHBOARD.PLACEHOLDER_DETAIL' | translate" class="w-full bg-slate-50" />
@@ -308,11 +332,14 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <p-tag [value]="formatStatus(req.jobType)" severity="info"></p-tag>
-            <div class="mt-3 flex flex-col gap-1 bg-slate-50 p-3 rounded-lg border border-slate-200" *ngIf="req.answers?.length > 0">
-              <div class="text-sm" *ngFor="let ans of req.answers">
-                <span class="font-bold text-slate-700">{{ans.question}}:</span> <span class="text-slate-600">{{ans.answer}}</span>
-              </div>
+          <div class="mt-3 flex flex-col gap-1 bg-slate-50 p-3 rounded-lg border border-slate-200" *ngIf="req.answers?.length > 0">
+            <div class="text-sm" *ngFor="let ans of req.answers">
+              <span class="font-bold text-slate-700">
+                {{ currentLang === 'fr' ? (ans.questionFr || ans.question) : (ans.questionEn || ans.question) }}:
+              </span> 
+              <span class="text-slate-600">{{ans.answer}}</span>
             </div>
+          </div>
             <div class="mt-2 text-lg text-slate-800 font-bold">{{ formatPay(req.payRate, req.paymentType) }}</div>
             <div class="text-sm font-medium animate-fade-in" [ngClass]="req.qtyFilled >= req.qtyRequested ? 'text-green-600' : 'text-amber-600'">
               {{ 'BUSINESS_DASHBOARD.FILLED_COUNT' | translate }}: {{req.qtyFilled}} / {{req.qtyRequested}}

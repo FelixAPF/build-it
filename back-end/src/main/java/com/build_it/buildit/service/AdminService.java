@@ -105,7 +105,7 @@ public class AdminService {
       }
     }
 
-    String docUrl = user.getDocumentPath() != null ? "/api/admin/documents/" + user.getDocumentPath() : null;
+    String docUrl = user.getDocumentPath() != null ? "/documents/" + user.getDocumentPath() : null;
 
     return UserAdminResponse.builder()
       .userId(user.getId())

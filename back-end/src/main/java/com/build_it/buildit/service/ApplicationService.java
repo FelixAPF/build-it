@@ -4,10 +4,13 @@ import com.build_it.buildit.dto.ApplicationResponse;
 import com.build_it.buildit.entity.*;
 import com.build_it.buildit.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,8 @@ public class ApplicationService {
   private final UserRepository userRepository;
   private final AuditLogService auditLogService;
   private final EmailService emailService;
-
+  @Autowired
+  private SimpMessagingTemplate messagingTemplate;
   // STEP 3.3: Worker Applies
   @Transactional
   public String applyForJob(Long requirementId, String workerEmail) {
@@ -49,8 +53,23 @@ public class ApplicationService {
       .status(ApplicationStatus.PENDING)
       .build();
 
-    applicationRepository.save(application);
+    JobApplication save = applicationRepository.save(application);
     auditLogService.log(workerEmail, "JOB_APPLICATION", "Submitted availability match application tracking for slot ID: " + requirementId);
+
+    Long businessId = application.getJobRequirement().getJobPosting().getBusiness().getId(); // Example: job.getBusinessId();
+    String address = application.getJobRequirement().getJobPosting().getAddress(); // Example: job.getAddress();
+
+    // Prepare a fast notification payload
+    Map<String, Object> payload = Map.of(
+            "type", "NEW_APPLICATION",
+            "jobPostingId", application.getJobRequirement().getJobPosting().getId(),
+            "message_key", "NEW_SHIFT_APPLIED",
+            "address", address
+    );
+
+    // Broadcast directly to the listening business dashboard channel
+    String destination = "/topic/business/" + businessId;
+    messagingTemplate.convertAndSend(destination, (Object) payload);
     return "Successfully applied for the position!";
   }
   @Transactional

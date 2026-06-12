@@ -32,12 +32,15 @@ public class JobPostingService {
   @Value("${stripe.api.key}")
   private String stripeApiKey;
 
+  @Value("${app.frontend-url}")
+  private String frontEndUrl;
+
   private static final double BASE_FEE_PER_WORKER = 5.00;
   private static final double TPS_RATE = 0.05;
   private static final double TVQ_RATE = 0.09975;
 
   @Transactional
-  public String createJobPosting(CreateJobPostingRequest request, String businessEmail) {
+  public String createJobPosting(CreateJobPostingRequest request, String businessEmail, String dynamicFrontendUrl) {
     Stripe.apiKey = stripeApiKey;
 
     User user = userRepository.findByEmail(businessEmail)
@@ -100,8 +103,8 @@ public class JobPostingService {
 
       SessionCreateParams params = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
-        .setSuccessUrl("http://localhost:4200/payment-success?jobId=" + jobPosting.getId())
-        .setCancelUrl("http://localhost:4200/business-dashboard")
+        .setSuccessUrl(dynamicFrontendUrl + "/payment-success?jobId=" + jobPosting.getId())
+        .setCancelUrl(dynamicFrontendUrl + "/business-dashboard")
         .putMetadata("jobId", jobPosting.getId().toString()) // <-- CRITICAL: Attach Job ID!
         .addLineItem(
           SessionCreateParams.LineItem.builder()
@@ -162,7 +165,7 @@ public class JobPostingService {
   }
 
   @Transactional
-  public String generatePaymentSessionForExistingJob(Long jobId, String businessEmail) {
+  public String generatePaymentSessionForExistingJob(Long jobId, String businessEmail, String dynamicFrontendUrl) {
     Stripe.apiKey = stripeApiKey;
 
     User user = userRepository.findByEmail(businessEmail)
@@ -189,8 +192,8 @@ public class JobPostingService {
 
       SessionCreateParams params = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
-        .setSuccessUrl("http://localhost:4200/payment-success?jobId=" + jobPosting.getId())
-        .setCancelUrl("http://localhost:4200/business-dashboard")
+        .setSuccessUrl(dynamicFrontendUrl + "/payment-success?jobId=" + jobPosting.getId())
+        .setCancelUrl(dynamicFrontendUrl + "/business-dashboard")
         .putMetadata("jobId", jobPosting.getId().toString()) // <-- CRITICAL: Attach Job ID!
         .addLineItem(
           SessionCreateParams.LineItem.builder()

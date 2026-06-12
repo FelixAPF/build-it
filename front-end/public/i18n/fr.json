@@ -3,6 +3,10 @@
     "BRAND_FIRST": "Build",
     "BRAND_LAST": "It"
   },
+"NOTIFICATION": {
+  "NEW_APPLICATION": "Nouveau Candidat",
+  "NEW_SHIFT_APPLIED": "Un nouveau travailleur a postulé pour le quart au {{address}}"
+},
   "LANDING": {
     "NAV": {
       "GO_TO_DASHBOARD": "Aller au tableau de bord",
