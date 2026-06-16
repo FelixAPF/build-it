@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "274788768842",
+    "project_id": "crewup-a6aeb",
+    "storage_bucket": "crewup-a6aeb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274788768842:android:eb72360d144fcf1efbdab3",
+        "android_client_info": {
+          "package_name": "com.crew.up"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfIoBFXu36qMuIB0y86EAEcrWXzX09pQM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,13 +5,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { App } from '@capacitor/app';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { VersionService } from './services/version.service';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { PushNotificationService } from './services/push-notification.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, DialogModule, ButtonModule, ToastModule],
   templateUrl: './app.component.html',
+  providers: [MessageService],
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
@@ -19,6 +26,10 @@ export class AppComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private zone = inject(NgZone);
+  private versionService = inject(VersionService);
+  private pushNotificationService = inject(PushNotificationService);
+  showUpdateDialog = false;
+  updateStoreUrl = '';
 
 
   title = 'build-it';
@@ -26,8 +37,9 @@ export class AppComponent implements OnInit {
   // State flag to block rendering until JSON translations are ready
   isTranslationsLoaded = signal(false);
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const savedLang = localStorage.getItem('buildit_lang') || 'en';
+    this.pushNotificationService.initPush();
     
     // translate.use returns an Observable. Subscribe to flip our flag when ready.
     this.translate.use(savedLang).subscribe({
@@ -50,6 +62,8 @@ export class AppComponent implements OnInit {
         });
       }
     });
+
+    await this.verifyAppVersion();
 
     App.addListener('backButton', ({ canGoBack }) => {
       // 1. Check if any PrimeNG Dialogs or Overlays are currently active in the DOM
@@ -81,5 +95,17 @@ export class AppComponent implements OnInit {
       this.location.back();
       });
     }
+
+  async verifyAppVersion() {
+    const status = await this.versionService.checkForUpdates();
+    if (status.requiresUpdate && status.updateUrl) {
+      this.updateStoreUrl = status.updateUrl;
+      this.showUpdateDialog = true;
+    }
+  }
+
+  goToStore() {
+    this.versionService.openAppStore(this.updateStoreUrl);
+  }
     
 }
