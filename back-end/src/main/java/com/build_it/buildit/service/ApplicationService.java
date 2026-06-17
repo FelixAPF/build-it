@@ -75,16 +75,17 @@ public class ApplicationService {
     try {
       // Find the user account that owns the business profile attached to this job
       User businessUser = application.getJobRequirement().getJobPosting().getBusiness().getUser();
-      String deviceToken = businessUser.getFcmDeviceToken();
-
+      List<String> deviceTokens = businessUser.getDeviceTokens().stream()
+              .map(DeviceToken::getToken)
+              .toList(); // Use .collect(Collectors.toList()) if you are on an older Java version
       // Find the worker's name for the alert (adjust getter methods based on your exact User/WorkerProfile entity)
       String workerName = worker.getFirstName() + " " + worker.getLastName();
       String jobLocation = application.getJobRequirement().getJobPosting().getAddress();
 
-      fcmService.sendPushNotification(
-              deviceToken,
+      fcmService.sendPushNotificationToUser(
+              deviceTokens,
               "New Applicant! 📄",
-              workerName + " just applied for your job at: " + jobLocation
+              workerName + " just applied for your job: " + jobLocation
       );
     } catch (Exception e) {
       // Catch the exception so the application still succeeds even if Firebase drops the connection
@@ -169,14 +170,15 @@ public class ApplicationService {
     try {
       // Get the worker who applied
       User workerUser = application.getWorker().getUser();
-      String deviceToken = workerUser.getFcmDeviceToken();
-
+      List<String> deviceTokens = workerUser.getDeviceTokens().stream()
+              .map(DeviceToken::getToken)
+              .toList();
       // Get the job title for context
       String businessName = application.getJobRequirement().getJobPosting().getBusiness().getCompanyName();
 
       // Send the push!
-      fcmService.sendPushNotification(
-              deviceToken,
+      fcmService.sendPushNotificationToUser(
+              deviceTokens,
               "Application Approved! 🎉",
               "You have been hired by: " + businessName
       );

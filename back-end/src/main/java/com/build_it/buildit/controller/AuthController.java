@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -27,6 +29,17 @@ public class AuthController {
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
     return ResponseEntity.ok(authService.login(request));
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(@RequestBody Map<String, String> payload) {
+    String fcmToken = payload.get("fcmToken");
+
+    if (fcmToken != null) {
+      authService.removeDeviceToken(fcmToken);
+    }
+
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/business/profile")

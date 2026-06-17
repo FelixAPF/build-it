@@ -24,6 +24,7 @@ public class AuthService {
   private final AuditLogService auditLogService;
   private final PasswordResetTokenRepository passwordResetTokenRepository;
   private final EmailService emailService;
+  private final DeviceTokenRepository deviceTokenRepository;
   private final JwtUtils jwtUtils;
 
   @Transactional
@@ -139,6 +140,9 @@ public class AuthService {
     }
 
     String token = jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+    if (request.getFcmToken() != null && !request.getFcmToken().trim().isEmpty()) {
+      updateDeviceToken(user.getEmail(), request.getFcmToken());
+    }
     auditLogService.log(user.getEmail(), "USER_LOGIN", "Authenticated successfully using clean secure route parameters.");
     return new AuthResponse(token, user.getEmail(), user.getRole().name(), user.getStatus().name());
   }
@@ -159,18 +163,30 @@ public class AuthService {
   }
 
   @Transactional
-  public void updateDeviceToken(String email, String token) {
+  public void updateDeviceToken(String email, String tokenValue) {
+    if (tokenValue == null || tokenValue.trim().isEmpty()) return;
+
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // Updates the device token for the user
-    user.setFcmDeviceToken(token);
+    // Check if this specific physical device token already exists
+    Optional<DeviceToken> existingTokenOpt = deviceTokenRepository.findByToken(tokenValue);
 
-    // Save the updated user back to the database
-    userRepository.save(user);
-
-    // Optional: Log it for security auditing
-    auditLogService.log(email, "DEVICE_TOKEN_UPDATED", "User registered a new device for push notifications.");
+    if (existingTokenOpt.isPresent()) {
+      DeviceToken existingToken = existingTokenOpt.get();
+      // If the token belongs to a different user (e.g. they switched accounts on the same phone), reassign it
+      if (!existingToken.getUser().getId().equals(user.getId())) {
+        existingToken.setUser(user);
+        deviceTokenRepository.save(existingToken);
+      }
+    } else {
+      // Brand new device, save it to this user
+      DeviceToken newToken = DeviceToken.builder()
+              .token(tokenValue)
+              .user(user)
+              .build();
+      deviceTokenRepository.save(newToken);
+    }
   }
 
   @Transactional
@@ -259,5 +275,15 @@ public class AuthService {
     passwordResetTokenRepository.delete(resetToken);
 
     return "Your password has been successfully reset. You can now log in.";
+  }
+
+  @Transactional
+  public void removeDeviceToken(String tokenValue) {
+    if (tokenValue == null || tokenValue.trim().isEmpty()) return;
+
+    // This will remove the specific token from the user_device_tokens table
+    deviceTokenRepository.deleteByToken(tokenValue);
+
+    System.out.println("Device token removed successfully upon logout.");
   }
 }

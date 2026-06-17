@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users") // "user" is often a reserved keyword in PostgreSQL, so we use "users"
@@ -28,8 +30,11 @@ public class User {
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
-  @Column(name = "fcm_device_token")
-  private String fcmDeviceToken;
+  @Builder.Default
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  private List<DeviceToken> deviceTokens = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)

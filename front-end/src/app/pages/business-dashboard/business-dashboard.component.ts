@@ -27,6 +27,7 @@ import { Browser } from '@capacitor/browser';
 import { AutoFocus } from "primeng/autofocus";
 import { Subscription } from 'rxjs';
 import { RealtimeService } from '../../services/realtime.service';
+import { environment } from '../../../environment/environment';
 
 declare var google: any;
 
@@ -112,7 +113,7 @@ paymentTypes = [
   this.isPaying[jobId] = true;
   
   const isNative = Capacitor.isNativePlatform();
-  const frontendUrl = isNative ? 'crewup://app' : 'http://localhost:4200';
+  const frontendUrl = isNative ? 'crewup://app' : environment.frontEndUrl;
   this.businessService.payForExistingJob(jobId,frontendUrl).subscribe({
     next: (res) => {
       if (res && res.checkoutUrl) {
@@ -465,7 +466,6 @@ onSubmit() {
       payload.requirements = payload.requirements.map((req: any) => {
         if (req.tradeQuestions) {
           req.answers = req.tradeQuestions.map((tq: any) => {
-            console.log("TQ IS ", tq)
             return {
               question: tq.id,
               answer: tq.answers.filter((a: string) => a.trim().length > 0).join(', ')

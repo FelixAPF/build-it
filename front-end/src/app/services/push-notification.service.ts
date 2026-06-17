@@ -29,7 +29,7 @@ export class PushNotificationService {
       await PushNotifications.register();
 
       PushNotifications.addListener('registration', (token: Token) => {
-        this.saveTokenToBackend(token.value);
+        localStorage.setItem('fcm_device_token', token.value);
       });
 
       // --- THE NEW FOREGROUND LISTENER ---
@@ -56,7 +56,7 @@ export class PushNotificationService {
   }
 
   private saveTokenToBackend(token: string) {
-    this.http.post(`${environment.apiUrl}/api/users/device-token`, { token }, { responseType: 'text' })
+    this.http.post(`${environment.apiUrl}/users/device-token`, { token }, { responseType: 'text' })
       .subscribe();
   }
 }

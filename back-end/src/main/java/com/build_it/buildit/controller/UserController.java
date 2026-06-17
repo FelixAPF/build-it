@@ -30,9 +30,11 @@ public class UserController {
 
   @PreAuthorize("isAuthenticated()")
   @PostMapping("/device-token")
-  public ResponseEntity<String> updateDeviceToken(@RequestBody Map<String, String> payload, Principal principal) {
+  public ResponseEntity<?> updateDeviceToken(@RequestBody Map<String, String> payload, Principal principal) {
     String token = payload.get("token");
-    authService.updateDeviceToken(principal.getName(), token);
-    return ResponseEntity.ok("Device token successfully saved");
+    if (token != null) {
+      authService.updateDeviceToken(principal.getName(), token);
+    }
+    return ResponseEntity.ok().body("Device token updated");
   }
 }
