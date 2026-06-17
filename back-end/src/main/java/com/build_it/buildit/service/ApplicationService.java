@@ -15,6 +15,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ApplicationService {
+  private final FcmService fcmService;
 
   private final JobApplicationRepository applicationRepository;
   private final JobRequirementRepository requirementRepository;
@@ -70,6 +71,25 @@ public class ApplicationService {
     // Broadcast directly to the listening business dashboard channel
     String destination = "/topic/business/" + businessId;
     messagingTemplate.convertAndSend(destination, (Object) payload);
+
+    try {
+      // Find the user account that owns the business profile attached to this job
+      User businessUser = application.getJobRequirement().getJobPosting().getBusiness().getUser();
+      String deviceToken = businessUser.getFcmDeviceToken();
+
+      // Find the worker's name for the alert (adjust getter methods based on your exact User/WorkerProfile entity)
+      String workerName = worker.getFirstName() + " " + worker.getLastName();
+      String jobLocation = application.getJobRequirement().getJobPosting().getAddress();
+
+      fcmService.sendPushNotification(
+              deviceToken,
+              "New Applicant! 📄",
+              workerName + " just applied for your job at: " + jobLocation
+      );
+    } catch (Exception e) {
+      // Catch the exception so the application still succeeds even if Firebase drops the connection
+      System.err.println("Failed to send push notification to business: " + e.getMessage());
+    }
     return "Successfully applied for the position!";
   }
   @Transactional
@@ -145,6 +165,26 @@ public class ApplicationService {
       posting.getAddress(),
       posting.getStartDatetime().toString()
     );
+
+    try {
+      // Get the worker who applied
+      User workerUser = application.getWorker().getUser();
+      String deviceToken = workerUser.getFcmDeviceToken();
+
+      // Get the job title for context
+      String businessName = application.getJobRequirement().getJobPosting().getBusiness().getCompanyName();
+
+      // Send the push!
+      fcmService.sendPushNotification(
+              deviceToken,
+              "Application Approved! 🎉",
+              "You have been hired by: " + businessName
+      );
+    } catch (Exception e) {
+      // We catch the exception so that if Firebase is down,
+      // the business can still successfully approve the worker!
+      System.err.println("Failed to send push notification: " + e.getMessage());
+    }
 
     auditLogService.log(businessEmail, "APPLICATION_APPROVED", "Hired tradesperson " + application.getWorker().getFullName() + " for requirement context.");
     return "Worker approved! Schedule locked.";

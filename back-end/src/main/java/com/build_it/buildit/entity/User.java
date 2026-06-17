@@ -28,6 +28,9 @@ public class User {
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
+  @Column(name = "fcm_device_token")
+  private String fcmDeviceToken;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   private Role role;

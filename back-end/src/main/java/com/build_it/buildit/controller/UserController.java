@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,5 +26,13 @@ public class UserController {
     String savedFileName = fileStorageService.storeFile(file, principal.getName());
     // Pass the saved filename to the auth service
     return ResponseEntity.ok(authService.completeDocumentUpload(principal.getName(), savedFileName));
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/device-token")
+  public ResponseEntity<String> updateDeviceToken(@RequestBody Map<String, String> payload, Principal principal) {
+    String token = payload.get("token");
+    authService.updateDeviceToken(principal.getName(), token);
+    return ResponseEntity.ok("Device token successfully saved");
   }
 }

@@ -159,6 +159,21 @@ public class AuthService {
   }
 
   @Transactional
+  public void updateDeviceToken(String email, String token) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // Updates the device token for the user
+    user.setFcmDeviceToken(token);
+
+    // Save the updated user back to the database
+    userRepository.save(user);
+
+    // Optional: Log it for security auditing
+    auditLogService.log(email, "DEVICE_TOKEN_UPDATED", "User registered a new device for push notifications.");
+  }
+
+  @Transactional
   public String verifyEmail(String token) {
     EmailVerificationToken verificationToken = emailVerificationTokenRepository.findByToken(token)
       .orElseThrow(() -> new RuntimeException("Invalid or expired verification link."));

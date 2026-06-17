@@ -6,11 +6,13 @@ import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader, TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor'; // <-- Import the interceptor
+import { MessageService } from 'primeng/api';
 
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
+    MessageService,
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])), // <-- Add it here!
     provideAnimations(),
